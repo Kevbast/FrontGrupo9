@@ -1,0 +1,10 @@
+<div>
+    <h1>Eventos</h1>
+    <br/>
+    <div *ngIf="eventos">
+        <div *ngFor="let evento of eventos">
+            <h1 class="bg-danger">{{evento.idEvento}}</h1>
+            <h2>{{evento.fechaEvento | date:'longDate'}}</h2>
+        </div>
+    </div>
+</div>
