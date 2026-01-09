@@ -1,0 +1,162 @@
+/* --- PALETA DE COLORES (Azules Deportivos) --- */
+:root {
+  --sport-primary: #0077b6;    /* Azul sólido y profesional */
+  --sport-hover: #023e8a;      /* Azul más oscuro para interacción */
+  --sport-light: #caf0f8;      /* Azul muy pálido para fondo */
+  --white-translucent: rgba(255, 255, 255, 0.95);
+}
+
+/* 1. CONTENEDOR (Fondo estático y limpio) */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  /* Un fondo azul muy suave y fijo, sin animaciones locas */
+  background-color: #e3f2fd; 
+  background-image: linear-gradient(to top, #e3f2fd 0%, #f1f8e9 100%);
+}
+
+/* 2. TARJETA (La animación sutil de entrada) */
+.login-card {
+  max-width: 400px;
+  width: 90%;
+  border-radius: 16px !important; /* Bordes redondeados modernos */
+  border: none;
+  background: var(--white-translucent);
+  box-shadow: 0 10px 40px rgba(0, 119, 182, 0.15); /* Sombra azulada muy suave */
+  
+  /* AQUÍ ESTÁ LA ANIMACIÓN SUTIL */
+  animation: floatUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0; /* Empieza invisible */
+  transform: translateY(30px); /* Empieza un poco más abajo */
+}
+
+/* 3. CABECERA E IMAGEN */
+.card-header {
+  position: relative;
+  height: 170px;
+  overflow: hidden;
+}
+
+.card-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Filtro azul suave sobre la imagen */
+.header-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 119, 182, 0.6) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 25px;
+}
+
+/* Logo */
+.logo-circle {
+  background: white;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(50%); /* Cuelga en el borde */
+  z-index: 2;
+}
+
+.logo-circle mat-icon {
+  color: var(--sport-primary);
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+/* 4. CUERPO DE LA TARJETA */
+.text-center {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+mat-card-title {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.4rem !important;
+}
+
+mat-card-subtitle {
+  color: #7f8c8d;
+}
+
+/* 5. FORMULARIO (Centrado de cajas) */
+.login-form {
+  display: flex;         /* Convertimos el form en Flexbox */
+  flex-direction: column;
+  align-items: center;   /* ESTO CENTRA LAS CAJAS HORIZONTALMENTE */
+  width: 100%;
+  padding: 20px 0;
+}
+
+/* 5. EL BOTÓN (Lo más importante) */
+.login-btn {
+  width: 100%;
+  height: 48px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  margin-top: 15px;
+  border-radius: 8px !important;
+  
+  /* Azul degradado sutil */
+  background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3); /* Sombra "glow" azul */
+  
+  /* Transición suave para el hover */
+  transition: all 0.3s ease;
+}
+
+/* Animación al pasar el mouse por el botón */
+.login-btn:hover {
+  background: linear-gradient(135deg, #023e8a 0%, #0077b6 100%) !important;
+  transform: translateY(-2px); /* Se levanta un poquito */
+  box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
+}
+
+/* Footer */
+mat-card-footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #fafafa;
+  color: #bdc3c7;
+  font-size: 0.75rem;
+}
+
+/* --- KEYFRAMES (La definición de la animación) --- */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px); /* Empieza abajo */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Termina en su sitio */
+  }
+}
+
+/* --- OVERRIDES DE ANGULAR MATERIAL (Opcional) --- */
+/* Esto fuerza que las líneas de los inputs sean azules en lugar de moradas */
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline-thick {
+  color: var(--sport-primary) !important;
+}
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: var(--sport-primary) !important;
+}

@@ -1,0 +1,46 @@
+<div class="login-container">
+  
+  <mat-card class="login-card">
+    
+    <div class="card-header">
+      <img src="https://www.mediterraneansportvillage.com/content/imgsxml/panel_herointerior/01-productos-cabezera202.jpg" alt="Deportes Master">
+      <div class="header-overlay">
+        <div class="logo-circle">
+          <mat-icon>school</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <mat-card-header class="text-center">
+      <mat-card-title>Portal de Deportes</mat-card-title>
+      <mat-card-subtitle>Acceso Alumnos y Profesores</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form #loginForm="ngForm" class="login-form">
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre de Usuario</mat-label>
+          <input matInput #cajausername name="cajausername" type="text" placeholder="Ej. jperez">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput #cajapassword name="cajapassword" type="password" placeholder="******">
+          <mat-icon matSuffix>lock</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="login()" class="login-btn">
+          INGRESAR
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-footer>
+      <p>© 2026 Centro Educativo - Máster Deportivo</p>
+    </mat-card-footer>
+
+  </mat-card>
+</div>
