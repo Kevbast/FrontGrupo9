@@ -160,3 +160,27 @@ mat-card-footer {
 ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
   color: var(--sport-primary) !important;
 }
+
+/* Estilos para el mensaje de error */
+.error-msg {
+  color: #d32f2f; /* Rojo Material Design */
+  text-align: center; 
+  margin-top: 15px;
+  font-size: 0.9rem;
+  background-color: #ffebee;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Estilos para el contenido de carga dentro del botón */
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.spinner-gif {
+  height: 24px; /* Tamaño pequeño para que quepa en el botón */
+  width: auto;
+}

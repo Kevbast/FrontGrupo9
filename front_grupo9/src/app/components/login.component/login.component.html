@@ -3,7 +3,7 @@
   <mat-card class="login-card">
     
     <div class="card-header">
-      <img src="https://www.mediterraneansportvillage.com/content/imgsxml/panel_herointerior/01-productos-cabezera202.jpg" alt="Deportes Master">
+      <img src="CampoFutbol.jpg" alt="Deportes Master">
       <div class="header-overlay">
         <div class="logo-circle">
           <mat-icon>school</mat-icon>
@@ -31,9 +31,24 @@
           <mat-icon matSuffix>lock</mat-icon>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" (click)="login()" class="login-btn">
-          INGRESAR
+        <button mat-raised-button 
+                color="primary" 
+                (click)="login()" 
+                class="login-btn"
+                [disabled]="isLoading">
+          
+          <span *ngIf="!isLoading">INGRESAR</span>
+
+          <div *ngIf="isLoading" class="loading-content">
+             <img src="loading.gif" alt="Cargando..." class="spinner-gif">
+             <span>Entrando...</span>
+          </div>
+
         </button>
+
+        <p *ngIf="errorMessage" style="color: red; text-align: center; margin-top: 10px;">
+          {{ errorMessage }}
+        </p>
 
       </form>
     </mat-card-content>
