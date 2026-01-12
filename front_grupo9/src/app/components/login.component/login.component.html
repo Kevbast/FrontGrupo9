@@ -19,16 +19,34 @@
     <mat-card-content>
       <form #loginForm="ngForm" class="login-form">
         
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nombre de Usuario</mat-label>
-          <input matInput #cajausername name="cajausername" type="text" placeholder="Ej. jperez">
-          <mat-icon matSuffix>person</mat-icon>
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>Usuario</mat-label>
+          
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>person</mat-icon>
+          </div>
+
+          <input matInput #cajausername name="cajausername" type="text" placeholder="username">
+          
+          <div matSuffix class="white-box box-text">
+            @tajamar365.com
+          </div>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="custom-field">
           <mat-label>Contraseña</mat-label>
-          <input matInput #cajapassword name="cajapassword" type="password" placeholder="******">
-          <mat-icon matSuffix>lock</mat-icon>
+          
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>lock</mat-icon>
+          </div>
+
+          <input matInput #cajapassword name="cajapassword" 
+                [type]="hidePassword ? 'password' : 'text'" 
+                placeholder="******">
+
+          <div matSuffix class="white-box box-icon box-clickable" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </div>
         </mat-form-field>
 
         <button mat-raised-button 
@@ -38,17 +56,12 @@
                 [disabled]="isLoading">
           
           <span *ngIf="!isLoading">INGRESAR</span>
-
           <div *ngIf="isLoading" class="loading-content">
-             <img src="loading.gif" alt="Cargando..." class="spinner-gif">
-             <span>Entrando...</span>
+            <span>Entrando...</span>
           </div>
-
         </button>
 
-        <p *ngIf="errorMessage" style="color: red; text-align: center; margin-top: 10px;">
-          {{ errorMessage }}
-        </p>
+        <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
 
       </form>
     </mat-card-content>

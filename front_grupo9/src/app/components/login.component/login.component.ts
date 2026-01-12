@@ -14,6 +14,9 @@ export class LoginComponent {
 @ViewChild('cajapassword') cajaPassword!: ElementRef;
 @Output()updateToken:EventEmitter<any>=new EventEmitter()
 
+// 1. NUEVA VARIABLE PARA EL OJO
+  public hidePassword: boolean = true;
+
 // Variable para controlar la animación del botón (Cargando...)
   public isLoading: boolean = false;
   public errorMessage: string = "";
@@ -21,24 +24,17 @@ export class LoginComponent {
  constructor(private _service: ServiceTorneo, private _app: App, private _router: Router) { }
 
  login(): void{
-    let usuario = this.cajaUsername.nativeElement.value;
+    let usuarioInput = this.cajaUsername.nativeElement.value;
     let password = this.cajaPassword.nativeElement.value;
 
-    if(!usuario || !password) {
+    if(!usuarioInput || !password) {
       this.errorMessage = "Por favor, rellena todos los campos";
       return;
     }
+    
+    let usuarioCompleto = usuarioInput + '@tajamar365.com';
 
-    // this._service.login(usuario,password).subscribe(response=>{
-    //       localStorage.setItem('authToken', response.response);
-    //       console.log('Token JWT almacenado:', response.response);
-    //       console.log('Idrole almacenado:', response.idrole);
-    //       console.log('ROL almacenado:', response.role);
-    //       this.isLoading = false;         
-    //       this.updateToken.emit();
-    //       this._router.navigate(["/"])
-    // })
-    this._service.login(usuario, password).subscribe({
+    this._service.login(usuarioCompleto, password).subscribe({
       next: (response) => {
         localStorage.setItem('authToken', response.response);
         console.log('Login OK');       
