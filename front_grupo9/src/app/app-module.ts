@@ -15,6 +15,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon'; // Opcional, para iconos
+import { EventosService } from '../services/eventosService';
+
+// LIBRERIAS PARA OBTENER LA FECHA EN ESPAÑOL
+import { LOCALE_ID } from '@angular/core';
+import localeEs from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeEs);
 
 @NgModule({
   declarations: [
@@ -34,8 +41,14 @@ import { MatIconModule } from '@angular/material/icon'; // Opcional, para iconos
     MatFormFieldModule,
     MatIconModule
   ],
+  
   providers: [
-    provideBrowserGlobalErrorListeners(),provideHttpClient(),ServiceTorneo
+    provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
+    EventosService,
+    ServiceTorneo,
+    //PROVIDER PARA OBTENER LA FECHA EN ESPAÑOL
+    {provide: LOCALE_ID, useValue: 'es' }
   ],
   bootstrap: [App]
 })

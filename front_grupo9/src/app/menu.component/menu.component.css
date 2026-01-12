@@ -1,0 +1,15 @@
+.nav-link {
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover {
+  transform: translateY(-3px);
+}
+
+#tituloEncabezado {
+  transition: color 0.3s ease;
+}
+
+#tituloEncabezado:hover {
+  color: #e3f2fd !important;
+}
