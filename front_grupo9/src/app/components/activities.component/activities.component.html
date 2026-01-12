@@ -1,0 +1,55 @@
+<div class="container">
+  <h2 class="section-title sports-border">Deportes</h2>
+  <div class="grid">
+    <div class="card" *ngFor="let act of deportes">
+      <div class="card-header sports-bg">
+        <div class="header-top">
+          <h3>{{ act.nombre }}</h3>
+          <span>🏆</span>
+        </div>
+        <p>Competición deportiva escolar</p>
+      </div>
+      <div class="card-body">
+        <div class="stats">
+          <span>👥 Participantes</span>
+          <span><strong>{{ act.minimoJugadores }}</strong> / 14</span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill blue" [style.width.%]="(act.minimoJugadores / 14) * 100"></div>
+        </div>
+        <div class="material-btn">
+          <span>📦 Ver Materiales (3)</span>
+          <span class="arrow">→</span>
+        </div>
+        <button class="btn-enroll">Inscribirse</button>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title games-border">Videojuegos</h2>
+  <div class="grid">
+    <div class="card" *ngFor="let game of videojuegos">
+      <div class="card-header games-bg">
+        <div class="header-top">
+          <h3>{{ game.nombre }}</h3>
+          <span>🎮</span>
+        </div>
+        <p>{{ game.descripcion }}</p>
+      </div>
+      <div class="card-body">
+        <div class="stats">
+          <span>👥 Participantes</span>
+          <span><strong>{{ game.actual }}</strong> / {{ game.max }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill yellow" [style.width.%]="(game.actual / game.max) * 100"></div>
+        </div>
+        <div class="material-btn">
+          <span>📦 Ver Materiales ({{ game.materiales }})</span>
+          <span class="arrow">→</span>
+        </div>
+        <button class="btn-enroll">Inscribirse</button>
+      </div>
+    </div>
+  </div>
+</div>
