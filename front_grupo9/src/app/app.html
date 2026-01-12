@@ -1,3 +1,7 @@
 
-<app-menu></app-menu>
-<router-outlet/>
+@if (token) {
+<app-menu (updateToken)="updateToken()"></app-menu>
+<router-outlet />
+}@else{
+  <app-login (updateToken)="updateToken()"></app-login>
+}

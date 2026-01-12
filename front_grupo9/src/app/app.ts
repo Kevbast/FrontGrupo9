@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { ServiceTorneo } from './services/sercvice.torneo';
+import { ServiceTorneo } from './services/service.torneo';
 
 @Component({
   selector: 'app-root',

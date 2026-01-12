@@ -3,12 +3,14 @@ import { HttpClient,HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment.development";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ServiceTorneo{
      constructor(private _http:HttpClient){}
      //Login funcional del Torneo
     login(nombre: string,contraseña:string): Observable<any> {
-        let apiUrl=environment.urlTorneo+"api/auth/LoginEventos";
+        let apiUrl=environment.apiTorneo+"api/auth/LoginEventos";
         let credentials={
             userName:nombre,
             password:contraseña

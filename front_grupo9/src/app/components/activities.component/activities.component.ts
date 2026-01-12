@@ -17,7 +17,7 @@ export class ActivitiesComponent implements OnInit {
     { nombre: 'League of Legends', descripcion: 'Competición de LoL formato 5v5', actual: 10, max: 20, materiales: 2 }
   ];
   
-  private url = environment.urlTorneo + 'api/actividades';
+  private url = environment.apiTorneo + 'api/actividades';
 
   constructor(private http: HttpClient) {}
 

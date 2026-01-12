@@ -1,3 +1,4 @@
 export const environment = {
-    urlTorneo: "https://apideportestajamar.azurewebsites.net/"
+    apiTorneo:"https://apideportestajamar.azurewebsites.net/",
+    urlApiEventos: "https://apideportestajamar.azurewebsites.net/"
 };

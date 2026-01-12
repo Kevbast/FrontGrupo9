@@ -8,18 +8,23 @@ import { provideHttpClient, HttpClientModule } from '@angular/common/http';
 import { ServiceTorneo } from './services/sercvice.torneo';
 import { MenuComponent } from './components/menu.component/menu.component';
 import { ActivitiesComponent } from './components/activities.component/activities.component';
+import { LoginComponent } from './components/login.component/login.component';
+import { HomeComponent } from './components/home.component/home.component';
 //ANGULAR MATERIAL
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { EventosService } from '../services/eventosService';
 
 @NgModule({
   declarations: [
     App,
     MenuComponent,
-    ActivitiesComponent
+    ActivitiesComponent,
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +37,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatIconModule
   ],
-  providers: [ServiceTorneo],
+  providers: [ServiceTorneo, EventosService],
   bootstrap: [App]
 })
 export class AppModule { }
