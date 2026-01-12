@@ -1,15 +1,18 @@
 <div class="container">
   <h2 class="section-title sports-border">Deportes</h2>
   <div class="grid">
-    <div class="card" *ngFor="let act of deportes">
-      <div class="card-header sports-bg">
-        <div class="header-top">
-          <h3>{{ act.nombre }}</h3>
-          <span>🏆</span>
-        </div>
-        <p>Competición deportiva escolar</p>
-      </div>
-      <div class="card-body">
+    <mat-card *ngFor="let act of deportes" class="activity-card">
+      <mat-card-header class="sports-bg">
+        <mat-card-title>
+          <div class="header-top">
+            <h3>{{ act.nombre }}</h3>
+            <span class="icon">🏆</span>
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
         <div class="stats">
           <span>👥 Participantes</span>
           <span><strong>{{ act.minimoJugadores }}</strong> / 14</span>
@@ -21,22 +24,28 @@
           <span>📦 Ver Materiales (3)</span>
           <span class="arrow">→</span>
         </div>
-        <button class="btn-enroll">Inscribirse</button>
-      </div>
-    </div>
+      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 
   <h2 class="section-title games-border">Videojuegos</h2>
   <div class="grid">
-    <div class="card" *ngFor="let game of videojuegos">
-      <div class="card-header games-bg">
-        <div class="header-top">
-          <h3>{{ game.nombre }}</h3>
-          <span>🎮</span>
-        </div>
-        <p>{{ game.descripcion }}</p>
-      </div>
-      <div class="card-body">
+    <mat-card *ngFor="let game of videojuegos" class="activity-card">
+      <mat-card-header class="games-bg">
+        <mat-card-title>
+          <div class="header-top">
+            <h3>{{ game.nombre }}</h3>
+            <span class="icon">🎮</span>
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle>{{ game.descripcion }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
         <div class="stats">
           <span>👥 Participantes</span>
           <span><strong>{{ game.actual }}</strong> / {{ game.max }}</span>
@@ -48,8 +57,11 @@
           <span>📦 Ver Materiales ({{ game.materiales }})</span>
           <span class="arrow">→</span>
         </div>
-        <button class="btn-enroll">Inscribirse</button>
-      </div>
-    </div>
+      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>

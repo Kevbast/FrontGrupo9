@@ -59,6 +59,7 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
+              "aot": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

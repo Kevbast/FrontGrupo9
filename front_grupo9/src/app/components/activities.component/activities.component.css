@@ -1,24 +1,139 @@
-.container { padding: 20px; background-color: #f0f7ff; min-height: 100vh; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px; margin-bottom: 50px; }
+.container { 
+  padding: 20px; 
+  background-color: #f0f7ff; 
+  min-height: 100vh; 
+}
 
-.card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: none; }
-.card-header { padding: 20px; color: white; }
-.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-.header-top h3 { margin: 0; font-size: 1.4rem; font-weight: bold; }
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); 
+  gap: 25px; 
+  margin-bottom: 50px; 
+}
 
-.sports-bg { background-color: #00c853; }
-.games-bg { background-color: #9c27b0; }
-.section-title { margin: 30px 0 20px; font-weight: bold; font-size: 1.8rem; }
-.sports-border { border-left: 6px solid #00c853; padding-left: 15px; }
-.games-border { border-left: 6px solid #9c27b0; padding-left: 15px; }
+.activity-card {
+  border-radius: 15px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
 
-.card-body { padding: 20px; }
-.stats { display: flex; justify-content: space-between; margin-bottom: 10px; color: #555; font-size: 0.95rem; }
-.progress-bar { height: 10px; background: #eee; border-radius: 5px; overflow: hidden; margin-bottom: 20px; }
-.fill { height: 100%; transition: width 0.5s ease-out; }
-.fill.blue { background-color: #00a8ff; }
-.fill.yellow { background-color: #ffb100; }
+.activity-card mat-card-header {
+  padding: 20px;
+  color: white;
+  margin: 0;
+}
 
-.material-btn { display: flex; justify-content: space-between; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; color: #444; cursor: pointer; border: 1px solid #eee; }
-.btn-enroll { width: 100%; padding: 14px; background-color: #00a8ff; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-.btn-enroll:hover { background-color: #0091db; }
+.sports-bg { 
+  background-color: #00c853; 
+}
+
+.games-bg { 
+  background-color: #9c27b0; 
+}
+
+.activity-card mat-card-header ::ng-deep .mat-mdc-card-header-text {
+  width: 100%;
+  margin: 0;
+}
+
+.activity-card mat-card-title,
+.activity-card mat-card-subtitle {
+  color: white !important;
+  margin: 0;
+}
+
+.header-top { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 5px; 
+}
+
+.header-top h3 { 
+  margin: 0; 
+  font-size: 1.4rem; 
+  font-weight: bold; 
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.section-title { 
+  margin: 30px 0 20px; 
+  font-weight: bold; 
+  font-size: 1.8rem; 
+}
+
+.sports-border { 
+  border-left: 6px solid #00c853; 
+  padding-left: 15px; 
+}
+
+.games-border { 
+  border-left: 6px solid #9c27b0; 
+  padding-left: 15px; 
+}
+
+mat-card-content {
+  padding: 20px !important;
+}
+
+.stats { 
+  display: flex; 
+  justify-content: space-between; 
+  margin-bottom: 10px; 
+  color: #555; 
+  font-size: 0.95rem; 
+}
+
+.progress-bar { 
+  height: 10px; 
+  background: #eee; 
+  border-radius: 5px; 
+  overflow: hidden; 
+  margin-bottom: 20px; 
+}
+
+.fill { 
+  height: 100%; 
+  transition: width 0.5s ease-out; 
+}
+
+.fill.blue { 
+  background-color: #00a8ff; 
+}
+
+.fill.yellow { 
+  background-color: #ffb100; 
+}
+
+.material-btn { 
+  display: flex; 
+  justify-content: space-between; 
+  background: #f8f9fa; 
+  padding: 12px; 
+  border-radius: 8px; 
+  color: #444; 
+  cursor: pointer; 
+  border: 1px solid #eee; 
+}
+
+mat-card-actions {
+  padding: 0 20px 20px !important;
+  margin: 0 !important;
+}
+
+.btn-enroll { 
+  width: 100%; 
+  padding: 14px !important; 
+  border-radius: 10px !important; 
+  font-weight: bold !important; 
+  font-size: 1rem !important; 
+  background-color: #00a8ff !important;
+  color: white !important;
+}
+
+.btn-enroll:hover {
+  background-color: #0091db !important;
+}

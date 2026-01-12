@@ -5,8 +5,7 @@ import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-activities',
-  standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  standalone: false,
   templateUrl: './activities.component.html',
   styleUrl: './activities.component.css',
 })
