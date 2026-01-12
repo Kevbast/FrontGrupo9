@@ -1,0 +1,74 @@
+<div class="login-container">
+  
+  <mat-card class="login-card">
+    
+    <div class="card-header">
+      <img src="CampoFutbol.jpg" alt="Deportes Master">
+      <div class="header-overlay">
+        <div class="logo-circle">
+          <mat-icon>school</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <mat-card-header class="text-center">
+      <mat-card-title>Portal de Deportes</mat-card-title>
+      <mat-card-subtitle>Acceso Alumnos y Profesores</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form #loginForm="ngForm" class="login-form">
+        
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>Usuario</mat-label>
+          
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>person</mat-icon>
+          </div>
+
+          <input matInput #cajausername name="cajausername" type="text" placeholder="username">
+          
+          <div matSuffix class="white-box box-text">
+            @tajamar365.com
+          </div>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>Contraseña</mat-label>
+          
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>lock</mat-icon>
+          </div>
+
+          <input matInput #cajapassword name="cajapassword" 
+                [type]="hidePassword ? 'password' : 'text'" 
+                placeholder="******">
+
+          <div matSuffix class="white-box box-icon box-clickable" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </div>
+        </mat-form-field>
+
+        <button mat-raised-button 
+                color="primary" 
+                (click)="login()" 
+                class="login-btn"
+                [disabled]="isLoading">
+          
+          <span *ngIf="!isLoading">INGRESAR</span>
+          <div *ngIf="isLoading" class="loading-content">
+            <span>Entrando...</span>
+          </div>
+        </button>
+
+        <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-footer>
+      <p>© 2026 Centro Educativo - Máster Deportivo</p>
+    </mat-card-footer>
+
+  </mat-card>
+</div>
