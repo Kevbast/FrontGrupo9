@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { ServiceTorneo } from '../../services/sercvice.torneo';
+
 import { Router } from '@angular/router';
+import { ServiceTorneo } from '../../services/service.torneo';
 
 @Component({
   selector: 'app-menu',
