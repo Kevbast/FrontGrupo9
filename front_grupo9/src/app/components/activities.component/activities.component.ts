@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActividadesService } from '../../services/service.actividad';
-import { Actividad } from '../../../models/Actividad';
-import { Inscripcion } from '../../../models/Inscripcion';
+import { Inscripcion } from '../../models/Inscripcion';
+import { Actividad } from '../../models/Actividad';
 
 @Component({
   selector: 'app-activities',
