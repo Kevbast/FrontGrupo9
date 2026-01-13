@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Evento } from '../../../models/Evento';
+import { Evento } from '../../models/Evento';
 import { EventosService } from '../../services/eventosService';
+
 
 @Component({
   selector: 'app-home',
