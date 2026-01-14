@@ -15,8 +15,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { EventosService } from './services/eventosService';
+import { PerfilComponent } from './components/perfil.component/perfil.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { EventosService } from './services/eventosService';
     MenuComponent,
     ActivitiesComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    PerfilComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,9 @@ import { EventosService } from './services/eventosService';
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatIconModule
+    MatIconModule,
+    MatChipsModule,
+    MatDividerModule
   ],
   providers: [ServiceTorneo, EventosService],
   bootstrap: [App]
