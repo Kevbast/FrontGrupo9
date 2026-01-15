@@ -8,6 +8,7 @@ import { Actividad } from '../../models/Actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Material } from '../../models/Material';
 import { Usuario } from '../../models/Usuario';
+import { ServiceTorneo } from '../../services/service.torneo';
 
 @Component({
   selector: 'app-activities',
@@ -24,6 +25,7 @@ export class ActivitiesComponent implements OnInit {
   public mostrarModal: boolean = false;
   public actividadSeleccionada: string = '';
   public idEvento!: number;
+  public role: string | null = null;
 
   // --- NUEVAS VARIABLES PARA EL DESPLEGABLE ---
   // Cache para guardar participantes por ID de Actividad para no repetir llamadas
@@ -39,10 +41,17 @@ export class ActivitiesComponent implements OnInit {
     private actividadesService: ActividadesService, 
     private materialesService: MaterialesService,
     private inscripcionesService: InscripcionesService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private torneoService: ServiceTorneo
   ) {}
 
   ngOnInit(): void {
+    // Obtener el rol del usuario
+    this.torneoService.getPerfil().subscribe(usuario => {
+      this.role = usuario.role;
+    });
+    
+    // Obtener el idEvento de los parámetros de la ruta
     this.route.params.subscribe(params => {
       this.idEvento = +params['idEvento'];
       console.log('ID Evento recibido:', this.idEvento);
@@ -152,4 +161,29 @@ export class ActivitiesComponent implements OnInit {
     this.mostrarModal = false;
     this.materialesEventoActividad = [];
   }
+
+  crearActividad(): void {
+    if (!this.esAdminOOrganizador()) {
+      console.log('No tienes permisos para crear actividades');
+      return;
+    }
+    console.log('Crear nueva actividad');
+    // Aquí puedes añadir la lógica para abrir un modal o navegar a un formulario
+    // Por ejemplo: this.router.navigate(['/crear-actividad', this.idEvento]);
+  }
+
+  editarActividad(actividad: Actividad): void {
+    if (!this.esAdminOOrganizador()) {
+      console.log('No tienes permisos para editar actividades');
+      return;
+    }
+    console.log('Editar actividad:', actividad);
+    // Aquí puedes añadir la lógica para editar la actividad
+    // Por ejemplo: this.router.navigate(['/editar-actividad', actividad.idEventoActividad]);
+  }
+
+  public esAdminOOrganizador(): boolean {
+    return this.role === 'ADMINISTRADOR' || this.role === 'ORGANIZADOR';
+  }
+
 }
