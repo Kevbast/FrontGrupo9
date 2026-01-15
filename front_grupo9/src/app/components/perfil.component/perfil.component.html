@@ -1,70 +1,68 @@
 <div class="container-fluid" *ngIf="user">
-    
-    <div class="d-flex align-items-center p-4 mt-5 bg-white mx-3 rounded-4 shadow-sm border-start border-5 border-primary">
-        <h1 class="mb-0 fw-bold text-dark">Mi Perfil</h1>
+  <div
+    class="d-flex align-items-center p-4 mt-5 bg-white mx-3 rounded-4 shadow-sm border-start border-5 border-primary"
+  >
+    <h1 class="mb-0 fw-bold text-dark">Mi Perfil</h1>
+  </div>
+
+  <div class="row mt-4 mx-3 justify-content-center">
+    <div class="col-12 col-xl-9">
+      <mat-card class="profile-card shadow-lg border-0 overflow-hidden">
+        <div class="profile-banner"></div>
+
+        <mat-card-content class="position-relative px-4 pb-5">
+          <div class="avatar-wrapper">
+            <img
+              [src]="user.imagen ? user.imagen : 'assets/profile-picture.jpg'"
+              alt="Avatar"
+              class="profile-avatar shadow"
+            />
+
+            <div
+              class="status-indicator"
+              [class.active]="user.estadoUsuario"
+              [title]="user.estadoUsuario ? 'Usuario Activo' : 'Inactivo'"
+            ></div>
+          </div>
+
+          <div class="text-center mt-3 mb-5">
+            <h2 class="fw-bold fs-2 mb-1 text-dark">{{ user.nombre }} {{ user.apellidos }}</h2>
+
+            <div class="d-flex justify-content-center gap-2 mt-2">
+              <span class="role-badge">
+                {{ user.role | uppercase }}
+              </span>
+              <span class="id-badge">ID: #{{ user.idUsuario }}</span>
+            </div>
+          </div>
+
+          <div class="row g-4 justify-content-center">
+            <div class="col-md-5">
+              <div class="info-box shadow-sm">
+                <div class="icon-circle bg-blue-light">
+                  <mat-icon class="text-primary">email</mat-icon>
+                </div>
+                <div>
+                  <label>Correo Electrónico</label>
+                  <p>{{ user.email }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <div class="info-box shadow-sm">
+                <div class="icon-circle bg-cyan-light">
+                  <mat-icon class="text-info">school</mat-icon>
+                </div>
+                <div>
+                  <label>Curso Académico</label>
+                  <p>{{ user.curso ? user.curso : 'Sin asignar' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
-
-    <div class="row mt-4 mx-3 justify-content-center">
-        <div class="col-12 col-xl-9">
-            
-            <mat-card class="profile-card shadow-lg border-0 overflow-hidden">
-                
-                <div class="profile-banner"></div>
-
-                <mat-card-content class="position-relative px-4 pb-5">
-                    
-                    <div class="avatar-wrapper">
-                        <img [src]="user.imagen ? user.imagen : 'assets/profile-picture.jpg'" 
-                             alt="Avatar" 
-                             class="profile-avatar shadow">
-                        
-                        <div class="status-indicator" 
-                             [class.active]="user.estadoUsuario"
-                             [title]="user.estadoUsuario ? 'Usuario Activo' : 'Inactivo'">
-                        </div>
-                    </div>
-
-                    <div class="text-center mt-3 mb-5">
-                        <h2 class="fw-bold fs-2 mb-1 text-dark">{{ user.nombre }} {{ user.apellidos }}</h2>
-                        
-                        <div class="d-flex justify-content-center gap-2 mt-2">
-                            <span class="role-badge">
-                                {{ user.role | uppercase }}
-                            </span>
-                            <span class="id-badge">ID: #{{ user.idUsuario }}</span>
-                        </div>
-                    </div>
-
-                    <div class="row g-4 justify-content-center">
-                        
-                        <div class="col-md-5">
-                            <div class="info-box shadow-sm">
-                                <div class="icon-circle bg-blue-light">
-                                    <mat-icon class="text-primary">email</mat-icon>
-                                </div>
-                                <div>
-                                    <label>Correo Electrónico</label>
-                                    <p>{{ user.email }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-5">
-                            <div class="info-box shadow-sm">
-                                <div class="icon-circle bg-cyan-light">
-                                    <mat-icon class="text-info">school</mat-icon>
-                                </div>
-                                <div>
-                                    <label>Curso Académico</label>
-                                    <p>{{ user.curso ? (user.curso + 'º Grado') : 'Sin asignar' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </mat-card-content>
-            </mat-card>
-
-        </div>
-    </div>
+  </div>
 </div>

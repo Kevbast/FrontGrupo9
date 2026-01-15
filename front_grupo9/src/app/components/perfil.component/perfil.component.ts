@@ -8,24 +8,24 @@ import { Router } from '@angular/router';
   standalone: false,
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
-  
 })
-export class PerfilComponent implements OnInit{
-public user!:Usuario;
+export class PerfilComponent implements OnInit {
+  public user!: Usuario;
 
-constructor(private _service:ServiceTorneo,private _router:Router){}
+  constructor(private _service: ServiceTorneo, private _router: Router) {}
 
-ngOnInit(): void {
-  if(this._service.getToken()){
-    this._service.getPerfil().subscribe(response=>{
-      this.user=response;
-      console.log(this.user.apellidos)
-      console.log(this.user.curso)
-      console.log(this.user.nombre)
-    })
-  }else{
-  this._router.navigate(["/login"])
+  ngOnInit(): void {
+    if (this._service.getToken()) {
+      this._service.getPerfil().subscribe((response) => {
+        this.user = response;
+
+        console.log(this.user);
+        console.log('ROL DEL USUARIO: ' + this.user.role);
+        console.log('Curso:' + this.user.curso);
+        console.log(this.user.imagen);
+      });
+    } else {
+      this._router.navigate(['/login']);
+    }
   }
-}
-
 }

@@ -11,21 +11,27 @@
         </mat-card-title>
         <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
       </mat-card-header>
-      
+
       <mat-card-content>
+        <!--On click visual para ver los participantes-->
         <div class="stats">
           <span>👥 Participantes</span>
-          <span><strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50</span>
+          <span
+            ><strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50</span
+          >
         </div>
         <div class="progress-bar">
-          <div class="fill blue" [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / act.max) * 100"></div>
+          <div
+            class="fill blue"
+            [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / act.max) * 100"
+          ></div>
         </div>
         <div class="material-btn">
           <span>📦 Ver Materiales (5)</span>
           <span class="arrow">→</span>
         </div>
       </mat-card-content>
-      
+
       <mat-card-actions>
         <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
       </mat-card-actions>
@@ -44,21 +50,26 @@
         </mat-card-title>
         <mat-card-subtitle>{{ game.descripcion }}</mat-card-subtitle>
       </mat-card-header>
-      
+
       <mat-card-content>
         <div class="stats">
           <span>👥 Participantes</span>
-          <span><strong>{{ getNumeroParticipantes(game.idEventoActividad) }}</strong> / 50</span>
+          <span
+            ><strong>{{ getNumeroParticipantes(game.idEventoActividad) }}</strong> / 50</span
+          >
         </div>
         <div class="progress-bar">
-          <div class="fill yellow" [style.width.%]="(getNumeroParticipantes(game.idEventoActividad) / game.max) * 100"></div>
+          <div
+            class="fill yellow"
+            [style.width.%]="(getNumeroParticipantes(game.idEventoActividad) / game.max) * 100"
+          ></div>
         </div>
         <div class="material-btn">
           <span>📦 Ver Materiales (5)</span>
           <span class="arrow">→</span>
         </div>
       </mat-card-content>
-      
+
       <mat-card-actions>
         <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
       </mat-card-actions>

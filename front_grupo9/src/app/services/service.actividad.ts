@@ -5,9 +5,8 @@ import { environment } from '../../environments/environment.development';
 import { Inscripcion } from '../models/Inscripcion';
 import { Actividad } from '../models/Actividad';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ActividadesService {
   private urlActividades = environment.apiTorneo + 'api/actividades';

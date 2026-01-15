@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
-import { HttpClient,HttpHeaders } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { environment } from "../../environments/environment.development";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
-import { tap } from "rxjs/operators"; // <--- Importante: Importar tap
-import { Usuario } from "../models/Usuario";
+import { tap } from 'rxjs/operators'; // <--- Importante: Importar tap
+import { Usuario } from '../models/Usuario';
 
 // Interfaz para saber qué nos devuelve la API exactamente
 export interface LoginResponse {
@@ -14,75 +14,60 @@ export interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class ServiceTorneo{
-     constructor(private _http:HttpClient){}
-     //Login funcional del Torneo
-    login(nombre: string,contraseña:string): Observable<LoginResponse> {
-        let apiUrl=environment.apiTorneo+"api/auth/LoginEventos";
-        let credentials={
-            userName:nombre,
-            password:contraseña
+export class ServiceTorneo {
+  constructor(private _http: HttpClient) {}
+  //Login funcional del Torneo
+  login(nombre: string, contraseña: string): Observable<LoginResponse> {
+    let apiUrl = environment.apiTorneo + 'api/auth/LoginEventos';
+    let credentials = {
+      userName: nombre,
+      password: contraseña,
+    };
+    console.log(credentials);
+    return this._http.post<LoginResponse>(apiUrl, credentials).pipe(
+      tap((data: LoginResponse) => {
+        //Capturamos la respuesta
+        if (data.response) {
+          //Guardamos el token
+          localStorage.setItem('authToken', data.response);
         }
-        console.log(credentials);
-        return this._http.post<LoginResponse>(apiUrl, credentials).pipe(
-            tap((data: LoginResponse) => {
-                //Capturamos la respuesta
-                if (data.response) {
-                //Guardamos el token
-                localStorage.setItem('authToken', data.response);                
-                //Guardamos el Rol
-                localStorage.setItem('userRole', data.role);               
-                //Guardamos el ID del Rol (lo convertimos a string para guardarlo)
-                localStorage.setItem('userIdRole', data.idrole.toString());
-                }
-            })
-            );
-        };   
-    
-    getToken(): string | null {
+      })
+    );
+  }
+
+  getToken(): string | null {
     return localStorage.getItem('authToken');
-    }
+  }
 
-    getRole(): string | null {
-    return localStorage.getItem('userRole');
-    }
+  cerrarSesion(): void {
+    localStorage.removeItem('authToken');
+    this.getToken();
+  }
 
-    getIdRole(): string | null {
-        return localStorage.getItem('userIdRole');
-    }
+  //Procedemos con el header del cuerpo
+  // Función auxiliar para generar los encabezados con el token
+  private createAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders();
 
-    cerrarSesion(): void{
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("userIdRole");
-        this.getToken();
+    if (token) {
+      // Si hay token, lo añadimos como Authorization Bearer
+      headers = headers.set('Authorization', `Bearer ${token}`);
+      console.log('Headers creados manualmente con token.');
+    } else {
+      console.warn('Advertencia: Intento de acceso a ruta protegida sin token.');
     }
+    return headers;
+  }
 
-    //Procedemos con el header del cuerpo
-    // Función auxiliar para generar los encabezados con el token
-    private createAuthHeaders(): HttpHeaders {
-        const token = this.getToken();
-        let headers = new HttpHeaders();
-        
-        if (token) {
-            // Si hay token, lo añadimos como Authorization Bearer
-            headers = headers.set('Authorization', `Bearer ${token}`);
-            console.log("Headers creados manualmente con token.");
-        } else {
-            console.warn("Advertencia: Intento de acceso a ruta protegida sin token.");
-        }
-        return headers;
-    }
-
-    //Perfil del usuario 
-    getPerfil():Observable<Usuario>{
-        let request="api/UsuariosDeportes/Perfil";
-        let apiUrl=environment.apiTorneo + request;
-        // CORRECCIÓN: Aplicar los encabezados aquí
-        const headers = this.createAuthHeaders();
-        return this._http.get<Usuario>(apiUrl, { headers: headers });
-    }
-
+  //Perfil del usuario
+  getPerfil(): Observable<Usuario> {
+    let request = 'api/UsuariosDeportes/Perfil';
+    let apiUrl = environment.apiTorneo + request;
+    // CORRECCIÓN: Aplicar los encabezados aquí
+    const headers = this.createAuthHeaders();
+    return this._http.get<Usuario>(apiUrl, { headers: headers });
+  }
 }
