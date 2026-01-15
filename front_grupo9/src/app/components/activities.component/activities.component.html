@@ -1,12 +1,34 @@
 <div class="container">
-  <h2 class="section-title sports-border">Deportes</h2>
+  <div class="section-header">
+    <h2 class="section-title sports-border">Deportes</h2>
+    <button
+      *ngIf="role === 'ADMINISTRADOR' || role === 'ORGANIZADOR'"
+      mat-icon-button
+      class="add-activity-btn"
+      (click)="crearActividad()"
+      aria-label="Crear actividad"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
   <div class="grid">
     <mat-card *ngFor="let act of deportes" class="activity-card">
       <mat-card-header class="sports-bg">
         <mat-card-title>
           <div class="header-top">
             <h3>{{ act.nombre }}</h3>
-            <span class="icon">🏆</span>
+            <div class="header-icons">
+              <span class="icon">🏆</span>
+              <button
+                *ngIf="role === 'ADMINISTRADOR' || role === 'ORGANIZADOR'"
+                mat-icon-button
+                class="edit-icon"
+                (click)="editarActividad(act)"
+                aria-label="Editar actividad"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
           </div>
         </mat-card-title>
         <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
@@ -39,7 +61,18 @@
         <mat-card-title>
           <div class="header-top">
             <h3>{{ game.nombre }}</h3>
-            <span class="icon">🎮</span>
+            <div class="header-icons">
+              <span class="icon">🎮</span>
+              <button
+                *ngIf="role === 'ADMINISTRADOR' || role === 'ORGANIZADOR'"
+                mat-icon-button
+                class="edit-icon"
+                (click)="editarJuego(game)"
+                aria-label="Editar juego"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
           </div>
         </mat-card-title>
         <mat-card-subtitle>{{ game.descripcion }}</mat-card-subtitle>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActividadesService } from '../../services/service.actividad';
+import { ServiceTorneo } from '../../services/service.torneo';
 import { Actividad } from '../../../models/Actividad';
 import { Inscripcion } from '../../../models/Inscripcion';
 
@@ -17,12 +18,17 @@ export class ActivitiesComponent implements OnInit {
   public videojuegos: Actividad[] = [];
   public inscripciones: Inscripcion[] = [];
   public inscripcionesPorActividad: { [key: number]: Inscripcion[] } = {};
+  public role: string | null = null;
 
   private listaVideojuegos = ['FIFA', 'LOL', 'VALORANT', 'CSGO', 'LEAGUE OF LEGENDS', 'POKEMON', 'POKEMON GO', 'VIDEOJUEGO', 'GAMING', 'GAME', 'PLAY STATION', 'XBOX', 'PC GAMING'];
 
-  constructor(private actividadesService: ActividadesService) {}
+  constructor(
+    private actividadesService: ActividadesService,
+    private torneoService: ServiceTorneo
+  ) {}
 
   ngOnInit(): void {
+    this.role = this.torneoService.getRole();
     this.cargarDatos();
   }
 
@@ -95,5 +101,33 @@ export class ActivitiesComponent implements OnInit {
 
   getNumeroParticipantes(idEventoActividad: number): number {
     return this.getInscripciones(idEventoActividad).length;
+  }
+
+  crearActividad(): void {
+    if (!this.esAdminOOrganizador()) {
+      return;
+    }
+    console.log('Crear actividad');
+    // TODO: Añadir navegación o diálogo de creación cuando esté disponible.
+  }
+
+  editarActividad(act: Actividad): void {
+    if (!this.esAdminOOrganizador()) {
+      return;
+    }
+    console.log('Editar actividad', act);
+    // TODO: Añadir navegación o diálogo de edición cuando esté disponible.
+  }
+
+  editarJuego(game: Actividad): void {
+    if (!this.esAdminOOrganizador()) {
+      return;
+    }
+    console.log('Editar juego', game);
+    // TODO: Añadir navegación o diálogo de edición cuando esté disponible.
+  }
+
+  private esAdminOOrganizador(): boolean {
+    return this.role === 'ADMINISTRADOR' || this.role === 'ORGANIZADOR';
   }
 }
