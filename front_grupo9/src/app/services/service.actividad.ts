@@ -24,4 +24,10 @@ export class ActividadesService {
     let url = environment.apiTorneo + request;
     return this.http.get<Array<Actividad>>(url);
   }
+
+  findUsuariosInscritosPorActividadEvento(idEvento: number, idActividad: number): Observable<Usuario[]> {
+    let request = `api/Actividades/UsuariosInscritos/${idEvento}/${idActividad}`;
+    let url = environment.apiTorneo + request;
+    return this.http.get<Usuario[]>(url);
+  }
 }
