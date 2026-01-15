@@ -47,7 +47,7 @@ import { CommonModule, DatePipe } from '@angular/common';
     MatButtonModule,
     FormsModule
   ],
-  providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe],
+  providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService],
   bootstrap: [App]
 })
 export class AppModule { }
