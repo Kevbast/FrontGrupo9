@@ -1,16 +1,164 @@
-
 .nav-link {
   transition: transform 0.2s ease;
 }
-
-.nav-link:hover {
-  transform: translateY(-3px);
+/* --- VARIABLES (Mismas que el Login) --- */
+:root {
+  --sport-primary: #0077b6;
+  --sport-hover: #023e8a;
+  --white-translucent: rgba(255, 255, 255, 0.95);
 }
 
-#tituloEncabezado {
-  transition: color 0.3s ease;
+/* 1. BARRA DE NAVEGACIÓN (El contenedor azul) */
+.custom-navbar {
+  /* Degradado Azul Deportivo */
+  background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%);
+  padding: 1rem 0;
+  box-shadow: 0 4px 20px rgba(0, 119, 182, 0.4); /* Sombra difusa azulada */
+  position: relative;
+  z-index: 100;
 }
 
-#tituloEncabezado:hover {
-  color: #e3f2fd !important;
+/* 2. LOGO Y TÍTULOS */
+.navbar-logo {
+  height: 65px;
+  margin-right: 20px;
+  /* Sombra al logo para que resalte sobre el azul */
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05) rotate(-5deg);
+}
+
+.navbar-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.brand-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  color: #e0f7fa; /* Blanco azulado */
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* 3. ICONOS DE NAVEGACIÓN (Cajas Blancas) */
+.nav-link-custom {
+  text-decoration: none;
+  position: relative;
+}
+
+/* La caja blanca del icono */
+.nav-box {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.15); /* Semitransparente por defecto */
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-box mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+/* Efecto Hover */
+.nav-box:hover {
+  background-color: white;
+  color: var(--sport-primary); /* El icono se vuelve azul */
+  transform: translateY(-5px); /* Flota hacia arriba */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ESTADO ACTIVO (Cuando estás en esa página) */
+.active .nav-box {
+  background-color: white;
+  color: var(--sport-primary);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* Resplandor blanco */
+  transform: scale(1.1);
+  border-color: white;
+}
+
+/* Pequeño punto indicador debajo del activo */
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 5px white;
+}
+
+/* 4. BOTÓN CERRAR SESIÓN */
+.logout-btn {
+  background-color: rgba(255, 0, 0, 0.1); /* Fondo rojo muy suave */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 30px; /* Forma de píldora */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.logout-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.logout-btn:hover {
+  background-color: #ff5252; /* Rojo vivo al pasar el ratón */
+  border-color: #ff5252;
+  box-shadow: 0 4px 12px rgba(255, 82, 82, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Ajustes Responsive */
+@media (max-width: 768px) {
+  .brand-subtitle {
+    display: none;
+  } /* Ocultar subtítulo en móvil */
+  .brand-title {
+    font-size: 1.1rem;
+  }
+  .navbar-logo {
+    height: 45px;
+    margin-right: 10px;
+  }
+  .nav-box {
+    width: 40px;
+    height: 40px;
+  }
+  .logout-btn span {
+    display: none;
+  } /* Solo icono salir en móvil */
+  .logout-btn {
+    padding: 8px;
+    border-radius: 50%;
+  }
 }
