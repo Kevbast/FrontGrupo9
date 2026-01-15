@@ -17,6 +17,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { EventosService } from './services/eventosService';
+import { InscripcionesComponent } from './components/inscripciones.component/inscripciones.component';
+import { InscripcionesService } from './services/service.inscripciones';
+import { ActividadesService } from './services/service.actividad';
 
 
 @NgModule({
@@ -25,7 +28,8 @@ import { EventosService } from './services/eventosService';
     MenuComponent,
     ActivitiesComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    InscripcionesComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,7 @@ import { EventosService } from './services/eventosService';
     MatFormFieldModule,
     MatIconModule
   ],
-  providers: [ServiceTorneo, EventosService],
+  providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService],
   bootstrap: [App]
 })
 export class AppModule { }

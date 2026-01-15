@@ -18,26 +18,4 @@ export class ActividadesService {
   getActividades(): Observable<Actividad[]> {
     return this.http.get<Actividad[]>(this.urlActividades);
   }
-
-  // Obtener todas las inscripciones
-  getInscripciones(): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(this.urlInscripciones);
-  }
-
-  // Obtener inscripciones por ID de actividad
-  getInscripcionesPorActividad(idEventoActividad: number): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(
-      `${this.urlInscripciones}?idEventoActividad=${idEventoActividad}`
-    );
-  }
-
-  // Crear una nueva inscripción
-  crearInscripcion(inscripcion: Inscripcion): Observable<Inscripcion> {
-    return this.http.post<Inscripcion>(this.urlInscripciones, inscripcion);
-  }
-
-  // Eliminar una inscripción
-  eliminarInscripcion(idInscripcion: number): Observable<any> {
-    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
-  }
 }

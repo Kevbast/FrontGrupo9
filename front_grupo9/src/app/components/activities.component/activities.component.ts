@@ -5,6 +5,7 @@ import { ActividadesService } from '../../services/service.actividad';
 import { ServiceTorneo } from '../../services/service.torneo';
 import { Actividad } from '../../../models/Actividad';
 import { Inscripcion } from '../../../models/Inscripcion';
+import { InscripcionesService } from '../../services/service.inscripciones';
 
 @Component({
   selector: 'app-activities',
@@ -24,6 +25,7 @@ export class ActivitiesComponent implements OnInit {
 
   constructor(
     private actividadesService: ActividadesService,
+    private inscripcionesService: InscripcionesService,
     private torneoService: ServiceTorneo
   ) {}
 
@@ -33,8 +35,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   cargarDatos(): void {
-    // Cargar todas las inscripciones
-    this.actividadesService.getInscripciones().subscribe({
+    this.inscripcionesService.getInscripciones().subscribe({
       next: (data) => {
         this.inscripciones = data;
         this.agruparInscripcionesPorActividad();
@@ -44,9 +45,7 @@ export class ActivitiesComponent implements OnInit {
       },
       error: (err) => console.error('Error cargando inscripciones:', err)
     });
-
-    // Cargar actividades de la API
-    this.actividadesService.getActividades().subscribe({
+   this.actividadesService.getActividades().subscribe({
       next: (data) => {
         console.log('Actividades cargadas de API:', data);
         this.procesarActividades(data);
@@ -56,9 +55,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   procesarActividades(data: any[]): void {
-    // Convertir los datos de la API al modelo Actividad
     this.actividades = data.map(act => {
-      // Buscar el ID correcto: si hay idEventoActividad usarlo, si no usar idActividad
       const idEventoActividad = act.idEventoActividad || act.idActividad;
       
       return new Actividad(
@@ -108,7 +105,6 @@ export class ActivitiesComponent implements OnInit {
       return;
     }
     console.log('Crear actividad');
-    // TODO: Añadir navegación o diálogo de creación cuando esté disponible.
   }
 
   editarActividad(act: Actividad): void {
@@ -116,7 +112,6 @@ export class ActivitiesComponent implements OnInit {
       return;
     }
     console.log('Editar actividad', act);
-    // TODO: Añadir navegación o diálogo de edición cuando esté disponible.
   }
 
   editarJuego(game: Actividad): void {
@@ -124,7 +119,6 @@ export class ActivitiesComponent implements OnInit {
       return;
     }
     console.log('Editar juego', game);
-    // TODO: Añadir navegación o diálogo de edición cuando esté disponible.
   }
 
   private esAdminOOrganizador(): boolean {
