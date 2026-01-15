@@ -19,6 +19,9 @@ import { EventosService } from './services/eventosService';
 import { InscripcionesComponent } from './components/inscripciones.component/inscripciones.component';
 import { InscripcionesService } from './services/service.inscripciones';
 import { ActividadesService } from './services/service.actividad';
+import { PerfilComponent } from './components/perfil.component/perfil.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,7 @@ import { ActividadesService } from './services/service.actividad';
     ActivitiesComponent,
     LoginComponent,
     HomeComponent,
-    InscripcionesComponent
+    PerfilComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,9 @@ import { ActividadesService } from './services/service.actividad';
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatIconModule
+    MatIconModule,
+    MatChipsModule,
+    MatDividerModule
   ],
   providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService],
   bootstrap: [App]
