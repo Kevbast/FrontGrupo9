@@ -7,7 +7,7 @@ import { ActivitiesComponent } from './components/activities.component/activitie
 const routes: Routes = [
   {path:"",component:HomeComponent},
   {path:"login",component:LoginComponent},
-  { path: "activities", component: ActivitiesComponent },
+  { path: "activities/:idEvento", component: ActivitiesComponent },
 ];
 
 @NgModule({

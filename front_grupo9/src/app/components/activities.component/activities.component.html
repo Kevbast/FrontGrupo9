@@ -1,11 +1,11 @@
 <div class="container">
-  <h2 class="section-title sports-border">Deportes</h2>
+  <h2 class="section-title sports-border">Actividades</h2>
   <div class="grid">
-    <mat-card *ngFor="let act of deportes" class="activity-card">
+    <mat-card *ngFor="let act of actividadesEvento" class="activity-card">
       <mat-card-header class="sports-bg">
         <mat-card-title>
           <div class="header-top">
-            <h3>{{ act.nombre }}</h3>
+            <h3>{{ act.nombreActividad }}</h3>
             <span class="icon">🏆</span>
           </div>
         </mat-card-title>
@@ -18,43 +18,10 @@
           <span><strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50</span>
         </div>
         <div class="progress-bar">
-          <div class="fill blue" [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / act.max) * 100"></div>
+          <div class="fill blue" [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / 50) * 100"></div>
         </div>
-        <div class="material-btn" (click)="getMaterialesEventoActividad(act.idEventoActividad, act.nombre)">
+        <div class="material-btn" (click)="getMaterialesEventoActividad(act.idEventoActividad, act.nombreActividad)">
           <span>📦 Ver Materiales</span>
-          <span class="arrow">→</span>
-        </div>
-      </mat-card-content>
-      
-      <mat-card-actions>
-        <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-
-  <h2 class="section-title games-border">Videojuegos</h2>
-  <div class="grid">
-    <mat-card *ngFor="let game of videojuegos" class="activity-card">
-      <mat-card-header class="games-bg">
-        <mat-card-title>
-          <div class="header-top">
-            <h3>{{ game.nombre }}</h3>
-            <span class="icon">🎮</span>
-          </div>
-        </mat-card-title>
-        <mat-card-subtitle>{{ game.descripcion }}</mat-card-subtitle>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <div class="stats">
-          <span>👥 Participantes</span>
-          <span><strong>{{ getNumeroParticipantes(game.idEventoActividad) }}</strong> / 50</span>
-        </div>
-        <div class="progress-bar">
-          <div class="fill yellow" [style.width.%]="(getNumeroParticipantes(game.idEventoActividad) / game.max) * 100"></div>
-        </div>
-        <div class="material-btn" (click)="getMaterialesEventoActividad(game.idEventoActividad, game.nombre)">
-          <span>📦 Ver Materiales (5)</span>
           <span class="arrow">→</span>
         </div>
       </mat-card-content>

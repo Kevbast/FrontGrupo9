@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { ActividadesService } from '../../services/service.actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Actividad } from '../../models/Actividad';
@@ -15,20 +16,27 @@ import { MaterialesService } from '../../services/materialesService';
 })
 export class ActivitiesComponent implements OnInit {
   public actividades: Actividad[] = [];
-  public deportes: Actividad[] = [];
-  public videojuegos: Actividad[] = [];
+  public actividadesEvento!: Array<Actividad>;
   public inscripciones: Inscripcion[] = [];
   public inscripcionesPorActividad: { [key: number]: Inscripcion[] } = {};
   public materialesEventoActividad!: Array<Material>;
   public mostrarModal: boolean = false;
   public actividadSeleccionada: string = '';
+  public idEvento!: number;
 
-  private listaVideojuegos = ['FIFA', 'LOL', 'VALORANT', 'CSGO', 'LEAGUE OF LEGENDS', 'POKEMON', 'POKEMON GO', 'VIDEOJUEGO', 'GAMING', 'GAME', 'PLAY STATION', 'XBOX', 'PC GAMING'];
-
-  constructor(private actividadesService: ActividadesService, private materialesService: MaterialesService) {}
+  constructor(
+    private actividadesService: ActividadesService, 
+    private materialesService: MaterialesService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.cargarDatos();
+    // Obtener el idEvento de los parámetros de la ruta
+    this.route.params.subscribe(params => {
+      this.idEvento = +params['idEvento']; // El + convierte string a number
+      console.log('ID Evento recibido:', this.idEvento);
+      this.cargarDatos();
+    });
   }
 
   cargarDatos(): void {
@@ -44,34 +52,27 @@ export class ActivitiesComponent implements OnInit {
       error: (err) => console.error('Error cargando inscripciones:', err)
     });
 
-    // Cargar actividades de la API
-    this.actividadesService.getActividades().subscribe({
+    //Cargar actividades por evento de la API
+    this.actividadesService.getActividadesEvento(this.idEvento).subscribe({
       next: (data) => {
-        console.log('Actividades cargadas de API:', data);
-        this.procesarActividades(data);
+        console.log('Actividades del evento cargadas:', data);
+        // Asignar directamente a actividadesEvento con el mapeo del modelo
+        this.actividadesEvento = data.map(act => {
+          return new Actividad(
+            act.posicion || 0,
+            act.idEvento || 0,
+            act.fechaEvento || '',
+            act.idProfesor || 0,
+            act.idActividad || 0,
+            act.nombreActividad || '',
+            act.minimoJugadores || 0,
+            act.idEventoActividad || 0
+          );
+        });
+        console.log('actividadesEvento procesadas:', this.actividadesEvento);
       },
-      error: (err) => console.error('Error cargando actividades:', err)
-    });
-  }
-
-  procesarActividades(data: any[]): void {
-    // Convertir los datos de la API al modelo Actividad
-    this.actividades = data.map(act => {
-      // Buscar el ID correcto: si hay idEventoActividad usarlo, si no usar idActividad
-      const idEventoActividad = act.idEventoActividad || act.idActividad;
-      
-      return new Actividad(
-        idEventoActividad,
-        act.nombre,
-        act.descripcion || 'Descripción',
-        act.max || 50,
-        act.materiales || 5,
-        act.actual || 0,
-        act.inscripciones || []
-      );
-    });
-
-    this.separarActividadesYVideojuegos();
+      error: (err) => console.error('Error cargando actividades del evento:', err)
+    })
   }
 
   agruparInscripcionesPorActividad(): void {
@@ -82,16 +83,6 @@ export class ActivitiesComponent implements OnInit {
       }
       this.inscripcionesPorActividad[inscripcion.idEventoActividad].push(inscripcion);
     });
-  }
-
-  separarActividadesYVideojuegos(): void {
-    this.deportes = this.actividades.filter(act => 
-      !this.listaVideojuegos.some(v => act.nombre.toUpperCase().includes(v))
-    );
-    
-    this.videojuegos = this.actividades.filter(act => 
-      this.listaVideojuegos.some(v => act.nombre.toUpperCase().includes(v))
-    );
   }
 
   getInscripciones(idEventoActividad: number): Inscripcion[] {

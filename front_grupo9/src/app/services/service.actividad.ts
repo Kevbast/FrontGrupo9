@@ -20,6 +20,12 @@ export class ActividadesService {
     return this.http.get<Actividad[]>(this.urlActividades);
   }
 
+  getActividadesEvento(idEvento: number) : Observable<Array<Actividad>> {
+    let request = "api/Actividades/ActividadesEvento/" + idEvento;
+    let url = environment.apiTorneo + request;
+    return this.http.get<Array<Actividad>>(url);
+  }
+
   // Obtener todas las inscripciones
   getInscripciones(): Observable<Inscripcion[]> {
     return this.http.get<Inscripcion[]>(this.urlInscripciones);
