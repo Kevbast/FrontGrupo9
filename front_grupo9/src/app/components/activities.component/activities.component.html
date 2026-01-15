@@ -20,8 +20,8 @@
         <div class="progress-bar">
           <div class="fill blue" [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / act.max) * 100"></div>
         </div>
-        <div class="material-btn">
-          <span>📦 Ver Materiales (5)</span>
+        <div class="material-btn" (click)="getMaterialesEventoActividad(act.idEventoActividad, act.nombre)">
+          <span>📦 Ver Materiales</span>
           <span class="arrow">→</span>
         </div>
       </mat-card-content>
@@ -53,7 +53,7 @@
         <div class="progress-bar">
           <div class="fill yellow" [style.width.%]="(getNumeroParticipantes(game.idEventoActividad) / game.max) * 100"></div>
         </div>
-        <div class="material-btn">
+        <div class="material-btn" (click)="getMaterialesEventoActividad(game.idEventoActividad, game.nombre)">
           <span>📦 Ver Materiales (5)</span>
           <span class="arrow">→</span>
         </div>
@@ -63,5 +63,54 @@
         <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
       </mat-card-actions>
     </mat-card>
+  </div>
+</div>
+
+
+<!-- Modal de Materiales -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <!-- Header del Modal -->
+      <div class="modal-header">
+        <h4 class="modal-title">
+          Materiales de {{ actividadSeleccionada }}
+        </h4>
+        <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Body del Modal -->
+      <div class="modal-body">
+        <div *ngIf="materialesEventoActividad && materialesEventoActividad.length > 0; else noMateriales">
+          <div class="list-group">
+            <div *ngFor="let material of materialesEventoActividad; let i = index" 
+                 class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between align-items-center">
+                <div class="material-info">
+                  <span class="badge bg-primary rounded-pill me-2">{{ i + 1 }}</span>
+                  <span class="material-name">{{ material.nombreMaterial }}</span>
+                </div>
+                <small class="text-muted">ID: {{ material.idMaterial }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noMateriales>
+          <div class="alert alert-info text-center" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            No hay materiales registrados para esta actividad
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Footer del Modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">
+          Cerrar
+        </button>
+      </div>
+    </div>
   </div>
 </div>

@@ -4,6 +4,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActividadesService } from '../../services/service.actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Actividad } from '../../models/Actividad';
+import { Material } from '../../models/Material';
+import { MaterialesService } from '../../services/materialesService';
 
 @Component({
   selector: 'app-activities',
@@ -17,10 +19,13 @@ export class ActivitiesComponent implements OnInit {
   public videojuegos: Actividad[] = [];
   public inscripciones: Inscripcion[] = [];
   public inscripcionesPorActividad: { [key: number]: Inscripcion[] } = {};
+  public materialesEventoActividad!: Array<Material>;
+  public mostrarModal: boolean = false;
+  public actividadSeleccionada: string = '';
 
   private listaVideojuegos = ['FIFA', 'LOL', 'VALORANT', 'CSGO', 'LEAGUE OF LEGENDS', 'POKEMON', 'POKEMON GO', 'VIDEOJUEGO', 'GAMING', 'GAME', 'PLAY STATION', 'XBOX', 'PC GAMING'];
 
-  constructor(private actividadesService: ActividadesService) {}
+  constructor(private actividadesService: ActividadesService, private materialesService: MaterialesService) {}
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -96,4 +101,20 @@ export class ActivitiesComponent implements OnInit {
   getNumeroParticipantes(idEventoActividad: number): number {
     return this.getInscripciones(idEventoActividad).length;
   }
+
+  //OBTENER LOS MATERIALES DEL EVENTO/ACTIVIDAD (MARCOS)
+  getMaterialesEventoActividad(idEventoActividad: number, nombreActividad: string): void {
+    this.actividadSeleccionada = nombreActividad;
+    this.materialesService.getMaterialesEvento(idEventoActividad).subscribe(result => {
+      this.materialesEventoActividad = result;
+      this.mostrarModal = true;
+    })
+  }
+
+  cerrarModal(): void {
+    this.mostrarModal = false;
+    this.materialesEventoActividad = [];
+  }
+
+
 }

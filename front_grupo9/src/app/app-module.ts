@@ -9,6 +9,7 @@ import { MenuComponent } from './components/menu.component/menu.component';
 import { ActivitiesComponent } from './components/activities.component/activities.component';
 import { LoginComponent } from './components/login.component/login.component';
 import { HomeComponent } from './components/home.component/home.component';
+import { MaterialesService } from './services/materialesService';
 //ANGULAR MATERIAL
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -37,7 +38,7 @@ import { EventosService } from './services/eventosService';
     MatFormFieldModule,
     MatIconModule
   ],
-  providers: [ServiceTorneo, EventosService],
+  providers: [ServiceTorneo, EventosService, MaterialesService],
   bootstrap: [App]
 })
 export class AppModule { }
