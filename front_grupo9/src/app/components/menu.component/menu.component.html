@@ -1,21 +1,40 @@
-<nav class="navbar navbar-dark" style="background-color: #1e88e5; padding: 1.5rem 0;">
-  <div class="container d-flex align-items-center">
-    <img src="escudo-negativo-recortado.png" style="height: 70px; margin-right: 60px;" />
-    <a class="navbar-brand fw-bold fs-4" [routerLink]="['/']" id="tituloEncabezado">
-      Competiciones Deportivas Tajamar
-    </a>
-    <ul class="navbar-nav flex-row mx-auto">
-      <li class="nav-item mx-3">
-        <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home" style="font-size: 35px; width: 35px; height: 35px;"></mat-icon>
+<nav class="navbar custom-navbar">
+  <div class="container d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center brand-section">
+      <img src="escudo_tajamar_gris.png" class="navbar-logo" alt="Escudo Tajamar" />
+
+      <a class="navbar-brand" [routerLink]="['/']">
+        <span class="brand-title">Competiciones</span>
+        <span class="brand-subtitle">Deportivas Tajamar</span>
+      </a>
+    </div>
+
+    <ul class="navbar-nav d-flex flex-row align-items-center gap-4 mx-auto">
+      <li class="nav-item">
+        <a
+          class="nav-link-custom"
+          [routerLink]="['/']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <div class="nav-box" matTooltip="Inicio">
+            <mat-icon fontIcon="home"></mat-icon>
+          </div>
         </a>
       </li>
-      <li class="nav-item mx-3">
-        <a class="nav-link" [routerLink]="['/perfil']">
-            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="person" style="font-size: 35px; width: 35px; height: 35px;"></mat-icon>
+
+      <li class="nav-item">
+        <a class="nav-link-custom" [routerLink]="['/perfil']" routerLinkActive="active">
+          <div class="nav-box" matTooltip="Mi Perfil">
+            <mat-icon fontIcon="person"></mat-icon>
+          </div>
         </a>
       </li>
     </ul>
-    <button class="btn btn-outline-danger" (click)="cerrarSesion()">Cerrar Sesion</button>
+
+    <button class="logout-btn" (click)="cerrarSesion()">
+      <mat-icon class="me-2">logout</mat-icon>
+      <span>Salir</span>
+    </button>
   </div>
 </nav>
