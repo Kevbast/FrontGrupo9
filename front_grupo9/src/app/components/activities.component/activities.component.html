@@ -11,11 +11,14 @@
         </mat-card-title>
         <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
       </mat-card-header>
-      
+
       <mat-card-content>
+        <!--On click visual para ver los participantes-->
         <div class="stats">
           <span>👥 Participantes</span>
-          <span><strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50</span>
+          <span
+            ><strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50</span
+          >
         </div>
         <div class="progress-bar">
           <div class="fill blue" [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / 50) * 100"></div>
@@ -25,9 +28,9 @@
           <span class="arrow">→</span>
         </div>
       </mat-card-content>
-      
+
       <mat-card-actions>
-        <button mat-raised-button color="primary" class="btn-enroll">Inscribirse</button>
+        <button mat-raised-button color="primary" class="btn-enroll" [routerLink]="['/inscripciones']">Inscribirse</button>
       </mat-card-actions>
     </mat-card>
   </div>

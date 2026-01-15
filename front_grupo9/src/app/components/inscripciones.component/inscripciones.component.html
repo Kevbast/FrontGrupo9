@@ -1,0 +1,57 @@
+<div class="enrollment-container">
+  <mat-card class="enrollment-card">
+    
+    <div class="card-header-gradient">
+      <div class="header-content">
+        <mat-icon class="header-icon">assignment_ind</mat-icon>
+        <h2>Nueva Inscripción</h2>
+        <p>Completa tus datos para participar en el evento</p>
+      </div>
+    </div>
+
+    <mat-card-content>
+      <form class="enrollment-form">
+        
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>ID de Usuario</mat-label>
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>person</mat-icon>
+          </div>
+          <input matInput type="number" [(ngModel)]="inscripcion.idUsuario" name="idUsuario" placeholder="Tu identificador">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>Código de Actividad</mat-label>
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>sports_soccer</mat-icon>
+          </div>
+          <input matInput type="number" [(ngModel)]="inscripcion.idEventoActividad" name="idEvento" placeholder="ID del evento">
+        </mat-form-field>
+
+        <div class="option-container">
+          <div class="option-box">
+            <mat-icon [color]="inscripcion.quiereSerCapitan ? 'primary' : ''">stars</mat-icon>
+            <span>¿Quieres ser Capitán del equipo?</span>
+            <mat-slide-toggle color="primary" [(ngModel)]="inscripcion.quiereSerCapitan" name="capitan">
+            </mat-slide-toggle>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="custom-field readonly-field">
+          <mat-label>Fecha de Registro</mat-label>
+          <div matPrefix class="white-box box-icon">
+            <mat-icon>calendar_today</mat-icon>
+          </div>
+          <input matInput [value]="inscripcion.fechaInscripcion | date:'short'" readonly>
+        </mat-form-field>
+
+        <button mat-raised-button 
+                class="enroll-submit-btn" 
+                (click)="enviarInscripcion()">
+          CONFIRMAR INSCRIPCIÓN
+        </button>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ActividadesService } from '../../services/service.actividad';
+import { ServiceTorneo } from '../../services/service.torneo';
+
+import { InscripcionesService } from '../../services/service.inscripciones';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Actividad } from '../../models/Actividad';
 import { Material } from '../../models/Material';
@@ -27,6 +30,7 @@ export class ActivitiesComponent implements OnInit {
   constructor(
     private actividadesService: ActividadesService, 
     private materialesService: MaterialesService,
+    private inscripcionesService: InscripcionesService,
     private route: ActivatedRoute
   ) {}
 
@@ -40,8 +44,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   cargarDatos(): void {
-    // Cargar todas las inscripciones
-    this.actividadesService.getInscripciones().subscribe({
+    this.inscripcionesService.getInscripciones().subscribe({
       next: (data) => {
         this.inscripciones = data;
         this.agruparInscripcionesPorActividad();
