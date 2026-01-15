@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InscripcionesService } from '../../services/service.inscripciones';
-import { Inscripcion } from '../../../models/Inscripcion';
-
+import { Inscripcion } from '../../models/Inscripcion';
 @Component({
   selector: 'app-inscripciones',
   standalone: false,
@@ -10,11 +9,14 @@ import { Inscripcion } from '../../../models/Inscripcion';
 })
 export class InscripcionesComponent implements OnInit {
   // Inicializamos el modelo basado en tu clase Inscripcion
-  public inscripcion: Inscripcion = new Inscripcion(0, 0, 0, false, new Date().toISOString());
+  public inscripcion: Inscripcion;
   public isLoading: boolean = false;
   public errorMessage: string = "";
 
-  constructor(private _service: InscripcionesService) {}
+  constructor(private _service: InscripcionesService) {
+       this.inscripcion = new Inscripcion(0, 0, 0, false, new Date().toISOString());
+
+  }
 
   ngOnInit(): void {
     // Lógica inicial vacía para visualización

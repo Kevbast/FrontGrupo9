@@ -18,7 +18,6 @@ export interface LoginResponse {
 })
 export class ServiceTorneo {
   constructor(private _http: HttpClient) {}
-  //Login funcional del Torneo
   login(nombre: string, contraseña: string): Observable<LoginResponse> {
     let apiUrl = environment.apiTorneo + 'api/auth/LoginEventos';
     let credentials = {
@@ -28,9 +27,7 @@ export class ServiceTorneo {
     console.log(credentials);
     return this._http.post<LoginResponse>(apiUrl, credentials).pipe(
       tap((data: LoginResponse) => {
-        //Capturamos la respuesta
         if (data.response) {
-          //Guardamos el token
           localStorage.setItem('authToken', data.response);
         }
       })

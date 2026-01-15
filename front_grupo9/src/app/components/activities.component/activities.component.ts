@@ -31,8 +31,10 @@ export class ActivitiesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.role = this.torneoService.getRole();
-    this.cargarDatos();
+    this.torneoService.getPerfil().subscribe(usuario => {
+      this.role = usuario.role;
+      this.cargarDatos();
+    });
   }
 
   cargarDatos(): void {

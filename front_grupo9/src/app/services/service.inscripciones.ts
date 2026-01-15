@@ -2,8 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment.development";
-import { Inscripcion } from "../../models/Inscripcion";
- 
+import { Inscripcion } from "../models/Inscripcion"; 
 
 @Injectable()
 export class InscripcionesService {
