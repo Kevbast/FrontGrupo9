@@ -27,6 +27,13 @@
 .navbar-logo:hover {
   transform: scale(1.05) rotate(-5deg);
 }
+.navbar-logo {
+  height: 65px;
+  margin-right: 20px;
+  /* Esto invierte el color oscuro a claro, pero al 85% para que sea grisáceo/plata */
+  filter: brightness(0) invert(0.85);
+  transition: transform 0.3s;
+}
 
 .navbar-brand {
   display: flex;
