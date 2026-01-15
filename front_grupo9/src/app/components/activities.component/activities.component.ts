@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActividadesService } from '../../services/service.actividad';
+import { ServiceTorneo } from '../../services/service.torneo';
+
+import { InscripcionesService } from '../../services/service.inscripciones';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Actividad } from '../../models/Actividad';
 
@@ -17,18 +20,23 @@ export class ActivitiesComponent implements OnInit {
   public videojuegos: Actividad[] = [];
   public inscripciones: Inscripcion[] = [];
   public inscripcionesPorActividad: { [key: number]: Inscripcion[] } = {};
+  public role: string | null = null;
 
   private listaVideojuegos = ['FIFA', 'LOL', 'VALORANT', 'CSGO', 'LEAGUE OF LEGENDS', 'POKEMON', 'POKEMON GO', 'VIDEOJUEGO', 'GAMING', 'GAME', 'PLAY STATION', 'XBOX', 'PC GAMING'];
 
-  constructor(private actividadesService: ActividadesService) {}
+  constructor(
+    private actividadesService: ActividadesService,
+    private inscripcionesService: InscripcionesService,
+    private torneoService: ServiceTorneo
+  ) {}
 
   ngOnInit(): void {
+    this.role = this.torneoService.getRole();
     this.cargarDatos();
   }
 
   cargarDatos(): void {
-    // Cargar todas las inscripciones
-    this.actividadesService.getInscripciones().subscribe({
+    this.inscripcionesService.getInscripciones().subscribe({
       next: (data) => {
         this.inscripciones = data;
         this.agruparInscripcionesPorActividad();
@@ -38,9 +46,7 @@ export class ActivitiesComponent implements OnInit {
       },
       error: (err) => console.error('Error cargando inscripciones:', err)
     });
-
-    // Cargar actividades de la API
-    this.actividadesService.getActividades().subscribe({
+   this.actividadesService.getActividades().subscribe({
       next: (data) => {
         console.log('Actividades cargadas de API:', data);
         this.procesarActividades(data);
@@ -50,9 +56,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   procesarActividades(data: any[]): void {
-    // Convertir los datos de la API al modelo Actividad
     this.actividades = data.map(act => {
-      // Buscar el ID correcto: si hay idEventoActividad usarlo, si no usar idActividad
       const idEventoActividad = act.idEventoActividad || act.idActividad;
       
       return new Actividad(
@@ -95,5 +99,30 @@ export class ActivitiesComponent implements OnInit {
 
   getNumeroParticipantes(idEventoActividad: number): number {
     return this.getInscripciones(idEventoActividad).length;
+  }
+
+  crearActividad(): void {
+    if (!this.esAdminOOrganizador()) {
+      return;
+    }
+    console.log('Crear actividad');
+  }
+
+  editarActividad(act: Actividad): void {
+    if (!this.esAdminOOrganizador()) {
+      return;
+    }
+    console.log('Editar actividad', act);
+  }
+
+  editarJuego(game: Actividad): void {
+    if (!this.esAdminOOrganizador()) {
+      return;
+    }
+    console.log('Editar juego', game);
+  }
+
+  private esAdminOOrganizador(): boolean {
+    return this.role === 'ADMINISTRADOR' || this.role === 'ORGANIZADOR';
   }
 }
