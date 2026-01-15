@@ -23,23 +23,4 @@ export class ActividadesService {
     let url = environment.apiTorneo + request;
     return this.http.get<Array<Actividad>>(url);
   }
-
-  // Obtener todas las inscripciones
-  getInscripciones(): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(this.urlInscripciones);
-  }
-
-  getInscripcionesPorActividad(idEventoActividad: number): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(
-      `${this.urlInscripciones}?idEventoActividad=${idEventoActividad}`
-    );
-  }
-
-  crearInscripcion(inscripcion: Inscripcion): Observable<Inscripcion> {
-    return this.http.post<Inscripcion>(this.urlInscripciones, inscripcion);
-  }
-
-  eliminarInscripcion(idInscripcion: number): Observable<any> {
-    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
-  }
 }

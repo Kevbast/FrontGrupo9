@@ -26,15 +26,22 @@ export class ActivitiesComponent implements OnInit {
   public mostrarModal: boolean = false;
   public actividadSeleccionada: string = '';
   public idEvento!: number;
+  public role: string | null = null;
 
   constructor(
     private actividadesService: ActividadesService, 
     private materialesService: MaterialesService,
     private inscripcionesService: InscripcionesService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private torneoService: ServiceTorneo
   ) {}
 
   ngOnInit(): void {
+    // Obtener el rol del usuario
+    this.torneoService.getPerfil().subscribe(usuario => {
+      this.role = usuario.role;
+    });
+    
     // Obtener el idEvento de los parámetros de la ruta
     this.route.params.subscribe(params => {
       this.idEvento = +params['idEvento']; // El + convierte string a number
@@ -110,5 +117,28 @@ export class ActivitiesComponent implements OnInit {
     this.materialesEventoActividad = [];
   }
 
+  crearActividad(): void {
+    if (!this.esAdminOOrganizador()) {
+      console.log('No tienes permisos para crear actividades');
+      return;
+    }
+    console.log('Crear nueva actividad');
+    // Aquí puedes añadir la lógica para abrir un modal o navegar a un formulario
+    // Por ejemplo: this.router.navigate(['/crear-actividad', this.idEvento]);
+  }
+
+  editarActividad(actividad: Actividad): void {
+    if (!this.esAdminOOrganizador()) {
+      console.log('No tienes permisos para editar actividades');
+      return;
+    }
+    console.log('Editar actividad:', actividad);
+    // Aquí puedes añadir la lógica para editar la actividad
+    // Por ejemplo: this.router.navigate(['/editar-actividad', actividad.idEventoActividad]);
+  }
+
+  public esAdminOOrganizador(): boolean {
+    return this.role === 'ADMINISTRADOR' || this.role === 'ORGANIZADOR';
+  }
 
 }
