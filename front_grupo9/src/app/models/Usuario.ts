@@ -10,6 +10,7 @@ export class Usuario {
         public role: string,
         public idCurso: number,
         public curso: number,
-        public idCursoUsuario: number
+        public idCursoUsuario: number,
+        public usuario:string //para ver los users
     ){}
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { Inscripcion } from '../models/Inscripcion';
 import { Actividad } from '../models/Actividad';
+import { Usuario } from '../models/Usuario';
 
 @Injectable({
   providedIn: 'root',
@@ -42,4 +43,11 @@ export class ActividadesService {
   eliminarInscripcion(idInscripcion: number): Observable<any> {
     return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
   }
+  //Método para devolver todos los Usuarios inscritos por evento y actividad de la BBDD(Kevin)
+  findUsuariosInscritosPorActividadEvento(idEvento:number,idactividad:number):Observable<Array<Usuario>>{
+        let request="api/Inscripciones/InscripcionesUsuariosEventoActividad/"+idEvento+"?idactividad="+idactividad;
+        let apiUrl=environment.apiTorneo + request;
+        return this.http.get<Array<Usuario>>(apiUrl);
+  }
+
 }

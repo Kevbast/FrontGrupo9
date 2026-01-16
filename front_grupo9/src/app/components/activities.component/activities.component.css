@@ -385,3 +385,78 @@ mat-card-actions {
 .rounded-pill {
   border-radius: 50rem !important;
 }
+
+/* --- CONTENEDOR DE LA LISTA (Caja interior) --- */
+.participants-dropdown {
+  background-color: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 12px; /* Bordes muy redondeados */
+  margin-top: 10px;
+  padding: 8px;
+  max-height: 220px; /* Altura máxima antes de hacer scroll */
+  overflow-y: auto;  /* Scroll vertical automático */
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.03); /* Sombra interna sutil */
+}
+
+/* --- FILA DE CADA USUARIO --- */
+.user-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px; /* Las filas también redondeadas */
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+  border-bottom: 1px solid transparent; /* Para evitar saltos */
+}
+
+/* Efecto al pasar el ratón: Azul muy clarito */
+.user-row:hover {
+  background-color: #f0f9ff; 
+  transform: translateX(5px); /* Pequeño desplazamiento a la derecha */
+}
+
+/* --- AVATAR (IMAGEN O ICONO) --- */
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden; /* Recorta la imagen cuadrada en círculo */
+  background-color: #e0f2f1; /* Verde menta muy suave o azul claro */
+  color: #0077b6; /* Tu azul primario */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 12px;
+  flex-shrink: 0; /* Evita que se aplaste */
+  border: 2px solid white; /* Anillo blanco alrededor */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ajuste del icono si no hay foto */
+.user-avatar mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* --- TEXTO DEL NOMBRE --- */
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #37474f; /* Gris oscuro, muy legible */
+}
+
+/* --- SCROLLBAR PERSONALIZADO (Minimalista) --- */
+.participants-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+.participants-dropdown::-webkit-scrollbar-thumb {
+  background-color: #cfd8dc;
+  border-radius: 10px;
+}
