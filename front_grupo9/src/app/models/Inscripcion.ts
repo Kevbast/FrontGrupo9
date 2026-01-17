@@ -4,6 +4,8 @@ export class Inscripcion {
         public idUsuario: number,
         public idEventoActividad: number,
         public quiereSerCapitan: boolean,
-        public fechaInscripcion: string
+        public fechaInscripcion: string,
+        public nombre?: string,
+        public eventoId?: number
     ){}
 }
