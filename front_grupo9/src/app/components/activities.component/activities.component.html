@@ -1,5 +1,20 @@
 <div class="container">
+
+  <!-- Volver a Eventos -->
+  <div class="mb-4 mt-3">
+    <button class="btn d-flex align-items-center gap-2 px-3 py-2" 
+            [routerLink]="['/']"
+            style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
+            onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
+            onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
+      <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
+      <span class="fw-semibold">Volver a los eventos</span>
+    </button>
+  </div>
+
   <h2 class="section-title sports-border">Actividades</h2>
+  
+  <div *ngIf="actividadesEvento && actividadesEvento.length > 0">
   <div class="grid">
     <mat-card *ngFor="let act of actividadesEvento" class="activity-card">
       
@@ -61,7 +76,18 @@
       <mat-card-actions>
         <button mat-raised-button color="primary" class="btn-enroll" [routerLink]="['/inscripciones']">Inscribirse</button>
       </mat-card-actions>
+
+      <mat-card-actions>
+        <button mat-raised-button color="success" class="btn-enroll" [routerLink]="['/equipos', act.idActividad, act.idEvento]">ir a equipos →</button>
+      </mat-card-actions>
+
     </mat-card>
+    
+  </div>
+  </div>
+
+  <div *ngIf="!actividadesEvento || actividadesEvento.length === 0" class="empty-state">
+    <img src="Empty Box.gif" alt="notfound"/>
   </div>
 </div>
 
