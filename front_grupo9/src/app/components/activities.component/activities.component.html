@@ -1,5 +1,24 @@
 <div class="container">
-  <h2 class="section-title sports-border">Actividades</h2>
+  
+  <div class="section-header-wrapper">
+    <h2 class="section-title sports-border">Actividades</h2>
+    
+    <div class="admin-panel" *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'">
+      <div class="admin-info">
+        <span class="badge-role">{{ rolUsuario }}</span>
+        <span>Panel de Control</span>
+      </div>
+      
+      <button mat-raised-button 
+              color="accent" 
+              class="btn-caja-global"
+              [routerLink]="['/pagos', idEvento]">
+        <mat-icon>account_balance_wallet</mat-icon>
+        GESTIONAR CAJA Y PAGOS
+      </button>
+    </div>
+  </div>
+
   <div class="grid">
     <mat-card *ngFor="let act of actividadesEvento" class="activity-card">
       
@@ -7,11 +26,32 @@
         <mat-card-title>
           <div class="header-top">
             <h3>{{ act.nombreActividad }}</h3>
-            <span class="icon">🏆</span>
+            
+            <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
+              
+              <div class="price-badge" *ngIf="preciosCache[act.idEventoActividad] && preciosCache[act.idEventoActividad] > 0">
+                {{ preciosCache[act.idEventoActividad] }}€
+              </div>
+              
+              <div class="free-badge" *ngIf="!preciosCache[act.idEventoActividad] || preciosCache[act.idEventoActividad] === 0">
+                Gratis
+              </div>
+
+
+              <span class="icon">🏆</span>
+              
+              <button mat-icon-button 
+                      class="edit-price-btn"
+                      *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'" 
+                      (click)="$event.stopPropagation(); gestionarPrecio(act)"
+                      matTooltip="Editar Precio">
+                <mat-icon>edit</mat-icon> </button>
+            </div>
+
           </div>
         </mat-card-title>
-        <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
-      </mat-card-header>
+      <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
+    </mat-card-header>
 
       <mat-card-content>
         
@@ -30,7 +70,6 @@
           </div>
 
           <div *ngIf="participantesCache[act.idActividad]" class="fade-in">
-            
             <div *ngIf="participantesCache[act.idActividad].length === 0" class="empty-msg">
               No hay alumnos inscritos.
             </div>
@@ -40,10 +79,9 @@
                  <mat-icon>person</mat-icon>
                </div>
                <div class="user-name">
-                 {{ user.usuario}}
+                 {{ user.usuario }}
                </div>
             </div>
-
           </div>
         </div>
 
@@ -59,19 +97,21 @@
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-raised-button color="primary" class="btn-enroll" [routerLink]="['/inscripciones']">Inscribirse</button>
+        <button mat-raised-button color="primary" class="btn-enroll" [routerLink]="['/inscripciones']">
+          Inscribirse
+        </button>
       </mat-card-actions>
+
     </mat-card>
   </div>
 </div>
-
 
 <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Materiales de {{ actividadSeleccionada }}</h4>
-        <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close">
+        <button type="button" class="btn-close" (click)="cerrarModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

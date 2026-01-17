@@ -460,3 +460,92 @@ mat-card-actions {
   background-color: #cfd8dc;
   border-radius: 10px;
 }
+/* Contenedor del título y el panel */
+.section-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+/* Panel de Administración (Barra superior) */
+.admin-panel {
+  background: linear-gradient(135deg, #2c3e50, #4ca1af); /* Un tono oscuro/profesional */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.admin-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.badge-role {
+  font-size: 0.75rem;
+  background-color: rgba(255,255,255,0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  width: fit-content;
+}
+
+/* Botón grande de Caja */
+.btn-caja-global {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+/* Ajuste responsive para móviles */
+@media (max-width: 768px) {
+  .section-header-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-panel {
+    justify-content: space-between;
+  }
+}
+
+/* Etiqueta de Precio (Azul/Verde) */
+.price-badge {
+  background-color: #ffd700; /* Dorado o Verde Dinero (#2ecc71) */
+  color: #333;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Etiqueta Gratis */
+.free-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botón de editar precio (más discreto ahora) */
+.edit-price-btn {
+  color: white;
+  opacity: 0.7;
+  transform: scale(0.9);
+}
+.edit-price-btn:hover {
+  opacity: 1;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
