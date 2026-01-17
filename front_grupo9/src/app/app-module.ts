@@ -18,7 +18,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { EventosService } from './services/eventosService';
-import { InscripcionesComponent } from './components/inscripciones.component/inscripciones.component';
+
 import { InscripcionesService } from './services/service.inscripciones';
 import { ActividadesService } from './services/service.actividad';
 import { PerfilComponent } from './components/perfil.component/perfil.component';
@@ -31,8 +31,7 @@ import { CommonModule, DatePipe } from '@angular/common';
     ActivitiesComponent,
     LoginComponent,
     HomeComponent,
-    PerfilComponent,
-    InscripcionesComponent
+    PerfilComponent
   ],
   imports: [
     BrowserModule,
