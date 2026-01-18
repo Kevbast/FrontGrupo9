@@ -13,6 +13,7 @@ import { Actividad } from '../../models/Actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Material } from '../../models/Material';
 import { Usuario } from '../../models/Usuario';
+import { Pagos } from '../../models/Pagos'; // Asegúrate de tener importado el modelo Pagos
 
 @Component({
   selector: 'app-activities',
@@ -39,8 +40,8 @@ export class ActivitiesComponent implements OnInit {
   public usuarioPerfil: Usuario | null = null;
   public rolUsuario: string = '';
 
-  // Diccionario para guardar precios: Clave=idEventoActividad, Valor=Precio
-  public preciosCache: { [key: number]: number } = {};
+  // Diccionario para guardar precios: Clave=idEventoActividad, Valor={idPrecio, precio}
+  public preciosCache: { [key: number]: { idPrecio: number, precio: number } } = {};
 
   constructor(
     private actividadesService: ActividadesService, 
@@ -56,9 +57,9 @@ export class ActivitiesComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.idEvento = +params['idEvento'];
       
-      this.cargarDatos();       // Carga inscripciones y actividades
-      this.cargarPerfil();      // Carga rol del usuario
-      this.cargarPrecios();     // <--- CARGAMOS LOS PRECIOS AL INICIO
+      this.cargarDatos();       
+      this.cargarPerfil();      
+      this.cargarPrecios();     
     });
   }
 
@@ -94,70 +95,189 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
-  // --- LÓGICA DE PRECIOS (IMPLEMENTADA) ---
+  // --- LÓGICA DE PRECIOS ---
 
-  // 1. Obtener todos los precios y mapearlos
   cargarPrecios(): void {
-    // Asegúrate de tener getPrecios() en tu servicio. Si no, añádelo.
     this.actividadesService.getPrecios().subscribe({
       next: (data) => {
-        // La API devuelve un array, lo convertimos a diccionario para acceso rápido
         if(data){
-            data.forEach((precioItem: any) => {
-                // precioItem tiene { idEventoActividad, precioTotal, ... }
-                this.preciosCache[precioItem.idEventoActividad] = precioItem.precioTotal;
+            this.preciosCache = {}; 
+            data.forEach((item: any) => {
+                this.preciosCache[item.idEventoActividad] = {
+                  idPrecio: item.idPrecioActividad,
+                  precio: item.precioTotal
+                };
             });
-            console.log("💰 Precios cargados en caché:", this.preciosCache);
+            console.log("💰 Precios cargados (con IDs):", this.preciosCache);
         }
       },
       error: (err) => console.error("Error al cargar precios:", err)
     });
   }
 
-  // 2. Abrir Modal
   gestionarPrecio(act: Actividad): void {
+    const infoPrecio = this.preciosCache[act.idEventoActividad];
+    const precioActual = infoPrecio ? infoPrecio.precio : null;
+
     const dialogRef = this.dialog.open(PrecioDialogComponent, {
-      width: '350px',
-      data: { nombreActividad: act.nombreActividad }
+      width: '500px', 
+      maxWidth: '95vw',
+      data: { 
+        nombreActividad: act.nombreActividad,
+        precioActual: precioActual 
+      }
     });
 
-    dialogRef.afterClosed().subscribe(precio => {
-      if (precio !== undefined && precio !== null) {
-        this.guardarPrecioEnApi(act.idEventoActividad, precio);
+    dialogRef.afterClosed().subscribe(resultado => {
+      
+      if (resultado === 'borrar') {
+        if (infoPrecio && infoPrecio.idPrecio) {
+          this.borrarPrecioApi(infoPrecio.idPrecio, act.idEventoActividad);
+        }
+      }
+      else if (resultado !== undefined && resultado !== null && typeof resultado === 'number') {
+        this.guardarPrecioEnApi(act.idEventoActividad, act.idActividad, resultado); // Pasamos también idActividad para buscar usuarios
       }
     });
   }
 
-  // 3. Guardar en API y Actualizar Vista
-  guardarPrecioEnApi(idEventoActividad: number, precio: number) {
-    this.actividadesService.crearPrecioActividad(idEventoActividad, precio).subscribe({
-      next: (res) => {
-        // ÉXITO: Actualizamos la caché local inmediatamente
-        this.preciosCache[idEventoActividad] = precio; 
-        alert(`✅ Precio de ${precio}€ asignado correctamente.`);
+  borrarPrecioApi(idPrecio: number, idEventoActividad: number) {
+    this.actividadesService.eliminarPrecioActividad(idPrecio).subscribe({
+      next: () => {
+        delete this.preciosCache[idEventoActividad];
+        alert('🗑️ Precio eliminado. La actividad vuelve a ser gratis.');
       },
       error: (err) => {
-        console.error("Error guardando precio:", err);
+        console.error(err);
+        alert('❌ Error al eliminar el precio.');
+      }
+    });
+  }
+
+  // Lógica inteligente POST vs PUT
+  // AÑADIDO: Recibe idActividad para buscar participantes
+  guardarPrecioEnApi(idEventoActividad: number, idActividad: number, precio: number) {
+    const registroExistente = this.preciosCache[idEventoActividad];
+
+    if (registroExistente) {
+      // --- PUT (ACTUALIZAR) ---
+      console.log(`✏️ Editando precio ID: ${registroExistente.idPrecio}...`);
+      
+      this.actividadesService.actualizarPrecioActividad(registroExistente.idPrecio, idEventoActividad, precio)
+        .subscribe({
+          next: (res) => {
+            this.preciosCache[idEventoActividad].precio = precio;
+            alert(`✅ Precio actualizado a ${precio}€.`);
+            // Aquí NO generamos recibos porque ya existirán, solo cambiamos el precio
+          },
+          error: (err) => {
+            console.error(err);
+            alert('❌ Error al actualizar el precio.');
+          }
+        });
+
+    } else {
+      // --- POST (CREAR) ---
+      console.log(`➕ Creando nuevo precio...`);
+
+      this.actividadesService.crearPrecioActividad(idEventoActividad, precio)
+        .subscribe({
+          next: (res: any) => {
+            const nuevoIdPrecio = res.idPrecioActividad || 0; 
+            
+            this.preciosCache[idEventoActividad] = {
+              idPrecio: nuevoIdPrecio,
+              precio: precio
+            };
+            
+            alert(`✅ Precio asignado correctamente.`);
+
+            // --- AQUÍ LLAMAMOS A LA GENERACIÓN DE RECIBOS ---
+            if (nuevoIdPrecio > 0) {
+              this.generarRecibosPendientes(this.idEvento, idActividad, nuevoIdPrecio);
+            }
+
+            if(!nuevoIdPrecio) this.cargarPrecios(); 
+          },
+          error: (err) => {
+            console.error(err);
+            alert('❌ Error al crear el precio.');
+          }
+        });
+    }
+  }
+
+  // --- NUEVO: GENERAR RECIBOS POR CURSO ---
+  // Asegúrate de tener importado el modelo PagosCompletos también si lo necesitas, 
+// o usa 'any' para la comprobación rápida.
+
+generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActividad: number) {
+    
+  // PASO 1: Obtenemos los alumnos inscritos (para sacar los cursos)
+    this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
+      next: (usuarios) => {
         
-        // Manejo específico del error 405 (Method Not Allowed)
-        if (err.status === 405) {
-          alert("⚠️ Error 405: Ya existe un precio para esta actividad. (La API pide usar PUT en vez de POST).");
-          // Si tu API lo requiere, aquí podrías intentar llamar a un método 'actualizarPrecio' (PUT)
-        } else {
-          alert('❌ Error al guardar el precio. Revisa la consola.');
-        }
+        // Filtramos cursos únicos
+        const cursosInscritos = new Set<number>();
+        usuarios.forEach((u: any) => {
+          if (u.idCurso && u.idCurso > 0) cursosInscritos.add(u.idCurso);
+        });
+
+        if (cursosInscritos.size === 0) return;
+
+        // PASO 2: ¡LA CLAVE! Obtenemos los pagos que YA EXISTEN en este evento
+        // Necesitas tener getPagosEvento disponible en actividadesService o serviceTorneo
+        this.actividadesService.getPagosEvento(idEvento).subscribe({
+          next: (pagosExistentes) => {
+            
+            let cursosAgenerar: number[] = [];
+
+            // PASO 3: Comprobamos uno a uno
+            cursosInscritos.forEach(idCurso => {
+              // Buscamos si ya existe un pago para este Curso + Esta Actividad
+              // Nota: Ajusta 'p.idActividad' o 'p.actividad' según lo que devuelva tu API de pagos
+              const yaTienePago = pagosExistentes.find((p: any) => 
+                p.idCurso === idCurso && p.idActividad === idActividad
+              );
+
+              // Si NO tiene pago, lo añadimos a la lista para crear
+              if (!yaTienePago) {
+                cursosAgenerar.push(idCurso);
+              }
+            });
+
+            // Si todos ya tienen pago, avisamos y salimos
+            if (cursosAgenerar.length === 0) {
+              console.log("Todos los cursos inscritos ya tienen su recibo generado.");
+              return;
+            }
+
+            // PASO 4: Generamos solo los que faltan
+            if (confirm(`Se han detectado ${cursosAgenerar.length} cursos nuevos sin recibo. ¿Generar recibos ahora?`)) {
+              cursosAgenerar.forEach(idCurso => {
+                const nuevoPago = new Pagos(
+                  0, idCurso, idPrecioActividad, 0, "Sin pagar"
+                );
+
+                this.actividadesService.crearPago(nuevoPago).subscribe({
+                  next: () => console.log(`Recibo generado para curso ${idCurso}`),
+                  error: (e) => console.error(e)
+                });
+              });
+            }
+
+          },
+          error: (err) => console.error("Error comprobando pagos existentes", err)
+        });
       }
     });
   }
 
   // --- NAVEGACIÓN A PAGOS ---
-  
-  // Para el botón general del panel de control
   irAPagosGenerales(): void {
     this.router.navigate(['/pagos', this.idEvento]);
   }
 
-  // Para navegar filtrando por actividad (opcional)
   irAPagos(act: Actividad): void {
     this.router.navigate(['/pagos', this.idEvento], { 
       queryParams: { actividad: act.nombreActividad } 

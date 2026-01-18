@@ -27,6 +27,10 @@ import { ActividadesService } from './services/service.actividad';
 import { PerfilComponent } from './components/perfil.component/perfil.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { PrecioDialogComponent } from './components/precio-dialog/precio-dialog';
+import { PagosComponent } from './components/pagos.component/pagos.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSpinner } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -37,7 +41,8 @@ import { PrecioDialogComponent } from './components/precio-dialog/precio-dialog'
     HomeComponent,
     PerfilComponent,
     InscripcionesComponent,
-    PrecioDialogComponent 
+    PrecioDialogComponent,
+    PagosComponent 
   ],
   imports: [
     BrowserModule,
@@ -50,7 +55,10 @@ import { PrecioDialogComponent } from './components/precio-dialog/precio-dialog'
     MatInputModule,
     MatSlideToggleModule,
     MatButtonModule,
-    MatDialogModule, 
+    MatDialogModule,
+    MatTableModule,
+    MatSpinner,
+    MatSelectModule, 
     FormsModule
   ],
   providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService],

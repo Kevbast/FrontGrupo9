@@ -29,23 +29,25 @@
             
             <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
               
-              <div class="price-badge" *ngIf="preciosCache[act.idEventoActividad] && preciosCache[act.idEventoActividad] > 0">
-                {{ preciosCache[act.idEventoActividad] }}€
+              <div class="price-badge" 
+                *ngIf="preciosCache[act.idEventoActividad] && preciosCache[act.idEventoActividad].precio > 0">
+                {{ preciosCache[act.idEventoActividad].precio }}€
               </div>
-              
-              <div class="free-badge" *ngIf="!preciosCache[act.idEventoActividad] || preciosCache[act.idEventoActividad] === 0">
+
+              <div class="free-badge" 
+                *ngIf="!preciosCache[act.idEventoActividad] || preciosCache[act.idEventoActividad].precio === 0">
                 Gratis
               </div>
-
-
-              <span class="icon">🏆</span>
-              
               <button mat-icon-button 
                       class="edit-price-btn"
                       *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'" 
                       (click)="$event.stopPropagation(); gestionarPrecio(act)"
                       matTooltip="Editar Precio">
                 <mat-icon>edit</mat-icon> </button>
+
+              <span class="icon">🏆</span>
+              
+              
             </div>
 
           </div>
