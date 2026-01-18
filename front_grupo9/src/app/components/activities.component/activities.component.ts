@@ -166,7 +166,12 @@ export class ActivitiesComponent implements OnInit {
     if (!this.participantesCache[idActividad]) {
       this.loadingLista = true;
       
-      this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
+      // Get inscriptions for this activity and map to users
+      const inscripcionesActividad = this.getInscripciones(idActividad);
+      const usuariosIds = inscripcionesActividad.map(insc => insc.idUsuario);
+      
+      // Fetch user details for the inscribed users
+      this.inscripcionesService.getUsuariosPorInscripcion(usuariosIds).subscribe({
         next: (users) => {
           // --- AQUÍ ESTÁ LA CLAVE ---
           console.log("✅ DATOS RECIBIDOS DE LA API:", users); 

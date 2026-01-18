@@ -114,11 +114,4 @@ export class ActividadesService {
     
     return this.http.put<Actividad>(url, payload, { headers: headers });
   }
-    findUsuariosInscritosPorActividadEvento(idEvento: number, idActividad: number): Observable<Usuario[]> {
-    let request = `api/Actividades/UsuariosInscritos/${idEvento}/${idActividad}`;
-    let url = environment.apiTorneo + request;
-    const headers = this.getAuthHeaders();
-    
-    return this.http.get<Usuario[]>(url, { headers: headers });
-  }
 }
