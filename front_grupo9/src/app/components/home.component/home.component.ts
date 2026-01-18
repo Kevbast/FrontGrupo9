@@ -3,6 +3,7 @@ import { Evento } from '../../models/Evento';
 import { EventosService } from '../../services/eventosService';
 import Swal from "sweetalert2";
 import { Usuario } from '../../models/Usuario';
+import { ServiceTorneo } from '../../services/service.torneo';
 declare var bootstrap: any;
 
 @Component({
@@ -13,16 +14,18 @@ declare var bootstrap: any;
 })
 export class HomeComponent {
 
+  public usuarioLogado!: Usuario
   public eventos!: Array<Evento>
   public eventosDisponibles!: Array<Evento>
   public eventosTranscurridosMismoYear!: Array<Evento>
+  //Necesario para poder asignar profesores a un evento
   public profesoresActivosSinEvento!: Array<Usuario>
   public nuevoEvento: Evento = new Evento(0, '', -1);
   public eventoEditar: Evento = new Evento(0, '', 0);
   private modalInstance: any;
   private modalInstanceEditar: any;
 
-  constructor(private _service: EventosService){}
+  constructor(private _service: EventosService, private _serviceTorneo: ServiceTorneo){}
 
   ngOnInit(): void {
     this._service.getEventos().subscribe(result => {
@@ -30,6 +33,11 @@ export class HomeComponent {
       this.filtrarEventosDisponibles();
       this.filtrarEventosTranscurridosMismoYear();
     })
+
+    this._serviceTorneo.getPerfil().subscribe(result => {
+      this.usuarioLogado = result;
+    });
+
   }
 
   cargarEventos(): void {
@@ -58,13 +66,6 @@ export class HomeComponent {
     });
   }
 
-  abrirModalCrearEvento(): void {
-    const modalElement = document.getElementById('modalCrearEvento');
-    this.modalInstance = new bootstrap.Modal(modalElement);
-    this.nuevoEvento = new Evento(0, '', 0);
-    this.modalInstance.show();
-  }
-
   //OBTENER LOS PROFESORES ACTIVOS SIN EVENTO 
   getProfesoresSinEvento(): void {
     this._service.getProfesoresActivosSinEvento().subscribe(result => {
@@ -73,9 +74,23 @@ export class HomeComponent {
     })
   }
 
-  //METODOS CRUD
-  
+  //METODOS DE MODALES
+  abrirModalCrearEvento(): void {
+    const modalElement = document.getElementById('modalCrearEvento');
+    this.modalInstance = new bootstrap.Modal(modalElement);
+    this.nuevoEvento = new Evento(0, '', 0);
+    this.modalInstance.show();
+  }
 
+  abrirModalEditarEvento(evento: Evento): void {
+    this.getProfesoresSinEvento();
+    const modalElement = document.getElementById('modalEditarEvento');
+    this.modalInstanceEditar = new bootstrap.Modal(modalElement);
+    this.eventoEditar = { ...evento };
+    this.modalInstanceEditar.show();
+  }
+
+  //METODOS CRUD
   crearEvento(): void {
     if (!this.nuevoEvento.fechaEvento) {
       Swal.fire({
@@ -108,14 +123,6 @@ export class HomeComponent {
         });
       }
     });
-  }
-
-  abrirModalEditarEvento(evento: Evento): void {
-    this.getProfesoresSinEvento();
-    const modalElement = document.getElementById('modalEditarEvento');
-    this.modalInstanceEditar = new bootstrap.Modal(modalElement);
-    this.eventoEditar = { ...evento };
-    this.modalInstanceEditar.show();
   }
 
   editarEvento(): void {
