@@ -23,6 +23,9 @@ import { InscripcionesService } from './services/service.inscripciones';
 import { ActividadesService } from './services/service.actividad';
 import { PerfilComponent } from './components/perfil.component/perfil.component';
 import { CommonModule, DatePipe } from '@angular/common';
+import { EquiposComponents } from './components/equipos.components/equipos.components';
+import { EquiposService } from './services/equiposService';
+import { UsuariosService } from './services/usuariosService';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,8 @@ import { CommonModule, DatePipe } from '@angular/common';
     ActivitiesComponent,
     LoginComponent,
     HomeComponent,
-    PerfilComponent
+    PerfilComponent, 
+    EquiposComponents
   ],
   imports: [
     BrowserModule,
@@ -46,7 +50,9 @@ import { CommonModule, DatePipe } from '@angular/common';
     MatButtonModule,
     FormsModule
   ],
-  providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService],
+  providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService,
+              EquiposService, UsuariosService
+  ],
   bootstrap: [App]
 })
 export class AppModule { }

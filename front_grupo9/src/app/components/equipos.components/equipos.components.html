@@ -1,0 +1,132 @@
+<div class="container-fluid px-4 py-4">
+
+  <!-- Header Section -->
+  <div class="d-flex align-items-center p-4 mb-4" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="width: 6px; height: 45px; background-color: white;" class="rounded me-3"></div>
+    <h1 class="fw-bold text-white mb-0">Equipos</h1>
+  </div>
+  
+  <!-- Equipos Section -->
+  <div *ngIf="equiposActividadEvento && equiposActividadEvento.length > 0" class="mb-5">
+    <div class="row g-4">
+      <div class="col-12 col-lg-6" *ngFor="let equipo of equiposActividadEvento">
+        <div class="border-0 rounded-3 overflow-hidden" style="background: white; box-shadow: 0 2px 8px rgba(9, 122, 236, 0.3);">
+          
+          <!-- Equipo Header -->
+          <div class="p-3" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 text-white fw-semibold">{{ equipo.nombreEquipo }}</h4>
+              <div class="d-flex gap-2">
+                <span class="badge bg-white text-primary px-3 py-2">Curso: {{ getNombreCursoPorId(equipo.idCurso) }}</span>
+                <span class="badge bg-white text-primary px-3 py-2">Equipacion: {{getNombreColorPorId(equipo.idColor)}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-3 py-2 border-top" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%);">
+            <h6 class="text-white mb-0 fw-semibold">Mín. {{ equipo.minimoJugadores }} jugadores</h6>
+          </div>
+          
+          <!-- Ver Jugadores Button -->
+          <div class="p-3 border-bottom" style="background-color: #f0f7ff; cursor: pointer;" 
+               (click)="toggleJugadores(equipo.idEquipo)">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-medium" style="color: #0056b3;">Jugadores del equipo</span>
+              <span style="color: #097AEC; transition: transform 0.3s;" 
+                    [style.transform]="equipoAbierto === equipo.idEquipo ? 'rotate(180deg)' : 'rotate(0deg)'">
+                ▼
+              </span>
+            </div>
+          </div>
+
+          <!-- Jugadores List -->
+          <div *ngIf="equipoAbierto === equipo.idEquipo" class="p-3" style="background-color: #f0f7ff;">
+            
+            <div *ngIf="loadingJugadores" 
+                 class="text-center py-3 text-muted">
+              <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+              Cargando jugadores...
+            </div>
+
+            <div *ngIf="!loadingJugadores">
+              
+              <div *ngIf="jugadoresEquipo.length === 0" 
+                   class="text-center py-3 text-muted">
+                No hay jugadores en este equipo
+              </div>
+
+              <div class="list-group list-group-flush" *ngIf="jugadoresEquipo.length > 0">
+                <div *ngFor="let jugador of jugadoresEquipo" 
+                     class="list-group-item border-0 py-2 px-0 d-flex align-items-center" 
+                     style="background-color: transparent;">
+                  <img [src]="jugador.imagen" 
+                       [alt]="jugador.usuario"
+                       class="rounded-circle me-3" 
+                       style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #097AEC;"
+                       onerror="this.src='https://via.placeholder.com/45'">
+                  <span class="fw-medium" style="color: #0056b3;">{{ jugador.usuario }}</span>
+                  <div *ngIf="esCapitan(jugador.role)" class="ms-auto">
+                    <img src="capitan.png" alt="Capitan" width="30px" class="me-3"/>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!equiposActividadEvento || equiposActividadEvento.length === 0" 
+       class="text-center py-5">
+    <div class="p-5 rounded-3" style="background: linear-gradient(135deg, #e6f2ff 0%, #d6e9ff 100%);">
+      <img src="/Empty Box.gif" alt="No hay equipos" style="max-width: 200px; opacity: 0.7;"/>
+      <p class="mt-3 mb-0" style="color: #0056b3; font-size: 1.1rem;">No se encontraron equipos para esta actividad</p>
+    </div>
+  </div>
+
+  <!-- Participantes Inscritos Section -->
+  <div *ngIf="participantesInscritos && participantesInscritos.length > 0" class="mt-5">
+    <div class="d-flex align-items-center p-4 mb-4" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <div style="width: 6px; height: 45px; background-color: white;" class="rounded me-3"></div>
+      <h2 class="fw-bold text-white mb-0">Participantes Inscritos</h2>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let participante of participantesInscritos">
+        <div class="p-3 rounded-3 text-center h-100" 
+             style="background: white; border: 2px solid #C5E0FF; box-shadow: 0 2px 6px rgba(9, 122, 236, 0.2);">
+          <img [src]="participante.imagen" 
+               [alt]="participante.usuario"
+               class="rounded-circle mb-3" 
+               style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #097AEC;"
+               onerror="this.src='https://via.placeholder.com/80'">
+          <p class="mb-0 fw-semibold" style="color: #0056b3;">{{ participante.usuario }}</p>
+          <p class="text-secondary mt-3">{{participante.curso}} - {{participante.idCurso}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty Participantes -->
+  <div *ngIf="!participantesInscritos || participantesInscritos.length === 0" class="mt-5">
+    <div class="text-center p-4 rounded-3" style="background: linear-gradient(135deg, #e6f2ff 0%, #d6e9ff 100%);">
+      <p class="mb-0 text-muted">No hay participantes inscritos</p>
+    </div>
+  </div>
+
+  <!-- Volver a Actividades -->
+  <div class="mt-3">
+    <button class="btn d-flex align-items-center gap-2 px-4 py-3 rounded-3" 
+            [routerLink]="['/activities', idEvento]"
+            style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
+            onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
+            onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
+      <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
+      <span class="fw-semibold">Volver a Actividades del evento</span>
+    </button>
+  </div>
+</div>

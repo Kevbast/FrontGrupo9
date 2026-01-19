@@ -1,0 +1,13 @@
+/* Transiciones suaves */
+.list-group-item {
+  transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: rgba(9, 122, 236, 0.08) !important;
+}
+
+/* Cursor pointer para elementos clickeables */
+[style*="cursor: pointer"]:hover {
+  background-color: rgba(9, 122, 236, 0.12) !important;
+}
