@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { Inscripcion } from '../models/Inscripcion';
 import { Actividad } from '../models/Actividad';
+import { Usuario } from '../models/Usuario';
 
 @Injectable({
   providedIn: 'root',
@@ -23,4 +24,30 @@ export class ActividadesService {
     let url = environment.apiTorneo + request;
     return this.http.get<Array<Actividad>>(url);
   }
+
+  // Obtener todas las inscripciones
+  getInscripciones(): Observable<Inscripcion[]> {
+    return this.http.get<Inscripcion[]>(this.urlInscripciones);
+  }
+
+  getInscripcionesPorActividad(idEventoActividad: number): Observable<Inscripcion[]> {
+    return this.http.get<Inscripcion[]>(
+      `${this.urlInscripciones}?idEventoActividad=${idEventoActividad}`
+    );
+  }
+
+  crearInscripcion(inscripcion: Inscripcion): Observable<Inscripcion> {
+    return this.http.post<Inscripcion>(this.urlInscripciones, inscripcion);
+  }
+
+  eliminarInscripcion(idInscripcion: number): Observable<any> {
+    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
+  }
+  //Método para devolver todos los Usuarios inscritos por evento y actividad de la BBDD(Kevin)
+  findUsuariosInscritosPorActividadEvento(idEvento:number,idactividad:number):Observable<Array<Usuario>>{
+        let request="api/Inscripciones/InscripcionesUsuariosEventoActividad/"+idEvento+"?idactividad="+idactividad;
+        let apiUrl=environment.apiTorneo + request;
+        return this.http.get<Array<Usuario>>(apiUrl);
+  }
+
 }

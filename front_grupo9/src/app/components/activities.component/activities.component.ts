@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ActividadesService } from '../../services/service.actividad';
-import { ServiceTorneo } from '../../services/service.torneo';
-
 import { InscripcionesService } from '../../services/service.inscripciones';
-import { Inscripcion } from '../../models/Inscripcion';
-import { Actividad } from '../../models/Actividad';
-import { Material } from '../../models/Material';
 import { MaterialesService } from '../../services/materialesService';
+// Modelos
+import { Actividad } from '../../models/Actividad';
+import { Inscripcion } from '../../models/Inscripcion';
+import { Material } from '../../models/Material';
+import { Usuario } from '../../models/Usuario';
+import { ServiceTorneo } from '../../services/service.torneo';
 
 @Component({
   selector: 'app-activities',
@@ -18,7 +17,7 @@ import { MaterialesService } from '../../services/materialesService';
   styleUrl: './activities.component.css',
 })
 export class ActivitiesComponent implements OnInit {
-  public actividades: Actividad[] = [];
+  
   public actividadesEvento!: Array<Actividad>;
   public inscripciones: Inscripcion[] = [];
   public inscripcionesPorActividad: { [key: number]: Inscripcion[] } = {};
@@ -27,6 +26,16 @@ export class ActivitiesComponent implements OnInit {
   public actividadSeleccionada: string = '';
   public idEvento!: number;
   public role: string | null = null;
+
+  // --- NUEVAS VARIABLES PARA EL DESPLEGABLE ---
+  // Cache para guardar participantes por ID de Actividad para no repetir llamadas
+  public participantesCache: { [idActividad: number]: Usuario[] } = {};
+
+  // Controla qué tarjeta está abierta (null = ninguna)
+  public actividadAbierta: number | null = null;
+  
+  // Spinner de carga local
+  public loadingLista: boolean = false;
 
   constructor(
     private actividadesService: ActividadesService, 
@@ -37,36 +46,27 @@ export class ActivitiesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener el rol del usuario
-    this.torneoService.getPerfil().subscribe(usuario => {
-      this.role = usuario.role;
-    });
-    
-    // Obtener el idEvento de los parámetros de la ruta
     this.route.params.subscribe(params => {
-      this.idEvento = +params['idEvento']; // El + convierte string a number
+      this.idEvento = +params['idEvento'];
       console.log('ID Evento recibido:', this.idEvento);
       this.cargarDatos();
     });
   }
 
   cargarDatos(): void {
+    // 1. Cargar todas las inscripciones para contar participantes
     this.inscripcionesService.getInscripciones().subscribe({
       next: (data) => {
         this.inscripciones = data;
         this.agruparInscripcionesPorActividad();
-        
-        console.log('Inscripciones cargadas:', this.inscripciones);
-        console.log('Inscripciones por actividad:', this.inscripcionesPorActividad);
       },
       error: (err) => console.error('Error cargando inscripciones:', err)
     });
 
-    //Cargar actividades por evento de la API
+    // 2. Cargar actividades del evento
     this.actividadesService.getActividadesEvento(this.idEvento).subscribe({
       next: (data) => {
-        console.log('Actividades del evento cargadas:', data);
-        // Asignar directamente a actividadesEvento con el mapeo del modelo
+        console.log('Actividades cargadas:', data);
         this.actividadesEvento = data.map(act => {
           return new Actividad(
             act.posicion || 0,
@@ -79,12 +79,12 @@ export class ActivitiesComponent implements OnInit {
             act.idEventoActividad || 0
           );
         });
-        console.log('actividadesEvento procesadas:', this.actividadesEvento);
       },
-      error: (err) => console.error('Error cargando actividades del evento:', err)
+      error: (err) => console.error('Error cargando actividades:', err)
     })
   }
 
+  // --- LÓGICA DE CONTEO DE INSCRITOS ---
   agruparInscripcionesPorActividad(): void {
     this.inscripcionesPorActividad = {};
     this.inscripciones.forEach(inscripcion => {
@@ -103,7 +103,46 @@ export class ActivitiesComponent implements OnInit {
     return this.getInscripciones(idEventoActividad).length;
   }
 
-  //OBTENER LOS MATERIALES DEL EVENTO/ACTIVIDAD (MARCOS)
+  // --- LÓGICA DE DESPLEGAR PARTICIPANTES (TOGGLE) ---
+  toggleParticipantes(idEvento: number, idActividad: number): void {
+    console.log("--- CLICK EN TOGGLE ---");
+    console.log("Abriendo actividad ID:", idActividad);
+
+    if (this.actividadAbierta === idActividad) {
+      this.actividadAbierta = null;
+      return;
+    }
+
+    this.actividadAbierta = idActividad;
+
+    if (!this.participantesCache[idActividad]) {
+      this.loadingLista = true;
+      
+      this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
+        next: (users) => {
+          // --- AQUÍ ESTÁ LA CLAVE ---
+          console.log("✅ DATOS RECIBIDOS DE LA API:", users); 
+          
+          this.participantesCache[idActividad] = users;
+          this.loadingLista = false;
+          
+          if (users.length > 0) {
+            console.log("🔍 Ejemplo del primer usuario:", users[0]);
+          } else {
+            console.warn("⚠️ El array de usuarios está VACÍO");
+          }
+        },
+        error: (err) => {
+          console.error("❌ Error cargando participantes", err);
+          this.loadingLista = false;
+        }
+      });
+    } else {
+      console.log("⚡ Cargando desde caché local:", this.participantesCache[idActividad]);
+    }
+  }
+
+  // --- MODAL DE MATERIALES ---
   getMaterialesEventoActividad(idEventoActividad: number, nombreActividad: string): void {
     this.actividadSeleccionada = nombreActividad;
     this.materialesService.getMaterialesEvento(idEventoActividad).subscribe(result => {
@@ -116,29 +155,4 @@ export class ActivitiesComponent implements OnInit {
     this.mostrarModal = false;
     this.materialesEventoActividad = [];
   }
-
-  crearActividad(): void {
-    if (!this.esAdminOOrganizador()) {
-      console.log('No tienes permisos para crear actividades');
-      return;
-    }
-    console.log('Crear nueva actividad');
-    // Aquí puedes añadir la lógica para abrir un modal o navegar a un formulario
-    // Por ejemplo: this.router.navigate(['/crear-actividad', this.idEvento]);
-  }
-
-  editarActividad(actividad: Actividad): void {
-    if (!this.esAdminOOrganizador()) {
-      console.log('No tienes permisos para editar actividades');
-      return;
-    }
-    console.log('Editar actividad:', actividad);
-    // Aquí puedes añadir la lógica para editar la actividad
-    // Por ejemplo: this.router.navigate(['/editar-actividad', actividad.idEventoActividad]);
-  }
-
-  public esAdminOOrganizador(): boolean {
-    return this.role === 'ADMINISTRADOR' || this.role === 'ORGANIZADOR';
-  }
-
 }
