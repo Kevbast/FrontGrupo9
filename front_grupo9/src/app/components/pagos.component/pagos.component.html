@@ -1,0 +1,114 @@
+<div class="pagos-container">
+  
+  <div class="header">
+    <button mat-icon-button (click)="volver()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Gestión de Caja (Evento #{{ idEvento }})</h1>
+  </div>
+
+  <div class="dashboard">
+    <mat-card class="dash-card blue">
+      <div class="dash-icon">
+        <mat-icon>monetization_on</mat-icon>
+      </div>
+      <div>
+        <h3>Total Previsto</h3>
+        <span>{{ totalEsperado }} €</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="dash-card green">
+      <div class="dash-icon">
+        <mat-icon>savings</mat-icon>
+      </div>
+      <div>
+        <h3>Recaudado</h3>
+        <span>{{ totalRecaudado }} €</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="dash-card orange">
+      <div class="dash-icon">
+        <mat-icon>pending</mat-icon>
+      </div>
+      <div>
+        <h3>Pendiente</h3>
+        <span>{{ deudaTotal }} €</span>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="table-wrapper mat-elevation-z8">
+    
+    <div *ngIf="loading" class="loading">
+      <mat-spinner diameter="40"></mat-spinner> 
+      <span>Cargando libro de cuentas...</span>
+    </div>
+
+    <table mat-table [dataSource]="listaPagos" *ngIf="!loading">
+
+      <ng-container matColumnDef="curso">
+        <th mat-header-cell *matHeaderCellDef> Clase / Curso </th>
+        <td mat-cell *matCellDef="let element"> 
+          <strong>{{ element.curso }}</strong>
+          <div style="font-size: 0.8rem; color: #888;">ID: {{ element.idCurso }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actividad">
+        <th mat-header-cell *matHeaderCellDef> Actividad </th>
+        <td mat-cell *matCellDef="let element"> {{ element.actividad }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="precio">
+        <th mat-header-cell *matHeaderCellDef> Total a Pagar </th>
+        <td mat-cell *matCellDef="let element"> {{ element.precioTotal }} € </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pagado">
+        <th mat-header-cell *matHeaderCellDef> Entregado </th>
+        <td mat-cell *matCellDef="let element" class="text-success"> 
+          {{ element.cantidadPagada }} € 
+        </td>
+      </ng-container>
+
+    <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef> Estado y Acciones </th>
+        <td mat-cell *matCellDef="let element">
+          
+          <div class="state-action-wrapper"> <span *ngIf="element.precioTotal === 0" class="badge bg-free">
+              NO PAGA
+            </span>
+
+            <mat-form-field appearance="outline" 
+                            class="status-select" 
+                            *ngIf="element.precioTotal > 0"
+                            subscriptSizing="dynamic">
+              
+              <mat-select [value]="element.estado" 
+                          (selectionChange)="cambiarEstado(element, $event.value)"
+                          [ngClass]="element.estado === 'PAGADO' ? 'select-pagado' : 'select-pendiente'">
+                
+                <mat-option value="Sin pagar">🔴 Sin pagar</mat-option>
+                <mat-option value="No tiene que pagar">✖️ Exento</mat-option>            
+                <mat-option value="PAGADO">🟢 PAGADO</mat-option>
+              
+              </mat-select>
+            </mat-form-field>
+            
+            <button mat-icon-button color="warn" (click)="eliminarPago(element.idPago)" matTooltip="Borrar registro">
+              <mat-icon>delete_outline</mat-icon> </button>
+
+          </div> </td>
+    </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="!loading && listaPagos.length === 0" class="no-data">
+      No hay pagos registrados para este evento.
+    </div>
+  </div>
+</div>

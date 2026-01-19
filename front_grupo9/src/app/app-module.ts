@@ -9,13 +9,16 @@ import { ActivitiesComponent } from './components/activities.component/activitie
 import { LoginComponent } from './components/login.component/login.component';
 import { HomeComponent } from './components/home.component/home.component';
 import { MaterialesService } from './services/materialesService';
-//ANGULAR MATERIAL
+
+// ANGULAR MATERIAL
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog'; // <--- 1. AÑADIR IMPORT
+
 import { FormsModule } from '@angular/forms';
 import { EventosService } from './services/eventosService';
 
@@ -26,6 +29,11 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { EquiposComponents } from './components/equipos.components/equipos.components';
 import { EquiposService } from './services/equiposService';
 import { UsuariosService } from './services/usuariosService';
+import { PrecioDialogComponent } from './components/precio-dialog/precio-dialog';
+import { PagosComponent } from './components/pagos.component/pagos.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSpinner } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -35,7 +43,9 @@ import { UsuariosService } from './services/usuariosService';
     LoginComponent,
     HomeComponent,
     PerfilComponent, 
-    EquiposComponents
+    EquiposComponents,
+    PrecioDialogComponent,
+    PagosComponent 
   ],
   imports: [
     BrowserModule,
@@ -48,6 +58,10 @@ import { UsuariosService } from './services/usuariosService';
     MatInputModule,
     MatSlideToggleModule,
     MatButtonModule,
+    MatDialogModule,
+    MatTableModule,
+    MatSpinner,
+    MatSelectModule, 
     FormsModule
   ],
   providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService,
