@@ -4,6 +4,16 @@
   --sport-hover: #023e8a;
   --white-translucent: rgba(255, 255, 255, 0.95);
 }
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-link {
+  transition: transform 0.2s ease;
+}
 
 /* 1. BARRA DE NAVEGACIÓN (El contenedor azul) */
 .custom-navbar {

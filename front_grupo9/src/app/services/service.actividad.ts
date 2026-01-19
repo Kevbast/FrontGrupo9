@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
@@ -15,6 +15,15 @@ export class ActividadesService {
 
   constructor(private http: HttpClient) {}
 
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('authToken');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
+  }
+
   getActividades(): Observable<Actividad[]> {
     return this.http.get<Actividad[]>(this.urlActividades);
   }
@@ -25,29 +34,50 @@ export class ActividadesService {
     return this.http.get<Array<Actividad>>(url);
   }
 
-  // Obtener todas las inscripciones
-  getInscripciones(): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(this.urlInscripciones);
+  crearActividad(actividad: any): Observable<Actividad> {
+    let request = "api/Actividades/create";
+    let url = environment.apiTorneo + request;
+    const headers = this.getAuthHeaders();
+    
+    const payload = {
+      nombre: actividad.nombreActividad || actividad.Nombre || '',
+      posicion: actividad.posicion || actividad.Posicion || 0,
+      idEvento: actividad.idEvento || actividad.IdEvento || 0,
+      idActividad: actividad.idActividad || actividad.IdActividad || 0,
+      minimoJugadores: actividad.minimoJugadores || actividad.MinimoJugadores || 0,
+      idProfesor: actividad.idProfesor || actividad.IdProfesor || 0,
+      idEventoActividad: actividad.idEventoActividad || actividad.IdEventoActividad || 0,
+      fechaEvento: actividad.fechaEvento || actividad.FechaEvento || new Date().toISOString()
+    };
+    
+    return this.http.post<Actividad>(url, payload, { headers: headers });
   }
 
-  getInscripcionesPorActividad(idEventoActividad: number): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(
-      `${this.urlInscripciones}?idEventoActividad=${idEventoActividad}`
-    );
+  crearEventoActividad(idEvento: number, idActividad: number): Observable<any> {
+    let request = `api/ActividadesEvento/create?idevento=${idEvento}&idactividad=${idActividad}`;
+    let url = environment.apiTorneo + request;
+    const headers = this.getAuthHeaders();
+    
+    return this.http.post<any>(url, {}, { headers: headers });
   }
 
-  crearInscripcion(inscripcion: Inscripcion): Observable<Inscripcion> {
-    return this.http.post<Inscripcion>(this.urlInscripciones, inscripcion);
+  actualizarActividad(actividad: Actividad): Observable<Actividad> {
+    let request = "api/Actividades/update";
+    let url = environment.apiTorneo + request;
+    const headers = this.getAuthHeaders();
+    
+    const payload = {
+      idActividad: actividad.idActividad,
+      nombre: actividad.nombreActividad,
+      nombreActividad: actividad.nombreActividad,
+      posicion: actividad.posicion,
+      idEvento: actividad.idEvento,
+      minimoJugadores: actividad.minimoJugadores,
+      idProfesor: actividad.idProfesor,
+      idEventoActividad: actividad.idEventoActividad,
+      fechaEvento: actividad.fechaEvento
+    };
+    
+    return this.http.put<Actividad>(url, payload, { headers: headers });
   }
-
-  eliminarInscripcion(idInscripcion: number): Observable<any> {
-    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
-  }
-  //Método para devolver todos los Usuarios inscritos por evento y actividad de la BBDD(Kevin)
-  findUsuariosInscritosPorActividadEvento(idEvento:number,idactividad:number):Observable<Array<Usuario>>{
-        let request="api/Inscripciones/InscripcionesUsuariosEventoActividad/"+idEvento+"?idactividad="+idactividad;
-        let apiUrl=environment.apiTorneo + request;
-        return this.http.get<Array<Usuario>>(apiUrl);
-  }
-
 }
