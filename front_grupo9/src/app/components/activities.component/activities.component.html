@@ -169,15 +169,6 @@
                 </mat-slide-toggle>
               </div>
             </div>
-
-            <!-- <mat-form-field appearance="outline" class="custom-field readonly-field">
-              <mat-label>Fecha de Registro</mat-label>
-              <div matPrefix class="white-box box-icon">
-                <mat-icon>calendar_today</mat-icon>
-              </div>
-              <input matInput [value]="inscripcion.fechaInscripcion | date:'short'" readonly>
-            </mat-form-field> -->
-
             <button mat-raised-button 
                     class="enroll-submit-btn" 
                     (click)="enviarInscripcion()">
@@ -289,19 +280,19 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
-              <mat-label>Posición</mat-label>
+              <mat-label>Posiciï¿½n</mat-label>
               <div matPrefix class="white-box box-icon">
                 <mat-icon>format_list_numbered</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="actividadEditar.posicion" name="posicionEdit" placeholder="Posición" required>
+              <input matInput type="number" [(ngModel)]="actividadEditar.posicion" name="posicionEdit" placeholder="Posiciï¿½n" required>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
-              <mat-label>Mínimo de Jugadores</mat-label>
+              <mat-label>Mï¿½nimo de Jugadores</mat-label>
               <div matPrefix class="white-box box-icon">
                 <mat-icon>people</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="actividadEditar.minimoJugadores" name="minimoJugadoresEdit" placeholder="Mínimo de jugadores" required>
+              <input matInput type="number" [(ngModel)]="actividadEditar.minimoJugadores" name="minimoJugadoresEdit" placeholder="Mï¿½nimo de jugadores" required>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
@@ -323,8 +314,42 @@
         </mat-card-content>
 
         <mat-card-footer class="footer-note">
-          <p>Los cambios se guardarán inmediatamente.</p>
+          <p>Los cambios se guardarï¿½n inmediatamente.</p>
         </mat-card-footer>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<!-- MODAL DE ERROR -->
+<div class="modal-overlay" *ngIf="mostrarModalError" (click)="cerrarModalError()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="enrollment-container">
+      <mat-card class="enrollment-card">
+        
+        <div class="card-header-gradient" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+          <div class="header-content">
+            <mat-icon class="header-icon">error_outline</mat-icon>
+            <h2>Error de InscripciÃ³n</h2>
+            <button type="button" class="btn-close" (click)="cerrarModalError()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+
+        <mat-card-content>
+          <div style="text-align: center; padding: 20px;">
+            <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #e74c3c;">cancel</mat-icon>
+            <p style="margin-top: 20px; font-size: 16px; color: #555;">{{ mensajeError }}</p>
+          </div>
+          
+          <button mat-raised-button 
+                  class="enroll-submit-btn" 
+                  style="background: #e74c3c;"
+                  (click)="cerrarModalError()">
+            <mat-icon>close</mat-icon>
+            CERRAR
+          </button>
+        </mat-card-content>
       </mat-card>
     </div>
   </div>

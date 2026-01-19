@@ -28,6 +28,8 @@ export class ActivitiesComponent implements OnInit {
   public mostrarModalInscripcion: boolean = false;
   public mostrarModalCrearActividad: boolean = false;
   public mostrarModalEditarActividad: boolean = false;
+  public mostrarModalError: boolean = false;
+  public mensajeError: string = '';
   public idEvento!: number;
   public role: string | null = null;
   public idUsuarioActual: number = 0;
@@ -262,8 +264,40 @@ export class ActivitiesComponent implements OnInit {
     return this.role === 'ADMINISTRADOR' || this.role === 'ORGANIZADOR';
   }
 
+  public cerrarModalError(): void {
+    this.mostrarModalError = false;
+    this.mensajeError = '';
+  }
+
   public enviarInscripcion(): void {
-    this.cerrarModalInscripcion();
+    const actividadesDelEvento = this.actividadesEvento.map(act => act.idEventoActividad);
+    const yaInscrito = this.inscripciones.some(insc => 
+      insc.idUsuario === this.idUsuarioActual && 
+      actividadesDelEvento.includes(insc.idEventoActividad)
+    );
+
+    if (yaInscrito) {
+      this.mensajeError = 'Solo se puede inscribir en una actividad por evento';
+      this.mostrarModalError = true;
+      this.cerrarModalInscripcion();
+      return;
+    }
+
+    this.inscripcionesService.crearInscripcion(this.inscripcion).subscribe({
+      next: (respuesta) => {
+        this.cerrarModalInscripcion();
+        if (this.participantesCache[this.idEventoActividadSeleccionada]) {
+          delete this.participantesCache[this.idEventoActividadSeleccionada];
+        }
+        setTimeout(() => {
+          this.cargarDatos();
+        }, 500);
+      },
+      error: (err) => {
+        console.error('Error al crear inscripción:', err);
+        this.cerrarModalInscripcion();
+      }
+    });
   }
 
 
