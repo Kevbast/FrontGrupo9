@@ -54,6 +54,10 @@ export class ActivitiesComponent implements OnInit {
   // Diccionario para guardar precios: Clave=idEventoActividad, Valor={idPrecio, precio}
   public preciosCache: { [key: number]: { idPrecio: number, precio: number } } = {};
 
+  // Variables para Materiales
+  public idEventoActividadMateriales: number = 0; // Para saber dónde guardar el nuevo
+  public nuevoMaterialNombre: string = ''; // Para el input del formulario
+
   constructor(
     private actividadesService: ActividadesService, 
     private materialesService: MaterialesService,
@@ -107,6 +111,7 @@ export class ActivitiesComponent implements OnInit {
       next: (usuario) => {
         this.usuarioPerfil = usuario;
         this.rolUsuario = usuario.role;
+        this.idUsuarioActual=usuario.idUsuario //DECLARAMOS EL USUARIO ACTUAL EN CARGARPERFIL
       }
     });
   }
@@ -341,8 +346,12 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
     }
   }
 
+// --- MATERIALES (MODIFICADO) ---
+
   getMaterialesEventoActividad(idEventoActividad: number, nombreActividad: string): void {
     this.actividadSeleccionada = nombreActividad;
+    this.idEventoActividadMateriales = idEventoActividad; 
+    this.materialesEventoActividad = []; 
     this.materialesService.getMaterialesEvento(idEventoActividad).subscribe(result => {
       this.materialesEventoActividad = result;
       this.mostrarModal = true;
@@ -352,8 +361,76 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
   cerrarModal(): void {
     this.mostrarModal = false;
     this.materialesEventoActividad = [];
+    this.nuevoMaterialNombre = ''; // Limpiamos input
   }
 
+  // 1. CREAR SOLICITUD DE MATERIAL (Restringido a inscritos)
+  crearMaterial(): void {
+    if (!this.nuevoMaterialNombre.trim()) return;
+
+    // VALIDACIÓN: ¿Está el usuario inscrito en esta actividad?
+    // Verificamos si su ID está en la lista de inscripciones de esta actividad
+    const listaInscritos = this.getInscripciones(this.idEventoActividadMateriales);
+    const estaInscrito = listaInscritos.some(i => i.idUsuario === this.idUsuarioActual);
+
+    // Permitimos si es Admin/Org O si está inscrito
+    if (this.esAdminOOrganizador() && !estaInscrito) {
+      alert("❌ Solo los participantes inscritos pueden solicitar material para esta actividad.");
+      return;
+    }
+
+    const nuevoMat = new Material(
+      0, 
+      this.idEventoActividadMateriales, 
+      this.idUsuarioActual, // Solicitante (quien crea la petición)
+      this.nuevoMaterialNombre, 
+      true, // Pendiente por defecto
+      new Date().toISOString(), 
+      0 // idUsuarioAportacion = 0 (NADIE lo ha traído aún, es una solicitud)
+    );
+    console.log(nuevoMat);
+    this.materialesService.crearMaterial(nuevoMat).subscribe({
+      next: (res) => {
+        this.nuevoMaterialNombre = ''; 
+        this.recargarMateriales();
+        // Feedback opcional
+        // alert("✅ Solicitud creada. Esperando que alguien lo aporte.");
+      },
+      error: (err) => alert('Error al crear solicitud de material')
+    });
+  }
+
+  // 2. BORRAR MATERIAL (Solo Admin/Org)
+  borrarMaterial(idMaterial: number): void {
+    if(confirm('¿Eliminar este material de la lista?')) {
+      this.materialesService.deleteMateriales(idMaterial).subscribe({
+        next: () => this.recargarMateriales(),
+        error: (err) => alert('Error al eliminar')
+      });
+    }
+  }
+
+  // 3. APORTAR MATERIAL (Cualquier usuario)
+  aportarMaterial(material: Material): void {
+    if(confirm(`¿Te comprometes a traer: ${material.nombreMaterial}?`)) {
+      this.materialesService.aportarMaterial(material.idMaterial, this.idUsuarioActual).subscribe({
+        next: () => {
+          alert('¡Gracias! Has sido registrado como aportador.');
+          this.recargarMateriales();
+        },
+        error: (err) => alert('Error al aportar material')
+      });
+    }
+  }
+
+  recargarMateriales() {
+    this.materialesService.getMaterialesEvento(this.idEventoActividadMateriales).subscribe(res => {
+      this.materialesEventoActividad = res;
+    });
+  }
+
+
+  //--------MODAL INSCRIPCIÓN
   abrirModalInscripcion(idEventoActividad: number): void {
     this.idEventoActividadSeleccionada = idEventoActividad;
     this.inscripcion.idUsuario = this.idUsuarioActual;

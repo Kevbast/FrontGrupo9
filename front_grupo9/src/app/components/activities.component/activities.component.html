@@ -148,38 +148,99 @@
   </div>
 </div>
 
-
 <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Materiales de {{ actividadSeleccionada }}</h4>
+      
+      <div class="modal-header" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <mat-icon>inventory_2</mat-icon>
+          <h4 class="modal-title" style="margin:0;">Materiales: {{ actividadSeleccionada }}</h4>
+        </div>
         <button type="button" class="btn-close" (click)="cerrarModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
       <div class="modal-body">
+        
+        <div class="add-material-section">
+          <mat-form-field appearance="outline" class="full-width" style="margin-bottom: 0;">
+            <mat-label>Solicitar Material (Ej: Balón, Petos...)</mat-label>
+            <input matInput 
+                   [(ngModel)]="nuevoMaterialNombre" 
+                   placeholder="Escribe el material necesario..." 
+                   (keyup.enter)="crearMaterial()">
+            
+            <button mat-icon-button matSuffix color="primary" 
+                    (click)="crearMaterial()" 
+                    [disabled]="!nuevoMaterialNombre"
+                    matTooltip="Crear solicitud">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </mat-form-field>
+          <div style="font-size: 0.75rem; color: #666; margin-top: 5px; margin-left: 5px;">
+            * Solo participantes inscritos pueden crear solicitudes.
+          </div>
+        </div>
+
         <div *ngIf="materialesEventoActividad && materialesEventoActividad.length > 0; else noMateriales">
           <div class="list-group">
-            <div *ngFor="let material of materialesEventoActividad; let i = index" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between align-items-center">
-                <div class="material-info">
-                  <span class="badge bg-primary rounded-pill me-2">{{ i + 1 }}</span>
-                  <span class="material-name">{{ material.nombreMaterial }}</span>
-                </div>
-                <small class="text-muted">ID: {{ material.idMaterial }}</small>
+            
+            <div *ngFor="let material of materialesEventoActividad; let i = index" class="material-item">
+              
+              <div class="material-status">
+                <mat-icon *ngIf="material.idUsuarioAportacion > 0" class="status-ok" matTooltip="Material cubierto">check_circle</mat-icon>
+                <mat-icon *ngIf="!material.idUsuarioAportacion || material.idUsuarioAportacion === 0" class="status-pending" matTooltip="Pendiente">help_outline</mat-icon>
               </div>
+
+              <div class="material-info">
+                <span class="mat-name">{{ material.nombreMaterial }}</span>
+                
+                <span class="mat-desc" *ngIf="material.idUsuarioAportacion > 0">
+                  <span class="badge-covered">Cubierto</span> 
+                  <span style="font-size: 0.75rem; color: #888;"> (Por Usuario ID: {{ material.idUsuarioAportacion }})</span>
+                </span>
+                
+                <span class="mat-desc" *ngIf="!material.idUsuarioAportacion || material.idUsuarioAportacion === 0">
+                  <span class="badge-pending">Se necesita</span>
+                  <span style="font-size: 0.75rem; color: #888;"> (Solicitado por ID: {{ material.idUsuario }})</span>
+                </span>
+              </div>
+
+              <div class="material-actions">
+                
+                <button mat-stroked-button color="primary" 
+                        class="btn-aportar"
+                        *ngIf="(!material.idUsuarioAportacion || material.idUsuarioAportacion === -1) && material.idUsuario !== idUsuarioActual"
+                        (click)="aportarMaterial(material)">
+                  ✋ Yo lo traigo
+                </button>
+
+                <button mat-icon-button color="warn" 
+                        *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR' || material.idUsuario === idUsuarioActual"
+                        (click)="borrarMaterial(material.idMaterial)"
+                        matTooltip="Eliminar solicitud">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
+
         <ng-template #noMateriales>
-          <div class="alert alert-info text-center" role="alert">
-            <i class="bi bi-info-circle me-2"></i> No hay materiales registrados.
+          <div class="empty-state-mat">
+            <mat-icon>category</mat-icon>
+            <p>No hay materiales solicitados para esta actividad.</p>
+            <p style="font-size: 0.85rem; color: #999;">¡Sé el primero en crear una solicitud!</p>
           </div>
         </ng-template>
+
       </div>
+      
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button mat-button (click)="cerrarModal()">Cerrar</button>
       </div>
     </div>
   </div>
