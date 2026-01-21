@@ -36,8 +36,8 @@ export class HomeComponent {
 
     this._serviceTorneo.getPerfil().subscribe(result => {
       this.usuarioLogado = result;
-    });
-
+      console.log(this.usuarioLogado);
+    })
   }
 
   cargarEventos(): void {
