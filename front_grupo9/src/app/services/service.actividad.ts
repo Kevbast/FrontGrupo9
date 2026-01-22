@@ -161,11 +161,4 @@ export class ActividadesService {
     return this.http.delete(url, { headers: headers });
   }
 
-  // Eliminar actividad (EventoActividad)
-  eliminarActividad(idEventoActividad: number): Observable<any> {
-    const url = `${environment.apiTorneo}api/ActividadesEvento/${idEventoActividad}`;
-    const headers = this.getAuthHeaders();
-    return this.http.delete(url, { headers: headers });
-  }
-
 }
