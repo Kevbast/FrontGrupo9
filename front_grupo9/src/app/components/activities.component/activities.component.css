@@ -79,6 +79,18 @@
   font-size: 20px;
 }
 
+.delete-icon {
+  color: white !important;
+}
+
+.delete-icon mat-icon {
+  font-size: 20px;
+}
+
+.delete-icon:hover {
+  background-color: rgba(255, 0, 0, 0.2) !important;
+}
+
 .header-top h3 { 
   margin: 0; 
   font-size: 1.4rem; 

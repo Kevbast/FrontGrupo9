@@ -72,8 +72,18 @@
                         mat-icon-button
                         class="edit-icon"
                         (click)="editarActividad(act)"
+                        matTooltip="Editar actividad"
                         aria-label="Editar actividad">
                   <mat-icon>edit</mat-icon>
+                </button>
+
+                <button *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'"
+                        mat-icon-button
+                        class="delete-icon"
+                        (click)="$event.stopPropagation(); eliminarActividad(act)"
+                        matTooltip="Eliminar actividad"
+                        aria-label="Eliminar actividad">
+                  <mat-icon>delete</mat-icon>
                 </button>
                 
               </div>

@@ -22,13 +22,16 @@ export class InscripcionesService {
   }
 
   getInscripciones(): Observable<Inscripcion[]> {
-    return this.http.get<Inscripcion[]>(this.urlInscripciones);
+    const headers = this.getAuthHeaders();
+    return this.http.get<Inscripcion[]>(this.urlInscripciones, { headers: headers });
   }
 
   // Obtener inscripciones por ID de actividad
   getInscripcionesPorActividad(idEventoActividad: number): Observable<Inscripcion[]> {
+    const headers = this.getAuthHeaders();
     return this.http.get<Inscripcion[]>(
-      `${this.urlInscripciones}?idEventoActividad=${idEventoActividad}`
+      `${this.urlInscripciones}?idEventoActividad=${idEventoActividad}`,
+      { headers: headers }
     );
   }
 
@@ -48,7 +51,8 @@ export class InscripcionesService {
 
   // Eliminar una inscripción
   eliminarInscripcion(idInscripcion: number): Observable<any> {
-    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`, { headers: headers });
   }
 
   // Obtener usuarios por IDs de usuario
@@ -63,6 +67,7 @@ export class InscripcionesService {
     
     // Construir la query string con los IDs
     const idsQuery = usuariosIds.join(',');
-    return this.http.get<Usuario[]>(`${this.urlUsuarios}?ids=${idsQuery}`);
+    const headers = this.getAuthHeaders();
+    return this.http.get<Usuario[]>(`${this.urlUsuarios}?ids=${idsQuery}`, { headers: headers });
   }
 }

@@ -27,13 +27,15 @@ export class ActividadesService {
   }
 
   getActividades(): Observable<Actividad[]> {
-    return this.http.get<Actividad[]>(this.urlActividades);
+    const headers = this.getAuthHeaders();
+    return this.http.get<Actividad[]>(this.urlActividades, { headers: headers });
   }
 
   getActividadesEvento(idEvento: number) : Observable<Array<Actividad>> {
     let request = "api/Actividades/ActividadesEvento/" + idEvento;
     let url = environment.apiTorneo + request;
-    return this.http.get<Array<Actividad>>(url);
+    const headers = this.getAuthHeaders();
+    return this.http.get<Array<Actividad>>(url, { headers: headers });
   }
 
   crearActividad(actividad: any): Observable<Actividad> {
@@ -84,32 +86,37 @@ export class ActividadesService {
   }
 
   eliminarInscripcion(idInscripcion: number): Observable<any> {
-    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`);
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`, { headers: headers });
   }
   //Método para devolver todos los Usuarios inscritos por evento y actividad de la BBDD(Kevin)
   findUsuariosInscritosPorActividadEvento(idEvento:number,idactividad:number):Observable<Array<Usuario>>{
         let request="api/Inscripciones/InscripcionesUsuariosEventoActividad/"+idEvento+"?idactividad="+idactividad;
         let apiUrl=environment.apiTorneo + request;
-        return this.http.get<Array<Usuario>>(apiUrl);
+        const headers = this.getAuthHeaders();
+        return this.http.get<Array<Usuario>>(apiUrl, { headers: headers });
   }
 
   // 1. OBTENER TODOS LOS PRECIOS
   getPrecios(): Observable<any[]> {
-    return this.http.get<any[]>(environment.apiTorneo + 'api/PrecioActividad');
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(environment.apiTorneo + 'api/PrecioActividad', { headers: headers });
   }
   // 2. ASIGNAR PRECIO 
   crearPrecioActividad(idEventoActividad: number, precio: number): Observable<any> {
     const url = environment.apiTorneo + 'api/PrecioActividad/create';
+    const headers = this.getAuthHeaders();
     const body = {
       idPrecioActividad:0,//Se autoincrementa
       idEventoActividad: idEventoActividad,
       precioTotal: precio
     };
-    return this.http.post(url, body); 
+    return this.http.post(url, body, { headers: headers }); 
   }
   // 3. Actualizar PRECIO
   actualizarPrecioActividad(idPrecioActividad: number, idEventoActividad: number, precio: number): Observable<any> {
   const url = environment.apiTorneo + 'api/PrecioActividad/update';
+  const headers = this.getAuthHeaders();
   
   const body = {
     idPrecioActividad: idPrecioActividad, // ¡CRUCIAL! Para saber cuál actualizar
@@ -117,36 +124,48 @@ export class ActividadesService {
     precioTotal: precio
   };
   
-  return this.http.put(url, body);
+  return this.http.put(url, body, { headers: headers });
 }
 
 // 4. ELIMINAR PRECIO
   eliminarPrecioActividad(idPrecioActividad: number): Observable<any> {
   const url = environment.apiTorneo + 'api/PrecioActividad/' + idPrecioActividad;
-  return this.http.delete(url);
+  const headers = this.getAuthHeaders();
+  return this.http.delete(url, { headers: headers });
   }
 
   //GESTIÓN DE PAGOS 
   getPagosEvento(idEvento: number): Observable<PagosCompletos[]> {
   const url = `${environment.apiTorneo}api/Pagos/PagosEvento/${idEvento}`;
-  return this.http.get<PagosCompletos[]>(url);
+  const headers = this.getAuthHeaders();
+  return this.http.get<PagosCompletos[]>(url, { headers: headers });
   }
 
   // Crea un nuevo registro de pago (recibo)
   crearPago(pago: Pagos): Observable<any> {
     const url = `${environment.apiTorneo}api/Pagos/create`;
-    return this.http.post(url, pago);
+    const headers = this.getAuthHeaders();
+    return this.http.post(url, pago, { headers: headers });
   }
 
   updatePago(pago: Pagos): Observable<any> {
     // Ajusta la URL si es distinta (PUT /api/Pagos suele ser lo estándar)
-    const url = `${environment.apiTorneo}api/Pagos/update`; 
-    return this.http.put(url, pago);
+    const url = `${environment.apiTorneo}api/Pagos/update`;
+    const headers = this.getAuthHeaders(); 
+    return this.http.put(url, pago, { headers: headers });
   }
 
   deletePago(idPago: number): Observable<any> {
     const url = `${environment.apiTorneo}api/Pagos/${idPago}`;
-    return this.http.delete(url);
+    const headers = this.getAuthHeaders();
+    return this.http.delete(url, { headers: headers });
+  }
+
+  // Eliminar actividad (EventoActividad)
+  eliminarActividad(idEventoActividad: number): Observable<any> {
+    const url = `${environment.apiTorneo}api/ActividadesEvento/${idEventoActividad}`;
+    const headers = this.getAuthHeaders();
+    return this.http.delete(url, { headers: headers });
   }
 
 }
