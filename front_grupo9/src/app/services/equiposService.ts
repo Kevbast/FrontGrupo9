@@ -33,6 +33,11 @@ export class EquiposService {
         let url = environment.urlApiEventos + request;
         return this._http.get<Array<MiembroEquipos>>(url);
     }
+    getCapitanByIdEventoActividad(idEventoActividad: number): Observable<Usuario> {
+        let request = "api/CapitanActividades/FindCapitanEventoActividad/" + idEventoActividad;
+        let url = environment.urlApiEventos + request;
+        return this._http.get<Usuario>(url);
+    }
     getCapitanes(): Observable<Array<CapitanActividad>> {
         let request = "api/CapitanActividades"
         let url = environment.urlApiEventos + request;
@@ -67,6 +72,16 @@ export class EquiposService {
 // ----------------------------------------------------------------------------
 
 //-------------- METODOS DE ACCION --------------------------------------------
+
+    unirseEquipo(idEquipo: number): Observable<any> {
+        let request = "api/UsuariosDeportes/ApuntarmeEquipo/" + idEquipo;
+        let url = environment.urlApiEventos + request;
+        let headers = new HttpHeaders();
+        let token = this._serviceTorneo.getToken();
+        headers = headers.set('Authorization', `Bearer ${token}`);
+        return this._http.post(url, "", {headers: headers});
+    }
+
 
     createEquipo(equipoRecibido: Equipo) : Observable<any> {
         let request = "api/Equipos/create";

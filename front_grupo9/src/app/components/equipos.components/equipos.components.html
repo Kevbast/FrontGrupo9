@@ -1,7 +1,7 @@
 <div class="container-fluid px-4 py-4">
 
   <!-- Botón Colores SOLO CAPITAN -->
-  <div *ngIf="esCapitan || usuarioLogado.role == 'ADMINISTRADOR'" class="d-flex justify-content-end mb-3">
+  <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="d-flex justify-content-end mb-3">
     <button  class="btn btn-sm px-4 py-2 fw-semibold text-white" 
             style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border: none; border-radius: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.2);"
             (click)="abrirModalCrearColor()">
@@ -29,7 +29,7 @@
               <div class="d-flex gap-2">
                 <span class="badge bg-white text-primary px-3 py-2">Curso: {{ getNombreCursoPorId(equipo.idCurso) }}</span>
                 <span class="badge bg-white text-primary px-3 py-2">Equipacion: {{getNombreColorPorId(equipo.idColor)}}</span>
-                <span class="ms-auto text-white" (click)="eliminarEquipo(equipo.idEquipo)">
+                <span *ngIf="esCapitan" class="ms-auto text-white" (click)="eliminarEquipo(equipo.idEquipo)">
                   <mat-icon>delete_outline</mat-icon>
                 </span>
               </div>
@@ -78,28 +78,21 @@
                        style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #097AEC;"
                        onerror="this.src='https://via.placeholder.com/45'">
                   <span class="fw-medium" style="color: #0056b3;">{{ jugador.usuario}}</span> 
-                  <div *ngIf="esCapitan || usuarioLogado.role == 'ADMINISTRADOR'" class="ms-auto" (click)="eliminarJugadorEquipo(jugador.idUsuario, equipo.idEquipo)">
-                    <mat-icon>delete_outline</mat-icon>
+                  <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="ms-auto" (click)="eliminarJugadorEquipo(jugador.idUsuario, equipo.idEquipo)">
+                    <mat-icon class="text-primary">delete_outline</mat-icon>
                   </div>
                 </div>
               </div>
-
+              <div *ngIf="estaEnEquipo() == false && estaInscrito()" class="list-group-item border-0 py-2 px-0 d-flex align-items-center justify-content-center border-top" style="background-color: transparent;">
+                  <span class="fw-medium" style="color: #328ef1;" (click)="unirseEquipo(equipoAbierto)">Unirse al equipo</span> 
+              </div>
             </div>
           </div>
 
         </div>
       </div>
     </div>
-    <div *ngIf="esCapitan || usuarioLogado.role == 'ADMINISTRADOR'" class="mt-5 w-100 d-flex justify-content-center">
-      <button class="btn w-75 fw-bold text-white d-flex align-items-center justify-content-center gap-2" 
-              style="height: 80px; background: linear-gradient(135deg, #097AEC 0%, #64c0fe 100%); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(9, 122, 236, 0.4); transition: all 0.3s ease; font-size: 1.1rem;"
-              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 16px rgba(9, 122, 236, 0.6)'; this.style.fontSize='1.2rem'"
-              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(9, 122, 236, 0.4)'; this.style.fontSize='1.1rem'"
-              (click)="abrirModalCrearEquipo()">
-        <mat-icon style="font-size: 1.5rem; height: 1.5rem; width: 1.5rem;">add_circle</mat-icon>
-        Crear nuevo equipo
-      </button>
-    </div>
+    
   </div>
 
   <!-- Empty State -->
@@ -110,6 +103,17 @@
       <p class="mt-3 mb-0" style="color: #0056b3; font-size: 1.1rem;">No se encontraron equipos para esta actividad</p>
     </div>
   </div>
+
+   <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="mt-5 w-100 d-flex justify-content-center">
+      <button class="btn w-75 fw-bold text-white d-flex align-items-center justify-content-center gap-2" 
+              style="height: 80px; background: linear-gradient(135deg, #097AEC 0%, #64c0fe 100%); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(9, 122, 236, 0.4); transition: all 0.3s ease; font-size: 1.1rem;"
+              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 16px rgba(9, 122, 236, 0.6)'; this.style.fontSize='1.2rem'"
+              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(9, 122, 236, 0.4)'; this.style.fontSize='1.1rem'"
+              (click)="abrirModalCrearEquipo()">
+        <mat-icon style="font-size: 1.5rem; height: 1.5rem; width: 1.5rem;">add_circle</mat-icon>
+        Crear nuevo equipo
+      </button>
+    </div>
 
   <!-- Participantes Inscritos Section -->
   <div *ngIf="participantesInscritos && participantesInscritos.length > 0" class="mt-5">
@@ -123,7 +127,7 @@
         <div class="p-3 rounded-3 text-center h-100" 
              style="background: white; border: 2px solid #C5E0FF; box-shadow: 0 2px 6px rgba(9, 122, 236, 0.2); position: relative;">
               <!--BOTON DE FICHAR SOLO VISIBLE PARA EL CAPITAN DE LA ACTIVIDAD-->          
-             <button *ngIf="esCapitan || usuarioLogado.role == 'ADMINISTRADOR'"  class="btn btn-primary btn-sm px-2 py-1" 
+             <button *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'"  class="btn btn-primary btn-sm px-2 py-1" 
                   style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border: none; font-size: 0.75rem; border-radius: 15px; position: absolute; top: 10px; right: 10px; box-shadow: 0 2px 4px rgba(9, 122, 236, 0.4);"
                   (click)="abrirModalFichar(participante)">
             Fichar

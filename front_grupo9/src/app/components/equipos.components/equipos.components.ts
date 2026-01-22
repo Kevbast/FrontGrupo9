@@ -54,7 +54,6 @@ export class EquiposComponents implements OnInit {
       
       this._serviceEquipo.getEquiposActividadEvento(this.idActividad, this.idEvento).subscribe(result => {
         this.equiposActividadEvento = result;
-        console.log('Equipos obtenidos:', result);
         
         // Cargar colores de cada equipo
         result.forEach(equipo => {
@@ -68,7 +67,6 @@ export class EquiposComponents implements OnInit {
 
       this._serviceUsuario.getUsuariosInscritosEventoActividad(this.idEvento, this.idActividad).subscribe(result => {
         this.participantesInscritos = result;
-        console.log("Participantes obtenidos:", result);
       });
 
       this._serviceEquipo.getCursosActivos().subscribe(result => {
@@ -94,19 +92,24 @@ export class EquiposComponents implements OnInit {
       //METODO DE OBTENCION DE USUARIO LOGADO
       this._serviceTorneo.getPerfil().subscribe(result => {
         this.usuarioLogado = result;
-        console.log(this.usuarioLogado);
 
-        //OBTENCION DE TODOS LOS CAPITANES, POCO OPTIMO. NECESITA ESTAR AQUI
-        //PARA PODER COMPROBAR CON this.usuarioLogado.idUsuario
-        this._serviceEquipo.getCapitanes().subscribe(result => {
-          result.forEach(capitan => {
-            if(capitan.idUsuario == this.usuarioLogado.idUsuario && capitan.idEventoActividad == this.idEventoActividad){
-              this.esCapitan = true
-            } else {
-            }
-          });
-          console.log(this.esCapitan);
-        });
+        //OBTENCION DEL CAPITAN DEL EVENTOACTIVIDAD
+        this._serviceEquipo.getCapitanByIdEventoActividad(this.idEventoActividad).subscribe(result => {
+          let capitan = result;
+          if((capitan != null || capitan != undefined) && capitan.idUsuario == this.usuarioLogado.idUsuario){
+            this.esCapitan = true;
+          }
+        })
+
+        // this._serviceEquipo.getCapitanes().subscribe(result => {
+        //   result.forEach(capitan => {
+        //     if(capitan.idUsuario == this.usuarioLogado.idUsuario && capitan.idEventoActividad == this.idEventoActividad){
+        //       this.esCapitan = true
+        //     } else {
+        //     }
+        //   });
+        //   console.log(this.esCapitan);
+        // });
 
       });
 
@@ -148,6 +151,54 @@ export class EquiposComponents implements OnInit {
         console.log('Jugadores del equipo', idEquipo, ':', result);
       });
     }
+  }
+
+  estaEnEquipo(): boolean {
+    
+    // Obtener todos los IDs de equipos de esta actividad/evento
+    const idsEquiposActividadEvento = this.equiposActividadEvento.map(equipo => equipo.idEquipo);
+    
+    // Verificar si el usuario logado está en alguno de estos equipos
+    return this.miembroEquipos.some(miembro => 
+      miembro.idUsuario === this.usuarioLogado.idUsuario && 
+      idsEquiposActividadEvento.includes(miembro.idEquipo)
+    );
+  }
+
+  //METODO PARA COMPROBAR SI EL USUARIO LOGADO ESTÁ INSCRITO EN EL EVENTO ACTIVIDAD
+  estaInscrito(): boolean {
+    if (!this.usuarioLogado || !this.participantesInscritos) {
+      return false;
+    }
+    return this.participantesInscritos.some(participante => 
+      participante.idUsuario === this.usuarioLogado.idUsuario
+    );
+  }
+
+  //METODO PARA QUE EL USUARIO LOGADO SE UNA A UN EQUIPO
+  unirseEquipo(idEquipo: number): void {
+    Swal.fire({
+      title: "Aviso",
+      text: "Estas a punto de unirte a un equipo, solo el capitan puede cambiarte de equipo si deseas. ¿Estás seguro?",
+      icon: "warning",
+      confirmButtonText: "Unirse a equipo",
+      confirmButtonColor: "blue",
+      showCancelButton: true,
+      cancelButtonText: "Volver"
+    }).then((result) => {
+      if(result.isConfirmed) {
+        this._serviceEquipo.unirseEquipo(idEquipo).subscribe(result => {
+          Swal.fire({
+            title: "¡Listo!",
+            text: "Te has unido correctamente al equipo, bienvenido",
+            icon: "success",
+            confirmButtonText: "Cerrar"
+          }).then(() => {
+            window.location.reload();
+          })
+        })
+      }
+    })
   }
 
   abrirModalFichar(participante: Usuario): void {
@@ -232,9 +283,7 @@ export class EquiposComponents implements OnInit {
       });   
   }
 
-  crearColor(): void {
-    console.log('Creando color:', this.nombreColorNuevo);
-    
+  crearColor(): void {    
     this._serviceEquipo.crearColor(this.nombreColorNuevo).subscribe(result => {
       alert("Hecho");
     })

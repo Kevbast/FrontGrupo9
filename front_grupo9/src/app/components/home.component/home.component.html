@@ -20,8 +20,8 @@
                         <div class="d-flex align-items-center mb-3">
                             <div style="width: 5px; height: 45px; background-color: rgb(255, 255, 255);" class="rounded rounded-pill me-3"></div>
                             <h4 class="card-title mb-0 fw-bold text-white">Evento #{{evento.idEvento}}</h4>
-                            <mat-icon *ngIf="usuarioLogado.idRole == 3 || usuarioLogado.idRole == 4" class="text-light ms-auto fs-3" (click)="abrirModalEditarEvento(evento)" style="cursor: pointer;">edit</mat-icon>
-                            <mat-icon *ngIf="usuarioLogado.idRole == 3 || usuarioLogado.idRole == 4" class="text-light ms-2 fs-3" (click)="borrarEvento(evento.idEvento)" style="cursor: pointer;">delete_outline</mat-icon>
+                            <mat-icon *ngIf="usuarioLogado?.idRole == 3 || usuarioLogado?.idRole == 4" class="text-light ms-auto fs-3" (click)="abrirModalEditarEvento(evento)" style="cursor: pointer;">edit</mat-icon>
+                            <mat-icon *ngIf="usuarioLogado?.idRole == 3 || usuarioLogado?.idRole == 4" class="text-light ms-2 fs-3" (click)="borrarEvento(evento.idEvento)" style="cursor: pointer;">delete_outline</mat-icon>
                         </div>
                         <div class="d-flex align-items-center mb-2">
                             <span class="me-2 text-white fs-5"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M200-640h560v-80H200v80Zm0 0v-80 80Zm0 560q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v227q-19-9-39-15t-41-9v-43H200v400h252q7 22 16.5 42T491-80H200Zm520 40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40Zm67-105 28-28-75-75v-112h-40v128l87 87Z"/></svg></span>
@@ -36,7 +36,7 @@
         </div>
         
         <!-- Botón crear evento -->
-        <div *ngIf="usuarioLogado.idRole == 3 || usuarioLogado.idRole == 4" class="col-12 col-md-6 mb-4">
+        <div *ngIf="usuarioLogado?.idRole == 3 || usuarioLogado?.idRole == 4" class="col-12 col-md-6 mb-4">
             <div class="card shadow rounded-4 border-0 overflow-hidden mt-5" 
                  style="position: relative; height: 20rem; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;"
                  (click)="abrirModalCrearEvento()"
@@ -77,7 +77,7 @@
                         <div class="d-flex align-items-center mb-3">
                             <div style="width: 5px; height: 45px; background-color: rgb(255, 255, 255);" class="rounded rounded-pill me-3"></div>
                             <h4 class="card-title mb-0 fw-bold text-white">Evento #{{evento.idEvento}}</h4>
-                            <mat-icon *ngIf="usuarioLogado.idRole == 3 || usuarioLogado.idRole == 4" class="text-light ms-auto fs-4" (click)="borrarEvento(evento.idEvento)">delete_outline</mat-icon>
+                            <mat-icon *ngIf="usuarioLogado?.idRole == 3 || usuarioLogado?.idRole == 4" class="text-light ms-auto fs-4" (click)="borrarEvento(evento.idEvento)">delete_outline</mat-icon>
                         </div>
                         <div class="d-flex align-items-center mb-2">
                             <span class="me-2 text-white fs-5"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v255l-80 80v-175H200v400h248l80 80H200Zm0-560h560v-80H200v80Zm0 0v-80 80ZM662-60 520-202l56-56 85 85 170-170 56 57L662-60Z"/></svg></span>
