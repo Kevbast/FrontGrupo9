@@ -9,6 +9,7 @@ import { Color } from '../../models/Color';
 import { ServiceTorneo } from '../../services/service.torneo';
 import { MiembroEquipos } from '../../models/MiembrosEquipo';
 import Swal from 'sweetalert2';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-equipos.components',
@@ -51,67 +52,60 @@ export class EquiposComponents implements OnInit {
       this.idActividad = +params['idActividad'];
       this.idEvento = +params['idEvento'];
       
-      this._serviceEquipo.getEquiposActividadEvento(this.idActividad, this.idEvento).subscribe(result => {
-        this.equiposActividadEvento = result;
-        
-        // Cargar colores de cada equipo
-        result.forEach(equipo => {
-          if (equipo.idColor && !this.listaColores.find(c => c.idColor === equipo.idColor)) {
-            this._serviceEquipo.getColorById(equipo.idColor).subscribe(color => {
-              this.listaColores.push(color);
-            });
+      this.cargarDatos();
+    });
+  }
+
+  cargarDatos(): void {
+    // Usar forkJoin para esperar a que todas las llamadas se completen
+    forkJoin({
+      equipos: this._serviceEquipo.getEquiposActividadEvento(this.idActividad, this.idEvento),
+      participantes: this._serviceUsuario.getUsuariosInscritosEventoActividad(this.idEvento, this.idActividad),
+      cursos: this._serviceEquipo.getCursosActivos(),
+      miembros: this._serviceEquipo.getMiembrosEquipo(),
+      colores: this._serviceEquipo.getColores(),
+      eventoActividad: this._serviceEquipo.getEventoActividad(this.idEvento, this.idActividad),
+      perfil: this._serviceTorneo.getPerfil()
+    }).subscribe({
+      next: (resultado) => {
+        // Asignar resultados
+        this.equiposActividadEvento = resultado.equipos;
+        this.participantesInscritos = resultado.participantes;
+        this.listaCursosActivos = resultado.cursos;
+        this.miembroEquipos = resultado.miembros;
+        this.todosLosColores = resultado.colores;
+        this.idEventoActividad = Number(resultado.eventoActividad.idEventoActividad);
+        this.usuarioLogado = resultado.perfil;
+
+        // Cargar colores únicos de los equipos
+        this.listaColores = [];
+        const coloresUnicos = new Set(resultado.equipos.map(e => e.idColor));
+        coloresUnicos.forEach(idColor => {
+          const color = resultado.colores.find(c => c.idColor === idColor);
+          if (color) {
+            this.listaColores.push(color);
           }
         });
-      });
 
-      this._serviceUsuario.getUsuariosInscritosEventoActividad(this.idEvento, this.idActividad).subscribe(result => {
-        this.participantesInscritos = result;
-      });
-
-      this._serviceEquipo.getCursosActivos().subscribe(result => {
-        this.listaCursosActivos = result;
-      });
-
-      this._serviceEquipo.getMiembrosEquipo().subscribe(result => {
-        this.miembroEquipos = result;
-      });
-
-      // Cargar todos los colores
-      this._serviceEquipo.getColores().subscribe(result => {
-        this.todosLosColores = result;
+        // Actualizar colores disponibles
         this.actualizarColoresDisponibles();
-      });
 
-
-      //METODO PARA OBTENER EL EVENTOACTIVIDAD, NECESARIO PARA COMPROBAR CAPITAN
-      this._serviceEquipo.getEventoActividad(this.idEvento, this.idActividad).subscribe(result => {
-        this.idEventoActividad = Number(result.idEventoActividad);
-      });
-
-      //METODO DE OBTENCION DE USUARIO LOGADO
-      this._serviceTorneo.getPerfil().subscribe(result => {
-        this.usuarioLogado = result;
-
-        //OBTENCION DEL CAPITAN DEL EVENTOACTIVIDAD
-        this._serviceEquipo.getCapitanByIdEventoActividad(this.idEventoActividad).subscribe(result => {
-          let capitan = result;
-          if((capitan != null || capitan != undefined) && capitan.idUsuario == this.usuarioLogado.idUsuario){
+        // Verificar si es capitán
+        this._serviceEquipo.getCapitanByIdEventoActividad(this.idEventoActividad).subscribe(capitan => {
+          if ((capitan != null || capitan != undefined) && capitan.idUsuario == this.usuarioLogado.idUsuario) {
             this.esCapitan = true;
           }
-        })
-
-        // this._serviceEquipo.getCapitanes().subscribe(result => {
-        //   result.forEach(capitan => {
-        //     if(capitan.idUsuario == this.usuarioLogado.idUsuario && capitan.idEventoActividad == this.idEventoActividad){
-        //       this.esCapitan = true
-        //     } else {
-        //     }
-        //   });
-        //   console.log(this.esCapitan);
-        // });
-
-      });
-
+        });
+      },
+      error: (error) => {
+        console.error('Error al cargar los datos:', error);
+        Swal.fire({
+          title: "Error",
+          text: "No se pudieron cargar los datos correctamente",
+          icon: "error",
+          confirmButtonText: "Cerrar"
+        });
+      }
     });
   }
 
@@ -193,6 +187,7 @@ export class EquiposComponents implements OnInit {
             icon: "success",
             confirmButtonText: "Cerrar"
           }).then(() => {
+            this.cargarDatos();
             window.location.reload();
           })
         })
@@ -236,7 +231,7 @@ export class EquiposComponents implements OnInit {
         icon: "success",
         confirmButtonText: "Confirmar"
       }).then(() => {
-        window.location.reload();
+        this.cargarDatos();
       });
       })
     } else {
@@ -274,6 +269,7 @@ export class EquiposComponents implements OnInit {
               icon: "success",
               confirmButtonText: "Confirmar"
             }).then(() => {
+              this.cargarDatos();
               window.location.reload();
             });
           });
@@ -321,7 +317,7 @@ export class EquiposComponents implements OnInit {
         icon: "success",
         confirmButtonText: "Confirmar"
       }).then(() => {
-        window.location.reload();
+        this.cargarDatos();
       });
     }, error => {
       Swal.fire({
@@ -360,7 +356,7 @@ export class EquiposComponents implements OnInit {
               icon: "success",
               confirmButtonText: "Confirmar"
             }).then(() => {
-              window.location.reload();
+              this.cargarDatos();
             });
         })
       }
