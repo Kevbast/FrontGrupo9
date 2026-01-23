@@ -11,16 +11,28 @@ import { ServiceTorneo } from "./service.torneo";
 export class EventosService {
     constructor(private _http: HttpClient, private _serviceTorneo: ServiceTorneo){}
 
+    //No quitar por ahora
+    private getAuthHeaders(): HttpHeaders {
+        const token = localStorage.getItem('authToken');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
+        }
+        return headers;
+    }
+
     getEventos(): Observable<Array<Evento>> {
         let request = "api/Eventos"
         let url = environment.urlApiEventos + request;
-        return this._http.get<Array<Evento>>(url);
+        const headers = this.getAuthHeaders();//No quitar por ahora
+        return this._http.get<Array<Evento>>(url, { headers: headers });
     }
 
     getProfesoresActivosSinEvento(): Observable<Array<Usuario>> {
         let request = "api/ProfesEventos/ProfesSinEventos";
         let url = environment.urlApiEventos + request;
-        return this._http.get<Array<Usuario>>(url);
+        const headers = this.getAuthHeaders();//No quitar por ahora
+        return this._http.get<Array<Usuario>>(url, { headers: headers });
     }
 
     createEvento(evento: Evento): Observable<any> {

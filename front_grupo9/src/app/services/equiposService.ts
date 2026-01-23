@@ -18,15 +18,26 @@ export class EquiposService {
 // -------- METODOS GET ---------------
 //----------------------------------------
 
+    private getAuthHeaders(): HttpHeaders {
+        const token = localStorage.getItem('authToken');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
+        }
+        return headers;
+    }
+
     getEquiposActividadEvento(idActividad: number, idEvento: number): Observable<Array<Equipo>> {
         let request = "api/Equipos/EquiposActividadEvento/" + idActividad + "/" + idEvento;
         let url = environment.urlApiEventos + request;
-        return this._http.get<Array<Equipo>>(url);
+        const headers = this.getAuthHeaders();
+        return this._http.get<Array<Equipo>>(url, { headers: headers });
     }
     getJugadoresEquipo(idEquipo: number): Observable<Array<Usuario>> {
         let request = "api/Equipos/UsuariosEquipo/" + idEquipo;
         let url = environment.urlApiEventos + request;
-        return this._http.get<Array<Usuario>>(url);
+        const headers = this.getAuthHeaders();
+        return this._http.get<Array<Usuario>>(url, { headers: headers });
     }
     getMiembrosEquipo(): Observable<Array<MiembroEquipos>> {
         let request = "api/MiembroEquipos";
@@ -47,7 +58,8 @@ export class EquiposService {
     getCursosActivos(): Observable<Array<Curso>> {
         let request = "api/GestionEvento/CursosActivos";
         let url = environment.urlApiEventos + request;
-        return this._http.get<Array<Curso>>(url);
+        const headers = this.getAuthHeaders();
+        return this._http.get<Array<Curso>>(url, { headers: headers });
     }
 
     getColores(): Observable<Array<Color>> {
@@ -59,7 +71,8 @@ export class EquiposService {
     getColorById(idColor: number): Observable<Color> {
         let request = "api/Colores/" + idColor;
         let url = environment.urlApiEventos + request;
-        return this._http.get<Color>(url);
+        const headers = this.getAuthHeaders();
+        return this._http.get<Color>(url, { headers: headers });
     }
 
     getEventoActividad(idEvento: number, idActividad: number): Observable<any> {

@@ -731,3 +731,94 @@ mat-card-actions {
   border-radius: 50%;
 }
 
+/* --- ESTILOS MODAL MATERIALES --- */
+
+/* Input de añadir */
+.add-material-section {
+  background-color: #fff3e0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ffe0b2;
+}
+
+/* Item de la lista */
+.material-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+  gap: 15px;
+}
+
+.material-item:last-child {
+  border-bottom: none;
+}
+
+.material-item:hover {
+  background-color: #fafafa;
+}
+
+/* Iconos de estado */
+.status-ok { color: #4caf50; font-size: 24px; }
+.status-pending { color: #ff9800; font-size: 24px; }
+
+/* Texto */
+.material-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+}
+
+.mat-desc {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 2px;
+}
+
+/* Badges pequeños */
+.badge-covered {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.badge-pending {
+  background-color: #fff3e0;
+  color: #ef6c00;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+/* Acciones */
+.material-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Estado vacío */
+.empty-state-mat {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+.empty-state-mat mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
