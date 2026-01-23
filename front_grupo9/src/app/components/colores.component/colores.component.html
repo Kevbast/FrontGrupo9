@@ -1,0 +1,160 @@
+<div class="container-fluid px-4 py-4">
+    
+    <!-- Header Section -->
+    <div class="d-flex align-items-center p-4 mb-4" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="width: 6px; height: 45px; background-color: white;" class="rounded me-3"></div>
+        <h1 class="fw-bold text-white mb-0">Colores de Equipación</h1>
+    </div>  
+
+    <!-- Volver a Equipos -->
+  <div class="mt-3">
+    <button class="btn d-flex align-items-center gap-2 px-4 py-3 rounded-3" 
+            [routerLink]="['/equipos', idActividad, idEvento]"
+            style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
+            onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
+            onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
+      <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
+      <span class="fw-semibold">Volver a Equipos</span>
+    </button>
+  </div>
+
+    <!-- Contenido dividido -->
+    <div class="row g-0" style="min-height: 60vh;">
+        
+        <!-- Lado Izquierdo - Lista de Colores -->
+        <div class="col-12 col-lg-6 p-4" style="background: transparent; border-radius: 15px 0 0 15px;">
+            <h3 class="fw-semibold mb-4" style="color: #097AEC;">Lista de Colores</h3>
+            
+            <!-- Lista de colores -->
+            <div *ngIf="colores && colores.length > 0" class="list-group">
+                <div *ngFor="let color of colores" 
+                     class="list-group-item border-0 mb-3 p-3 d-flex align-items-center justify-content-between"
+                     style="background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%); border-radius: 12px; box-shadow: 0 2px 6px rgba(9, 122, 236, 0.2);">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h5 class="mb-0 fw-semibold" style="color: #0056b3;">
+                                {{ color.nombreColor.charAt(0).toUpperCase() + color.nombreColor.slice(1) }}
+                            </h5>
+                            <small class="text-muted">ID: {{ color.idColor }}</small>
+                        </div>
+                    </div>
+                    <span>
+                        <mat-icon class="text-primary delete-icon" (click)="deleteColor(color.idColor)">delete_outline</mat-icon>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!colores || colores.length === 0" 
+                 class="text-center py-5">
+                <div class="p-5 rounded-3" style="background: linear-gradient(135deg, #e6f2ff 0%, #d6e9ff 100%);">
+                    <mat-icon style="font-size: 4rem; height: 4rem; width: 4rem; color: #097AEC; opacity: 0.5;">palette</mat-icon>
+                    <p class="mt-3 mb-0" style="color: #0056b3; font-size: 1.1rem;">No hay colores registrados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Línea divisoria vertical gradiente -->
+        <div class="d-none d-lg-block" style="width: 4px; background: linear-gradient(180deg, #097AEC 0%, #3B9EFF 50%, #64c0fe 100%); box-shadow: 0 0 10px rgba(9, 122, 236, 0.5);"></div>
+
+        <!-- Lado Derecho - Colores Elegidos y Botón Crear Color -->
+        <div class="col-12 col-lg-5 p-4" style="background: transparent; border-radius: 0 15px 15px 0;">
+            <h3 class="fw-semibold mb-4" style="color: #097AEC;">Colores Elegidos por Equipos</h3>
+            
+            <!-- Lista de colores elegidos -->
+            <div *ngIf="coloresElegidosEnEventoActividad && coloresElegidosEnEventoActividad.length > 0" class="list-group mb-4">
+                <div *ngFor="let color of coloresElegidosEnEventoActividad" 
+                     class="list-group-item border-0 mb-3 p-3 d-flex align-items-center justify-content-between"
+                     style="background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%); border-radius: 12px; box-shadow: 0 2px 6px rgba(9, 122, 236, 0.2);">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h5 class="mb-0 fw-semibold" style="color: #0056b3;">
+                                {{ color.nombreColor.charAt(0).toUpperCase() + color.nombreColor.slice(1) }}
+                            </h5>
+                            <small class="text-muted">ID: {{ color.idColor }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!coloresElegidosEnEventoActividad || coloresElegidosEnEventoActividad.length === 0" 
+                 class="text-center py-4 mb-4">
+                <div class="p-4 rounded-3" style="background: linear-gradient(135deg, #e6f2ff 0%, #d6e9ff 100%);">
+                    <mat-icon style="font-size: 3rem; height: 3rem; width: 3rem; color: #097AEC; opacity: 0.5;">palette</mat-icon>
+                    <p class="mt-3 mb-0" style="color: #0056b3; font-size: 1rem;">No hay colores elegidos por equipos</p>
+                </div>
+            </div>
+
+            <!-- Botón Crear Color -->
+            <div class="text-center mt-4">
+                <div class="mb-3">
+                    <mat-icon style="font-size: 4rem; height: 4rem; width: 4rem; color: #097AEC; opacity: 0.8;">add_circle</mat-icon>
+                </div>
+                <h4 class="fw-semibold mb-2" style="color: #097AEC;">Agregar Nuevo Color</h4>
+                <p class="text-muted mb-3">Crea un nuevo color para las equipaciones de los equipos</p>
+                <button class="btn px-5 py-3 fw-bold text-white" 
+                        style="background: linear-gradient(135deg, #097AEC 0%, #64c0fe 100%); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(9, 122, 236, 0.4); transition: all 0.3s ease; font-size: 1.1rem;"
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 16px rgba(9, 122, 236, 0.6)'"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(9, 122, 236, 0.4)'"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearColor">
+                    <mat-icon class="me-2" style="vertical-align: middle; font-size: 1.5rem; height: 1.5rem; width: 1.5rem;">palette</mat-icon>
+                    Crear Color
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal Crear Color -->
+<div class="modal fade" id="modalCrearColor" tabindex="-1" aria-labelledby="modalCrearColorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 4px 20px rgba(9, 122, 236, 0.3);">
+            
+            <!-- Modal Header -->
+            <div class="modal-header" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border-radius: 15px 15px 0 0; border: none;">
+                <h5 class="modal-title text-white fw-bold" id="modalCrearColorLabel">
+                    <mat-icon class="me-2" style="vertical-align: middle;">palette</mat-icon>
+                    Crear Nuevo Color
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label for="nombreColor" class="form-label fw-semibold" style="color: #0056b3;">
+                        Nombre del Color
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="nombreColor" 
+                           [(ngModel)]="nombreColorNuevo"
+                           placeholder="Ej: Rojo, Azul, Verde, Amarillo..."
+                           style="border: 2px solid #C5E0FF; border-radius: 10px; padding: 12px;">
+                    <small class="text-muted mt-2 d-block">
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0" style="background-color: #f0f7ff;">
+                <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" 
+                        style="border-radius: 10px;">
+                    Cancelar
+                </button>
+                <button type="button" class="btn px-4 py-2 text-white fw-semibold" 
+                        style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border: none; border-radius: 10px;"
+                        [disabled]="!nombreColorNuevo || nombreColorNuevo.trim() === ''"
+                        (click)="createColor()">
+                    <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.2rem; height: 1.2rem; width: 1.2rem;">add</mat-icon>
+                    Crear Color
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>

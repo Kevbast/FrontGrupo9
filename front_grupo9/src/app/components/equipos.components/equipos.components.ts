@@ -34,7 +34,6 @@ export class EquiposComponents implements OnInit {
   public loadingJugadores: boolean = false;
   public participanteSeleccionado!: Usuario;
   public equipoSeleccionado: number | string = '';
-  public nombreColorNuevo: string = '';
   // Variables para crear nuevo equipo
   public nuevoEquipo = {
     nombreEquipo: '',
@@ -262,7 +261,6 @@ export class EquiposComponents implements OnInit {
 
   getMiembrosEquipo(): Array<MiembroEquipos> {
     let miembrosEquipos!: Array<MiembroEquipos>
-    
     return miembrosEquipos;
   }
 
@@ -282,33 +280,6 @@ export class EquiposComponents implements OnInit {
         }
       });   
   }
-
-  crearColor(): void {    
-    this._serviceEquipo.crearColor(this.nombreColorNuevo).subscribe(result => {
-      alert("Hecho");
-    })
-    
-    // Cerrar modal
-    const modalElement = document.getElementById('modalCrearColor');
-    if (modalElement) {
-      const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
-      if (modal) {
-        modal.hide();
-      }
-    }
-  }
-
-  abrirModalCrearColor(): void {
-    this.nombreColorNuevo = '';
-    
-    // Abrir modal usando Bootstrap
-    const modalElement = document.getElementById('modalCrearColor');
-    if (modalElement) {
-      const modal = new (window as any).bootstrap.Modal(modalElement);
-      modal.show();
-    }
-  }
-
   // Método para actualizar colores disponibles (excluir los ya usados)
   actualizarColoresDisponibles(): void {
     const coloresUsados = this.equiposActividadEvento?.map(equipo => equipo.idColor) || [];

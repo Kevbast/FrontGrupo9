@@ -4,7 +4,7 @@
   <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="d-flex justify-content-end mb-3">
     <button  class="btn btn-sm px-4 py-2 fw-semibold text-white" 
             style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border: none; border-radius: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.2);"
-            (click)="abrirModalCrearColor()">
+            [routerLink]="['/colores', idActividad, idEvento]">
       <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.1rem; height: 1.1rem; width: 1.1rem;">palette</mat-icon>
       Colores equipación
     </button>
@@ -227,54 +227,6 @@
   </div>
 </div>
 
-<!-- Modal Crear Color -->
-<div class="modal fade" id="modalCrearColor" tabindex="-1" aria-labelledby="modalCrearColorLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-      
-      <!-- Modal Header -->
-      <div class="modal-header" style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border-radius: 15px 15px 0 0; border: none;">
-        <h5 class="modal-title text-white fw-bold" id="modalCrearColorLabel">
-          <mat-icon class="me-2" style="vertical-align: middle;">palette</mat-icon>
-          Crear Color
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <!-- Modal Body -->
-      <div class="modal-body p-4">
-        <div class="mb-3">
-          <label for="nombreColor" class="form-label fw-semibold" style="color: #333;">
-            Nombre del Color
-          </label>
-          <input type="text" 
-                 class="form-control" 
-                 id="nombreColor" 
-                 [(ngModel)]="nombreColorNuevo"
-                 placeholder="Ej: Rojo, Azul, Verde..."
-                 style="border: 2px solid #E0E0E0; border-radius: 10px; padding: 12px;">
-        </div>
-      </div>
-      
-      <!-- Modal Footer -->
-      <div class="modal-footer border-0" style="background-color: #f8f9fa;">
-        <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" 
-                style="border-radius: 10px;">
-          Cancelar
-        </button>
-        <button type="button" class="btn px-4 py-2 text-white fw-semibold" 
-                style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border: none; border-radius: 10px;"
-                [disabled]="!nombreColorNuevo || nombreColorNuevo.trim() === ''"
-                (click)="crearColor()">
-          <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.2rem; height: 1.2rem; width: 1.2rem;">add</mat-icon>
-          Crear Color
-        </button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
 <!-- Modal Crear Equipo -->
 <div class="modal fade" id="modalCrearEquipo" tabindex="-1" aria-labelledby="modalCrearEquipoLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -317,20 +269,6 @@
                  min="1"
                  placeholder="Ej: 5, 10..."
                  style="border: 2px solid #C5E0FF; border-radius: 10px; padding: 12px;">
-        </div>
-
-        <!-- Desplegable de Colores -->
-        <div class="mb-3">
-          <label for="selectColor" class="form-label fw-semibold" style="color: #0056b3;">
-            Color de Equipación
-          </label>
-          <select class="form-select" id="selectColor" [(ngModel)]="nuevoEquipo.idColor"
-                  style="border: 2px solid #C5E0FF; border-radius: 10px; padding: 12px;">
-            <option value="0" selected disabled>-- Seleccione un color --</option>
-            <option *ngFor="let color of coloresDisponibles" [value]="color.idColor">
-              {{ color.nombreColor.charAt(0).toUpperCase() + color.nombreColor.slice(1) }}
-            </option>
-          </select>
         </div>
 
         <!-- Desplegable de Cursos -->

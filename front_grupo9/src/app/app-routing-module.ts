@@ -6,6 +6,7 @@ import { ActivitiesComponent } from './components/activities.component/activitie
 import { PerfilComponent } from './components/perfil.component/perfil.component';
 import { EquiposComponents } from './components/equipos.components/equipos.components';
 import { PagosComponent } from './components/pagos.component/pagos.component';
+import { ColoresComponent } from './components/colores.component/colores.component';
 
 const routes: Routes = [
   {path:"",component:HomeComponent},
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path:"perfil",component:PerfilComponent},
   {path:"equipos/:idActividad/:idEvento", component: EquiposComponents},
   {path:"pagos/:idEvento", component: PagosComponent},
+  {path: "colores/:idActividad/:idEvento", component: ColoresComponent}
 ];
 
 @NgModule({
