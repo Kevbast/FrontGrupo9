@@ -13,7 +13,7 @@ import { Actividad } from '../../models/Actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Material } from '../../models/Material';
 import { Usuario } from '../../models/Usuario';
-import { Pagos } from '../../models/Pagos'; // Asegúrate de tener importado el modelo Pagos
+import { Pagos } from '../../models/Pagos';
 
 @Component({
   selector: 'app-activities',
@@ -35,7 +35,8 @@ export class ActivitiesComponent implements OnInit {
   public mostrarModalError: boolean = false;
   public mensajeError: string = '';
   public idEvento!: number;
-  public role: string | null = null;
+  
+  public rolUsuario: string = ''; 
   public idUsuarioActual: number = 0;
   public idEventoActividadSeleccionada: number = 0;
 
@@ -47,23 +48,24 @@ export class ActivitiesComponent implements OnInit {
   public inscripcion: Inscripcion;
   public actividadNueva: Actividad;
   public actividadEditar: Actividad;
+  
   // Perfil
   public usuarioPerfil: Usuario | null = null;
-  public rolUsuario: string = '';
-
-  // Diccionario para guardar precios: Clave=idEventoActividad, Valor={idPrecio, precio}
+  
+  // Diccionario para guardar precios
   public preciosCache: { [key: number]: { idPrecio: number, precio: number } } = {};
 
   // Variables para Materiales
-  public idEventoActividadMateriales: number = 0; // Para saber dónde guardar el nuevo
-  public nuevoMaterialNombre: string = ''; // Para el input del formulario
+  public idEventoActividadMateriales: number = 0; 
+  public nuevoMaterialNombre: string = ''; 
+  // Map to store current activity ID for materials to check participants
+  public idActividadParaMateriales: number = 0;
 
   constructor(
     private actividadesService: ActividadesService, 
     private materialesService: MaterialesService,
     private inscripcionesService: InscripcionesService,
     private route: ActivatedRoute,
-    private torneoService: ServiceTorneo,
     private dialog: MatDialog,
     private serviceTorneo: ServiceTorneo,
     private router: Router,
@@ -84,7 +86,6 @@ export class ActivitiesComponent implements OnInit {
   }
 
   cargarDatos(): void {
-    // 1. Inscripciones
     this.inscripcionesService.getInscripciones().subscribe({
       next: (data) => {
         this.inscripciones = data;
@@ -93,7 +94,6 @@ export class ActivitiesComponent implements OnInit {
       error: (err) => {}
     });
 
-    // 2. Actividades
     this.actividadesService.getActividadesEvento(this.idEvento).subscribe({
       next: (data) => {
         this.actividadesEvento = data.map(act => new Actividad(
@@ -110,8 +110,8 @@ export class ActivitiesComponent implements OnInit {
     this.serviceTorneo.getPerfil().subscribe({
       next: (usuario) => {
         this.usuarioPerfil = usuario;
-        this.rolUsuario = usuario.role;
-        this.idUsuarioActual=usuario.idUsuario //DECLARAMOS EL USUARIO ACTUAL EN CARGARPERFIL
+        this.rolUsuario = usuario.role; 
+        this.idUsuarioActual = usuario.idUsuario; 
       }
     });
   }
@@ -150,14 +150,13 @@ export class ActivitiesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(resultado => {
-      
       if (resultado === 'borrar') {
         if (infoPrecio && infoPrecio.idPrecio) {
           this.borrarPrecioApi(infoPrecio.idPrecio, act.idEventoActividad);
         }
       }
       else if (resultado !== undefined && resultado !== null && typeof resultado === 'number') {
-        this.guardarPrecioEnApi(act.idEventoActividad, act.idActividad, resultado); // Pasamos también idActividad para buscar usuarios
+        this.guardarPrecioEnApi(act.idEventoActividad, act.idActividad, resultado); 
       }
     });
   }
@@ -175,32 +174,22 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
-  // Lógica inteligente POST vs PUT
-  // AÑADIDO: Recibe idActividad para buscar participantes
   guardarPrecioEnApi(idEventoActividad: number, idActividad: number, precio: number) {
     const registroExistente = this.preciosCache[idEventoActividad];
 
     if (registroExistente) {
-      // --- PUT (ACTUALIZAR) ---
-      console.log(`✏️ Editando precio ID: ${registroExistente.idPrecio}...`);
-      
       this.actividadesService.actualizarPrecioActividad(registroExistente.idPrecio, idEventoActividad, precio)
         .subscribe({
           next: (res) => {
             this.preciosCache[idEventoActividad].precio = precio;
             alert(`✅ Precio actualizado a ${precio}€.`);
-            // Aquí NO generamos recibos porque ya existirán, solo cambiamos el precio
           },
           error: (err) => {
             console.error(err);
             alert('❌ Error al actualizar el precio.');
           }
         });
-
     } else {
-      // --- POST (CREAR) ---
-      console.log(`➕ Creando nuevo precio...`);
-
       this.actividadesService.crearPrecioActividad(idEventoActividad, precio)
         .subscribe({
           next: (res: any) => {
@@ -213,7 +202,6 @@ export class ActivitiesComponent implements OnInit {
             
             alert(`✅ Precio asignado correctamente.`);
 
-            // --- AQUÍ LLAMAMOS A LA GENERACIÓN DE RECIBOS ---
             if (nuevoIdPrecio > 0) {
               this.generarRecibosPendientes(this.idEvento, idActividad, nuevoIdPrecio);
             }
@@ -228,17 +216,9 @@ export class ActivitiesComponent implements OnInit {
     }
   }
 
-  // --- NUEVO: GENERAR RECIBOS POR CURSO ---
-  // Asegúrate de tener importado el modelo PagosCompletos también si lo necesitas, 
-// o usa 'any' para la comprobación rápida.
-
-generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActividad: number) {
-    
-  // PASO 1: Obtenemos los alumnos inscritos (para sacar los cursos)
+  generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActividad: number) {
     this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
       next: (usuarios) => {
-        
-        // Filtramos cursos únicos
         const cursosInscritos = new Set<number>();
         usuarios.forEach((u: any) => {
           if (u.idCurso && u.idCurso > 0) cursosInscritos.add(u.idCurso);
@@ -246,47 +226,34 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
 
         if (cursosInscritos.size === 0) return;
 
-        // PASO 2: ¡LA CLAVE! Obtenemos los pagos que YA EXISTEN en este evento
-        // Necesitas tener getPagosEvento disponible en actividadesService o serviceTorneo
         this.actividadesService.getPagosEvento(idEvento).subscribe({
           next: (pagosExistentes) => {
-            
             let cursosAgenerar: number[] = [];
 
-            // PASO 3: Comprobamos uno a uno
             cursosInscritos.forEach(idCurso => {
-              // Buscamos si ya existe un pago para este Curso + Esta Actividad
-              // Nota: Ajusta 'p.idActividad' o 'p.actividad' según lo que devuelva tu API de pagos
               const yaTienePago = pagosExistentes.find((p: any) => 
                 p.idCurso === idCurso && p.idActividad === idActividad
               );
 
-              // Si NO tiene pago, lo añadimos a la lista para crear
               if (!yaTienePago) {
                 cursosAgenerar.push(idCurso);
               }
             });
 
-            // Si todos ya tienen pago, avisamos y salimos
             if (cursosAgenerar.length === 0) {
               console.log("Todos los cursos inscritos ya tienen su recibo generado.");
               return;
             }
 
-            // PASO 4: Generamos solo los que faltan
             if (confirm(`Se han detectado ${cursosAgenerar.length} cursos nuevos sin recibo. ¿Generar recibos ahora?`)) {
               cursosAgenerar.forEach(idCurso => {
-                const nuevoPago = new Pagos(
-                  0, idCurso, idPrecioActividad, 0, "Sin pagar"
-                );
-
+                const nuevoPago = new Pagos(0, idCurso, idPrecioActividad, 0, "Sin pagar");
                 this.actividadesService.crearPago(nuevoPago).subscribe({
                   next: () => console.log(`Recibo generado para curso ${idCurso}`),
                   error: (e) => console.error(e)
                 });
               });
             }
-
           },
           error: (err) => console.error("Error comprobando pagos existentes", err)
         });
@@ -346,11 +313,26 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
     }
   }
 
-// --- MATERIALES (MODIFICADO) ---
+  // --- MATERIALES (MODIFICADO) ---
 
+  // Se añade el parámetro idActividad para poder buscar inscritos
   getMaterialesEventoActividad(idEventoActividad: number, nombreActividad: string): void {
     this.actividadSeleccionada = nombreActividad;
     this.idEventoActividadMateriales = idEventoActividad; 
+    
+    // Necesitamos el idActividad para buscar participantes. 
+    // Lo buscamos en el array de actividades
+    const actividad = this.actividadesEvento.find(a => a.idEventoActividad === idEventoActividad);
+    if(actividad) {
+        this.idActividadParaMateriales = actividad.idActividad;
+        // Cargamos los participantes si no están en caché para validaciones posteriores
+        if(!this.participantesCache[actividad.idActividad]) {
+            this.actividadesService.findUsuariosInscritosPorActividadEvento(this.idEvento, actividad.idActividad).subscribe(users => {
+                this.participantesCache[actividad.idActividad] = users;
+            });
+        }
+    }
+
     this.materialesEventoActividad = []; 
     this.materialesService.getMaterialesEvento(idEventoActividad).subscribe(result => {
       this.materialesEventoActividad = result;
@@ -361,20 +343,19 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
   cerrarModal(): void {
     this.mostrarModal = false;
     this.materialesEventoActividad = [];
-    this.nuevoMaterialNombre = ''; // Limpiamos input
+    this.nuevoMaterialNombre = ''; 
   }
 
   // 1. CREAR SOLICITUD DE MATERIAL (Restringido a inscritos)
   crearMaterial(): void {
     if (!this.nuevoMaterialNombre.trim()) return;
 
-    // VALIDACIÓN: ¿Está el usuario inscrito en esta actividad?
-    // Verificamos si su ID está en la lista de inscripciones de esta actividad
-    const listaInscritos = this.getInscripciones(this.idEventoActividadMateriales);
-    const estaInscrito = listaInscritos.some(i => i.idUsuario === this.idUsuarioActual);
+    // VALIDACIÓN: Usamos el caché de participantes que cargamos al abrir el modal
+    const inscritos = this.participantesCache[this.idActividadParaMateriales] || [];
+    const estaInscrito = inscritos.some(u => u.idUsuario === this.idUsuarioActual);
 
     // Permitimos si es Admin/Org O si está inscrito
-    if (this.esAdminOOrganizador() && !estaInscrito) {
+    if (!this.esAdminOOrganizador() && !estaInscrito) {
       alert("❌ Solo los participantes inscritos pueden solicitar material para esta actividad.");
       return;
     }
@@ -384,23 +365,21 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
       this.idEventoActividadMateriales, 
       this.idUsuarioActual, // Solicitante (quien crea la petición)
       this.nuevoMaterialNombre, 
-      true, // Pendiente por defecto
+      true, 
       new Date().toISOString(), 
-      0 // idUsuarioAportacion = 0 (NADIE lo ha traído aún, es una solicitud)
+      0 
     );
-    console.log(nuevoMat);
-    this.materialesService.crearMaterial(nuevoMat).subscribe({
+
+    this.materialesService.crearMaterial(nuevoMat).subscribe({ // Ojo: tu servicio se llama crearPago
       next: (res) => {
         this.nuevoMaterialNombre = ''; 
         this.recargarMateriales();
-        // Feedback opcional
-        // alert("✅ Solicitud creada. Esperando que alguien lo aporte.");
       },
       error: (err) => alert('Error al crear solicitud de material')
     });
   }
 
-  // 2. BORRAR MATERIAL (Solo Admin/Org)
+  // 2. BORRAR MATERIAL (Solo Admin/Org o Creador)
   borrarMaterial(idMaterial: number): void {
     if(confirm('¿Eliminar este material de la lista?')) {
       this.materialesService.deleteMateriales(idMaterial).subscribe({
@@ -410,8 +389,17 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
     }
   }
 
-  // 3. APORTAR MATERIAL (Cualquier usuario)
+  // 3. APORTAR MATERIAL (Solo inscritos)
   aportarMaterial(material: Material): void {
+    // VALIDACIÓN: Usamos el caché de participantes
+    const inscritos = this.participantesCache[this.idActividadParaMateriales] || [];
+    const estaInscrito = inscritos.some(u => u.idUsuario === this.idUsuarioActual);
+
+    if (!this.esAdminOOrganizador() && !estaInscrito) {
+        alert("❌ Solo los participantes inscritos pueden aportar material.");
+        return;
+    }
+
     if(confirm(`¿Te comprometes a traer: ${material.nombreMaterial}?`)) {
       this.materialesService.aportarMaterial(material.idMaterial, this.idUsuarioActual).subscribe({
         next: () => {
@@ -429,8 +417,7 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
     });
   }
 
-
-  //--------MODAL INSCRIPCIÓN
+  //--------MODAL INSCRIPCIÓN, ETC... (RESTO IGUAL)
   abrirModalInscripcion(idEventoActividad: number): void {
     this.idEventoActividadSeleccionada = idEventoActividad;
     this.inscripcion.idUsuario = this.idUsuarioActual;
@@ -520,7 +507,6 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
     this.actividadesService.actualizarActividad(this.actividadEditar).subscribe({
       next: (respuesta) => {
         this.cerrarModalEditarActividad();
-        
         setTimeout(() => {
           this.cargarDatos();
         }, 500);
@@ -530,7 +516,6 @@ generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActivida
     });
   }
 
-  // FUNCIÓN CORREGIDA
   public esAdminOOrganizador(): boolean {
     return this.rolUsuario === 'ADMINISTRADOR' || this.rolUsuario === 'ORGANIZADOR';
   }
