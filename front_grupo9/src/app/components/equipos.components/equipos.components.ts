@@ -42,6 +42,14 @@ export class EquiposComponents implements OnInit {
     idColor: 0,
     idCurso: 0
   };
+  // Variables para editar equipo
+  public equipoAEditar!: Equipo;
+  public editarEquipo = {
+    nombreEquipo: '',
+    idColor: 0,
+    minimoJugadores: 0
+  };
+  public coloresDisponiblesEdicion: Array<Color> = [];
   public todosLosColores: Array<Color> = [];
   public coloresDisponibles: Array<Color> = [];
 
@@ -361,6 +369,73 @@ export class EquiposComponents implements OnInit {
         })
       }
     })
+  }
+
+  // Abrir modal de editar equipo
+  abrirModalEditarEquipo(equipo: Equipo): void {
+    this.equipoAEditar = equipo;
+    this.editarEquipo = {
+      nombreEquipo: equipo.nombreEquipo,
+      idColor: equipo.idColor,
+      minimoJugadores: equipo.minimoJugadores
+    };
+    
+    // Obtener colores disponibles (excluir los ya usados EXCEPTO el color actual del equipo)
+    const coloresUsados = this.equiposActividadEvento
+      .filter(e => e.idEquipo !== equipo.idEquipo)
+      .map(e => e.idColor);
+    
+    this.coloresDisponiblesEdicion = this.todosLosColores.filter(
+      color => !coloresUsados.includes(color.idColor)
+    );
+    
+    const modalElement = document.getElementById('modalEditarEquipo');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  // Actualizar equipo
+  actualizarEquipoModal(): void {
+    const equipoActualizado = new Equipo(
+      this.equipoAEditar.idEquipo,
+      this.equipoAEditar.idEventoActividad,
+      this.editarEquipo.nombreEquipo,
+      this.editarEquipo.minimoJugadores,
+      this.editarEquipo.idColor,
+      this.equipoAEditar.idCurso
+    );
+
+    this._serviceEquipo.actualizarEquipo(equipoActualizado).subscribe({
+      next: (result) => {
+        Swal.fire({
+          title: "Equipo actualizado",
+          text: "El equipo ha sido actualizado exitosamente",
+          icon: "success",
+          confirmButtonText: "Confirmar"
+        }).then(() => {
+          this.cargarDatos();
+        });
+      },
+      error: (error) => {
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo actualizar el equipo",
+          icon: "error",
+          confirmButtonText: "Volver"
+        });
+      }
+    });
+    
+    // Cerrar modal
+    const modalElement = document.getElementById('modalEditarEquipo');
+    if (modalElement) {
+      const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
   }
 
 

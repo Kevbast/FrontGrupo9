@@ -28,12 +28,17 @@
           <div class="p-3" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%);">
             <div class="d-flex justify-content-between align-items-center">
               <h4 class="mb-0 text-white fw-semibold">{{ equipo.nombreEquipo }}</h4>
-              <div class="d-flex gap-2">
+              <div class="d-flex gap-2 align-items-center">
                 <span class="badge bg-white text-primary px-3 py-2">Curso: {{ getNombreCursoPorId(equipo.idCurso) }}</span>
                 <span class="badge bg-white text-primary px-3 py-2">Equipacion: {{getNombreColorPorId(equipo.idColor)}}</span>
-                <span *ngIf="esCapitan" class="ms-auto text-white" (click)="eliminarEquipo(equipo.idEquipo)">
-                  <mat-icon>delete_outline</mat-icon>
-                </span>
+                <div *ngIf="esCapitan || usuarioLogado?.idRole == 3" class="d-flex gap-2">
+                  <span class="text-white" (click)="abrirModalEditarEquipo(equipo)" style="cursor: pointer;">
+                    <mat-icon>edit</mat-icon>
+                  </span>
+                  <span class="text-white" (click)="eliminarEquipo(equipo.idEquipo)" style="cursor: pointer;">
+                    <mat-icon>delete_outline</mat-icon>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -315,6 +320,81 @@
                 (click)="crearEquipo()">
           <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.2rem; height: 1.2rem; width: 1.2rem;">check</mat-icon>
           Crear Equipo
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Equipo -->
+<div class="modal fade" id="modalEditarEquipo" tabindex="-1" aria-labelledby="modalEditarEquipoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 4px 20px rgba(9, 122, 236, 0.3);">
+      
+      <!-- Modal Header -->
+      <div class="modal-header" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border-radius: 15px 15px 0 0; border: none;">
+        <h5 class="modal-title text-white fw-bold" id="modalEditarEquipoLabel">
+          <mat-icon class="me-2" style="vertical-align: middle;">edit</mat-icon>
+          Editar Equipo
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+        
+        <!-- Nombre del Equipo -->
+        <div class="mb-3">
+          <label for="nombreEquipoEditar" class="form-label fw-semibold" style="color: #0056b3;">
+            Nombre del Equipo
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 id="nombreEquipoEditar" 
+                 [(ngModel)]="editarEquipo.nombreEquipo"
+                 placeholder="Ej: Los Tigres, Equipo A..."
+                 style="border: 2px solid #C5E0FF; border-radius: 10px; padding: 12px;">
+        </div>
+
+        <!-- Desplegable de Colores -->
+        <div class="mb-3">
+          <label for="selectColorEditar" class="form-label fw-semibold" style="color: #0056b3;">
+            Color de Equipación
+          </label>
+          <select class="form-select" id="selectColorEditar" [(ngModel)]="editarEquipo.idColor"
+                  style="border: 2px solid #C5E0FF; border-radius: 10px; padding: 12px;">
+            <option *ngFor="let color of coloresDisponiblesEdicion" [value]="color.idColor">
+              {{ color.nombreColor.charAt(0).toUpperCase() + color.nombreColor.slice(1) }}
+            </option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="color: #0056b3;">
+            Minimo de jugadores
+          </label>
+          <input type="number" 
+                 class="form-control"
+                 id="minimoJugadoresEditar" 
+                 [(ngModel)]="editarEquipo.minimoJugadores"
+                 style="border: 2px solid #C5E0FF; border-radius: 10px; padding: 12px;">
+        </div>
+
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer border-0" style="background-color: #f0f7ff;">
+        <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" 
+                style="border-radius: 10px;">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary px-4 py-2" 
+                style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border: none; border-radius: 10px;"
+                [disabled]="!editarEquipo.nombreEquipo || editarEquipo.idColor === 0"
+                (click)="actualizarEquipoModal()">
+          <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.2rem; height: 1.2rem; width: 1.2rem;">check</mat-icon>
+          Actualizar Equipo
         </button>
       </div>
       

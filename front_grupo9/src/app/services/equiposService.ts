@@ -115,6 +115,25 @@ export class EquiposService {
         return this._http.post(url, equipo, {headers: headers});
     }
 
+    actualizarEquipo(equipoRecibido: Equipo): Observable<any> {
+        let request = "api/Equipos/update";
+        let url = environment.urlApiEventos + request;
+        let headers = new HttpHeaders();
+        let token = this._serviceTorneo.getToken();
+        headers = headers.set('Authorization', `Bearer ${token}`);
+
+        const equipo = {
+            idEquipo: equipoRecibido.idEquipo,
+            idEventoActividad: equipoRecibido.idEventoActividad,
+            nombreEquipo: equipoRecibido.nombreEquipo,
+            minimoJugadores: equipoRecibido.minimoJugadores,
+            idColor: equipoRecibido.idColor,
+            idCurso: equipoRecibido.idCurso
+        }
+
+        return this._http.put(url, equipo, {headers: headers});
+    }
+
     eliminarEquipo(idEquipo: number): Observable<any> {
         let request = "api/Equipos/" + idEquipo;
         let url = environment.urlApiEventos + request;
