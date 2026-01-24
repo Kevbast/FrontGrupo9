@@ -24,6 +24,8 @@ import { Pagos } from '../../models/Pagos';
 export class ActivitiesComponent implements OnInit {
   
   public actividadesEvento!: Array<Actividad>;
+  public actividadesDisponibles: Array<Actividad> = [];
+  public idActividadSeleccionada: number = 0;
   public inscripciones: Inscripcion[] = [];
   public inscripcionesPorActividad: { [key: number]: Inscripcion[] } = {};
   public materialesEventoActividad!: Array<Material>;
@@ -111,7 +113,13 @@ export class ActivitiesComponent implements OnInit {
       next: (usuario) => {
         this.usuarioPerfil = usuario;
         this.rolUsuario = usuario.role; 
-        this.idUsuarioActual = usuario.idUsuario; 
+        this.idUsuarioActual = usuario.idUsuario;
+        console.log('👤 Perfil cargado:', {
+          idUsuario: usuario.idUsuario,
+          nombre: usuario.usuario,
+          role: usuario.role,
+          idRole: usuario.idRole
+        });
       }
     });
   }
@@ -436,39 +444,28 @@ export class ActivitiesComponent implements OnInit {
 
   cerrarModalCrearActividad(): void {
     this.mostrarModalCrearActividad = false;
-    this.actividadNueva = new Actividad(0, this.idEvento, new Date().toISOString(), 0, 0, '', 0, 0);
+    this.idActividadSeleccionada = 0;
+    this.actividadesDisponibles = [];
   }
 
   crearActividadEnviar(): void {
-    const actividadEnvio = new Actividad(
-      this.actividadNueva.posicion,
-      this.idEvento,
-      new Date().toISOString(),
-      this.actividadNueva.idProfesor,
-      0,
-      this.actividadNueva.nombreActividad,
-      this.actividadNueva.minimoJugadores,
-      0
-    );
-    
-    this.actividadesService.crearActividad(actividadEnvio).subscribe({
+    if (!this.idActividadSeleccionada) {
+      alert('❌ Por favor selecciona una actividad');
+      return;
+    }
+
+    this.actividadesService.crearEventoActividad(this.idEvento, this.idActividadSeleccionada).subscribe({
       next: (respuesta) => {
-        this.actividadesService.crearEventoActividad(this.idEvento, respuesta.idActividad).subscribe({
-          next: (eventoActividadRespuesta) => {
-            this.cerrarModalCrearActividad();
-            setTimeout(() => {
-              this.cargarDatos();
-            }, 500);
-          },
-          error: (err) => {
-            this.cerrarModalCrearActividad();
-            setTimeout(() => {
-              this.cargarDatos();
-            }, 500);
-          }
-        });
+        this.cerrarModalCrearActividad();
+        alert('✅ Actividad añadida al evento correctamente');
+        setTimeout(() => {
+          this.cargarDatos();
+          this.cargarPrecios();
+        }, 500);
       },
       error: (err) => {
+        console.error('Error al añadir actividad:', err);
+        alert('❌ Error al añadir la actividad al evento');
       }
     });
   }
@@ -477,8 +474,30 @@ export class ActivitiesComponent implements OnInit {
     if (!this.esAdminOOrganizador()) {
       return;
     }
-    this.actividadNueva = new Actividad(0, this.idEvento, new Date().toISOString(), 0, 0, '', 0, 0);
-    this.mostrarModalCrearActividad = true;
+    // Cargar todas las actividades disponibles
+    this.actividadesService.getActividades().subscribe({
+      next: (actividades: any[]) => {
+        console.log('Actividades recibidas:', actividades);
+        // Mapear las actividades para que tengan nombreActividad desde nombre
+        this.actividadesDisponibles = actividades.map(act => ({
+          idActividad: act.idActividad,
+          nombre: act.nombre,
+          nombreActividad: act.nombre,
+          minimoJugadores: act.minimoJugadores,
+          posicion: 0,
+          idEvento: 0,
+          fechaEvento: '',
+          idProfesor: 0,
+          idEventoActividad: 0
+        }));
+        this.idActividadSeleccionada = 0;
+        this.mostrarModalCrearActividad = true;
+      },
+      error: (err) => {
+        console.error('Error al cargar actividades:', err);
+        alert('❌ Error al cargar las actividades disponibles');
+      }
+    });
   }
 
   editarActividad(actividad: Actividad): void {
@@ -517,7 +536,34 @@ export class ActivitiesComponent implements OnInit {
   }
 
   public esAdminOOrganizador(): boolean {
-    return this.rolUsuario === 'ADMINISTRADOR' || this.rolUsuario === 'ORGANIZADOR';
+    return this.usuarioPerfil?.idRole === 3 || this.usuarioPerfil?.idRole === 4;
+  }
+
+  // Eliminar la relación entre evento y actividad (solo organizadores y administradores)
+  eliminarEventoActividad(idEventoActividad: number, nombreActividad: string): void {
+    // Verificar que el usuario es organizador (idRole = 3) o administrador (idRole = 4)
+    const esOrganizador = this.usuarioPerfil?.idRole === 3 || this.usuarioPerfil?.idRole === 4;
+    
+    if (!esOrganizador) {
+      return;
+    }
+
+    this.actividadesService.eliminarEventoActividad(idEventoActividad).subscribe({
+      next: () => {
+        alert('✅ Actividad eliminada del evento correctamente.');
+        // Limpiar cachés relacionados
+        delete this.preciosCache[idEventoActividad];
+        if (this.participantesCache[idEventoActividad]) {
+          delete this.participantesCache[idEventoActividad];
+        }
+        // Recargar datos
+        this.cargarDatos();
+        this.cargarPrecios();
+      },
+      error: (err) => {
+        console.error('Error al eliminar actividad:', err);
+      }
+    });
   }
 
   public cerrarModalError(): void {

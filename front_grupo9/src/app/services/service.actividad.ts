@@ -58,10 +58,8 @@ export class ActividadesService {
   }
 
   crearEventoActividad(idEvento: number, idActividad: number): Observable<any> {
-    let request = `api/ActividadesEvento/create?idevento=${idEvento}&idactividad=${idActividad}`;
-    let url = environment.apiTorneo + request;
+    let url = `${environment.apiTorneo}api/ActividadesEvento/create/${idEvento}/${idActividad}`;
     const headers = this.getAuthHeaders();
-    
     return this.http.post<any>(url, {}, { headers: headers });
   }
 
@@ -88,6 +86,13 @@ export class ActividadesService {
   eliminarInscripcion(idInscripcion: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.delete(`${this.urlInscripciones}/${idInscripcion}`, { headers: headers });
+  }
+
+  // Eliminar la relación entre evento y actividad (idEventoActividad)
+  eliminarEventoActividad(idEventoActividad: number): Observable<any> {
+    const url = `${environment.apiTorneo}api/ActividadesEvento/${idEventoActividad}`;
+    const headers = this.getAuthHeaders();
+    return this.http.delete(url, { headers: headers });
   }
   //Método para devolver todos los Usuarios inscritos por evento y actividad de la BBDD(Kevin)
   findUsuariosInscritosPorActividadEvento(idEvento:number,idactividad:number):Observable<Array<Usuario>>{
