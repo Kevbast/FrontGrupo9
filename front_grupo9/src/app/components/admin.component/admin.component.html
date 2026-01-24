@@ -1,0 +1,189 @@
+<div class="container mt-5 mb-5" *ngIf="adminUser">
+  
+  <div class="d-flex align-items-center mb-4">
+    <button mat-icon-button [routerLink]="['/perfil']" class="me-3 bg-white shadow-sm">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h2 class="fw-bold m-0 text-dark">Panel de Administración</h2>
+      <small class="text-muted">Gestión integral de la plataforma</small>
+    </div>
+  </div>
+
+  <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms" class="bg-white rounded-4 shadow-sm overflow-hidden min-h-500">
+    
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="d-flex align-items-center gap-2">
+          <mat-icon>people</mat-icon> Usuarios & Roles
+        </div>
+      </ng-template>
+
+      <div class="p-4 bg-light-tab">
+        <mat-card class="shadow-sm border-0 mb-4 rounded-4">
+          <mat-card-content class="p-4">
+            <mat-form-field appearance="outline" class="w-100 no-bottom-space">
+              <mat-label>Selecciona un Curso</mat-label>
+              <mat-select [(ngModel)]="idCursoSeleccionado" (selectionChange)="cargarUsuarios()">
+                <mat-option *ngFor="let curso of cursos" [value]="curso.idCurso">
+                  {{ curso.nombre }} ({{ curso.fechaInicio | date:'yyyy' }})
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>school</mat-icon>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+        <div *ngIf="idCursoSeleccionado">
+          <div *ngIf="loading" class="text-center py-5">
+            <mat-spinner diameter="40" class="mx-auto"></mat-spinner>
+          </div>
+
+          <div *ngIf="!loading && usuarios.length > 0" class="user-list">
+            <div *ngFor="let user of usuarios" class="user-item shadow-sm">
+              <div class="d-flex align-items-center gap-3">
+                <img [src]="user.imagen ? user.imagen : 'assets/profile-picture.jpg'" class="avatar">
+                <div>
+                  <h6 class="mb-0 fw-bold text-dark">{{ user.usuario }}</h6>
+                  <span class="badge-role" 
+                        [ngClass]="{
+                          'role-prof': user.idRole === 1,
+                          'role-user': user.idRole === 2, 
+                          'role-admin': user.idRole === 3,
+                          'role-org': user.idRole === 4,
+                          'role-cap': user.idRole === 5
+                        }">
+                    {{ user.role || 'USUARIO' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button mat-stroked-button color="primary" *ngIf="user.idRole === 2" (click)="ascenderAOrganizador(user)">
+                  <mat-icon>upgrade</mat-icon> Ascender
+                </button>
+                <div *ngIf="user.idRole === 4" class="text-success fw-bold d-flex align-items-center gap-1">
+                  <mat-icon>check_circle</mat-icon> Organizador
+                </div>
+                <div *ngIf="user.idRole === 3" class="text-danger fw-bold d-flex align-items-center gap-1">
+                  <mat-icon>shield</mat-icon> Admin
+                </div>
+                <div *ngIf="user.idRole === 1" class="text-primary fw-bold d-flex align-items-center gap-1">
+                  <mat-icon>school</mat-icon> Profesor
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="!loading && usuarios.length === 0" class="text-center py-5 text-muted">
+            <p>No hay alumnos en este curso.</p>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="d-flex align-items-center gap-2">
+          <mat-icon>sports_soccer</mat-icon> Actividades
+        </div>
+      </ng-template>
+
+      <div class="p-4 bg-light-tab">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="fw-bold m-0 text-dark">Catálogo de Deportes</h4>
+            <p class="text-muted small m-0">Administra las actividades disponibles.</p>
+          </div>
+          <button mat-raised-button color="primary" (click)="mostrarFormularioCrear()" *ngIf="!mostrandoFormulario">
+            <mat-icon>add</mat-icon> Nueva Actividad
+          </button>
+        </div>
+
+        <div *ngIf="mostrandoFormulario" class="form-container mb-4 fade-in">
+          <h5 class="fw-bold mb-3 text-primary">{{ esEdicion ? 'Editar Actividad' : 'Nueva Actividad' }}</h5>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nombre de la Actividad</mat-label>
+                <input matInput [(ngModel)]="actividadForm.nombre" placeholder="Ej: Baloncesto Femenino">
+                <mat-icon matSuffix>label</mat-icon>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Mín. Jugadores</mat-label>
+                <input matInput type="number" [(ngModel)]="actividadForm.minimoJugadores">
+                <mat-icon matSuffix>group</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-2 mt-2">
+            <button mat-button (click)="cancelarFormulario()">Cancelar</button>
+            <button mat-raised-button color="primary" (click)="guardarActividad()">
+              <mat-icon>save</mat-icon> Guardar
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="loadingActividades" class="text-center py-5">
+          <mat-spinner diameter="40" class="mx-auto"></mat-spinner>
+        </div>
+
+        <div *ngIf="!loadingActividades && listaActividades.length > 0" class="mat-elevation-z2 rounded-3 overflow-hidden border">
+          <table mat-table [dataSource]="listaActividades" class="w-100">
+
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold text-secondary ps-4"> ID </th>
+              <td mat-cell *matCellDef="let act" class="text-muted ps-4"> #{{act.idActividad}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold text-secondary"> ACTIVIDAD </th>
+              <td mat-cell *matCellDef="let act"> 
+                <div class="d-flex align-items-center fw-bold text-dark">
+                  <div class="icon-tiny-sport me-2">
+                    <mat-icon style="font-size:18px;width:18px;height:18px">sports_soccer</mat-icon>
+                  </div>
+                  {{act.nombre | uppercase}}
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="minJugadores">
+              <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold text-secondary"> JUGADORES </th>
+              <td mat-cell *matCellDef="let act"> 
+                <span class="badge bg-blue-subtle text-primary border border-primary-subtle">
+                   Min: {{act.minimoJugadores}}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold text-secondary text-end pe-4"> ACCIONES </th>
+              <td mat-cell *matCellDef="let act" class="text-end pe-3">
+                <button mat-icon-button color="primary" (click)="editarActividad(act)" matTooltip="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="borrarActividad(act.idActividad)" matTooltip="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover-row"></tr>
+          </table>
+        </div>
+
+        <div *ngIf="!loadingActividades && listaActividades.length === 0" class="text-center py-5 text-muted">
+          <mat-icon style="font-size:40px;height:40px;width:40px">playlist_remove</mat-icon>
+          <p>No hay actividades creadas.</p>
+        </div>
+
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

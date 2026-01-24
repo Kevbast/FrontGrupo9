@@ -1,40 +1,54 @@
-<div class="container-fluid" *ngIf="user">
-  <div
-    class="d-flex align-items-center p-4 mt-5 bg-white mx-3 rounded-4 shadow-sm border-start border-5 border-primary"
-  >
-    <h1 class="mb-0 fw-bold text-dark">Mi Perfil</h1>
+<div class="container-fluid mb-5" *ngIf="user">
+  
+  <div class="d-flex align-items-center justify-content-between p-4 mt-5 bg-white mx-3 rounded-4 shadow-sm border-start border-5 border-primary">
+    <div>
+      <h1 class="mb-0 fw-bold text-dark">Mi Perfil</h1>
+    </div>
+
+    <button mat-raised-button 
+            color="warn" 
+            class="shadow-sm"
+            *ngIf="user.idRole === 3||user.idRole===4"
+            [routerLink]="['/admin']">
+      <mat-icon>admin_panel_settings</mat-icon> IR Al PANEL DE GESTIÓN 
+    </button>
   </div>
 
   <div class="row mt-4 mx-3 justify-content-center">
     <div class="col-12 col-xl-9">
-      <mat-card class="profile-card shadow-lg border-0 overflow-hidden">
+      
+      <mat-card class="profile-card shadow-lg border-0 overflow-hidden mb-5">
         <div class="profile-banner"></div>
 
         <mat-card-content class="position-relative px-4 pb-5">
           <div class="avatar-wrapper">
-            <img
-              [src]="user.imagen ? user.imagen : 'assets/profile-picture.jpg'"
-              alt="Avatar"
-              class="profile-avatar shadow"
-            />
-
-            <div
-              class="status-indicator"
-              [class.active]="user.estadoUsuario"
-              [title]="user.estadoUsuario ? 'Usuario Activo' : 'Inactivo'"
-            ></div>
+            <img [src]="user.imagen ? user.imagen : 'assets/profile-picture.jpg'" alt="Avatar" class="profile-avatar shadow" />
+            <div class="status-indicator" [class.active]="user.estadoUsuario" [title]="user.estadoUsuario ? 'Usuario Activo' : 'Inactivo'"></div>
           </div>
 
           <div class="text-center mt-3 mb-5">
             <h2 class="fw-bold fs-2 mb-1 text-dark">{{ user.nombre }} {{ user.apellidos }}</h2>
-
-            <div class="d-flex justify-content-center gap-2 mt-2">
-              <span class="role-badge">
-                {{ user.role | uppercase }}
+            
+            <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+              
+              <span class="role-badge"
+                    [ngClass]="{
+                      'badge-default': user.idRole !== 3 && user.idRole !== 4,
+                      'badge-admin': user.idRole === 3,
+                      'badge-org': user.idRole === 4
+                    }">
+                
+                <mat-icon *ngIf="user.idRole === 3" class="icon-tiny">shield</mat-icon>
+                <mat-icon *ngIf="user.idRole === 4" class="icon-tiny">verified</mat-icon>
+                
+                <span *ngIf="user.idRole === 3">ADMINISTRADOR</span>
+                <span *ngIf="user.idRole === 4">ORGANIZADOR</span>
+                <span *ngIf="user.idRole !== 3 && user.idRole !== 4">{{ user.role | uppercase }}</span>
               </span>
+
               <span class="id-badge">ID: #{{ user.idUsuario }}</span>
             </div>
-          </div>
+            </div>
 
           <div class="row g-4 justify-content-center">
             <div class="col-md-5">
@@ -48,7 +62,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-md-5">
               <div class="info-box shadow-sm">
                 <div class="icon-circle bg-cyan-light">
@@ -63,6 +76,63 @@
           </div>
         </mat-card-content>
       </mat-card>
+
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-section-wrapper me-3">
+          <mat-icon>emoji_events</mat-icon>
+        </div>
+        <h2 class="fw-bold text-dark m-0">Mis Competiciones</h2>
+      </div>
+
+      <div *ngIf="loadingActividades" class="text-center py-5">
+        <mat-spinner diameter="50" class="mx-auto"></mat-spinner>
+        <p class="mt-3 text-muted">Cargando tus actividades...</p>
+      </div>
+
+      <div class="row g-4" *ngIf="!loadingActividades && actividades.length > 0">
+        <div class="col-md-6 col-lg-4" *ngFor="let act of actividades">
+          <mat-card class="activity-card h-100 border-0 shadow-sm">
+            <div class="activity-header">
+              <div class="activity-icon">
+                <mat-icon>sports_soccer</mat-icon>
+              </div>
+              <span class="activity-status" [class.captain-badge]="act.quiereSerCapitan">
+                {{ act.quiereSerCapitan ? 'Capitán' : 'Jugador' }}
+              </span>
+            </div>
+            <mat-card-content class="activity-content text-center">
+              <h3 class="activity-title text-uppercase">{{ act.nombreActividad }}</h3>
+              <div class="activity-date">
+                <mat-icon style="font-size: 16px; width: 16px; height: 16px;">edit_calendar</mat-icon> 
+                <span>Inscrito: {{ act.fechaInscripcion | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="activity-meta">
+                <div class="meta-item">
+                  <span class="meta-value highlight">#{{ act.idEvento }}</span>
+                  <label class="meta-label">ID Evento</label>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-value">{{ act.fechaEvento | date:'dd/MM' }}</span>
+                  <label class="meta-label">Fecha</label>
+                </div>
+              </div>
+            </mat-card-content>
+            <mat-card-actions class="activity-actions justify-content-center pb-4 px-4">
+              <button mat-stroked-button color="primary" (click)="irAEvento(act.idEvento)">
+                Ver Evento
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+
+      <div *ngIf="!loadingActividades && actividades.length === 0" class="empty-state text-center p-5 bg-white rounded-4 shadow-sm">
+        <mat-icon style="font-size: 60px; width: 60px; height: 60px; color: #ccc;">assignment_late</mat-icon>
+        <h4 class="fw-bold text-secondary mt-3">Aún no tienes inscripciones</h4>
+        <p class="text-muted">¡Anímate a participar en los torneos disponibles!</p>
+        <button mat-raised-button color="primary" routerLink="/" class="mt-2">Ver Eventos</button>
+      </div>
+
     </div>
   </div>
 </div>

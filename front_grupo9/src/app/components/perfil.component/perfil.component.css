@@ -134,3 +134,322 @@
     font-size: 1.1rem;
     word-break: break-all; /* Por si el email es muy largo */
 }
+
+/* ... Keep your existing styles for root, profile-card, banner, avatar, badges, info-box ... */
+
+/* --- SECCIÓN MIS COMPETICIONES --- */
+
+/* Icono del título de sección */
+.icon-section-wrapper {
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+}
+
+/* --- TARJETA DE ACTIVIDAD --- */
+.activity-card {
+    position: relative;
+    border-radius: 20px !important; /* Más redondeado */
+    background: white;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0; /* Borde sutil */
+    overflow: hidden; /* Para contener la cabecera */
+}
+
+/* Efecto Hover: Elevar y Sombra */
+.activity-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
+    border-color: #e3f2fd;
+}
+
+/* CABECERA DE LA TARJETA */
+.activity-header {
+    height: 100px;
+    /* Degradado sutil gris-azulado */
+    background: linear-gradient(135deg, #0077b6 30%, #c3cfe2 100%);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Alinear contenido abajo */
+    padding-bottom: 20px; /* Espacio para el icono flotante */
+    margin-bottom: 30px; /* Espacio para que el icono no tape el texto */
+    clip-path: ellipse(150% 100% at 50% 0%); /* Curva decorativa en la parte inferior */
+}
+
+/* ICONO FLOTANTE CENTRAL */
+.activity-icon {
+    position: absolute;
+    bottom: -25px; /* Mitad fuera de la cabecera */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    color: #0d6efd; /* Azul Bootstrap primario */
+    font-size: 30px;
+}
+
+.activity-icon mat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+}
+
+/* ETIQUETA DE ESTADO (Capitán/Jugador) */
+.activity-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: white; /* Fondo blanco para limpieza */
+    color: #555;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+
+/* Estilo especial para CAPITÁN (Dorado) */
+.captain-badge {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3) !important;
+    color: #f57f17 !important; /* Naranja/Dorado oscuro */
+    border: 1px solid #ffe082;
+    box-shadow: 0 2px 5px rgba(255, 193, 7, 0.2);
+}
+
+/* CONTENIDO DE LA TARJETA */
+.activity-content {
+    padding: 0 25px 25px 25px;
+}
+
+/* Título de la actividad */
+.activity-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+}
+
+/* Fecha de inscripción */
+.activity-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #f8f9fa;
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: #7f8c8d;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+/* METADATOS (Grid de 2 columnas) */
+.activity-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    background-color: #fcfcfc;
+    border: 1px solid #f1f1f1;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.meta-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #34495e;
+}
+
+.meta-value.highlight {
+    color: #097AEC; /* Tu color azul corporativo */
+}
+
+.meta-label {
+    font-size: 0.7rem;
+    color: #95a5a6;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* ACCIONES (Botón) */
+.activity-actions button {
+    width: 100%;
+    padding: 10px 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 12px; /* Botón redondeado pero no pastilla */
+    transition: all 0.2s;
+}
+
+.activity-actions button:hover {
+    background-color: #e3f2fd; /* Fondo azul muy claro al pasar ratón */
+    color: #0d47a1;
+}
+
+/* EMPTY STATE (Diseño mejorado) */
+.empty-state {
+    border: 2px dashed #e0e0e0;
+    border-radius: 20px;
+    background-color: #fafafa;
+    transition: border-color 0.3s;
+}
+
+.empty-state:hover {
+    border-color: #b0bec5;
+}
+
+/* --- ESTILOS GENERALES --- */
+.icon-box {
+    width: 50px; 
+    height: 50px;
+    font-size: 24px;
+}
+
+/* --- TARJETA DE CONTROL (SELECTOR) --- */
+.admin-control-card {
+    border-radius: 16px !important;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02) !important;
+}
+
+/* --- TARJETA DE USUARIO --- */
+.user-card {
+    border-radius: 16px !important;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background: white;
+}
+
+.user-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    border-color: #bbdefb; /* Sutil azul al hover */
+}
+
+/* --- AVATAR --- */
+.avatar-container {
+    position: relative;
+}
+
+.user-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f5f5f5;
+    background-color: #eee;
+}
+
+/* Puntito de estado */
+.status-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background-color: #bdbdbd;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+.status-dot.active { background-color: #4caf50; }
+
+/* --- BADGES DE ROL --- */
+.role-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.badge-admin { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+.badge-org   { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.badge-user  { background-color: #eceff1; color: #546e7a; border: 1px solid #cfd8dc; }
+
+/* --- BOTONES Y ACCIONES --- */
+.btn-promote {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    transition: 0.2s;
+}
+.btn-promote:hover {
+    background-color: #2196f3;
+    color: white;
+}
+
+.check-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+}
+
+/* --- EMPTY STATE --- */
+.empty-state {
+    background-color: #f9fafb;
+    border: 2px dashed #e0e0e0;
+}
+
+/* Badge Base */
+.role-badge {
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Colores Específicos */
+.badge-default {
+    background-color: #e3f2fd;
+    color: #0277bd;
+}
+
+.badge-admin {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.badge-org {
+    background-color: #e8f5e9; /* Fondo Verde Claro */
+    color: #2e7d32; /* Texto Verde Oscuro */
+    border: 1px solid #c8e6c9;
+}
+
+/* Icono pequeño dentro del badge */
+.icon-tiny {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
