@@ -3,7 +3,7 @@
   <div *ngIf="actividadesEvento"> <div class="section-header-wrapper">
       <h2 class="section-title sports-border">Actividades</h2>
       
-      <div class="admin-panel" *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'">
+      <div class="admin-panel" *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4">
         <div class="admin-info">
           <span class="badge-role">{{ rolUsuario }}</span>
           <span>Panel de Control</span>
@@ -60,7 +60,7 @@
 
                 <button mat-icon-button 
                         class="edit-price-btn"
-                        *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'" 
+                        *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4" 
                         (click)="$event.stopPropagation(); gestionarPrecio(act)"
                         matTooltip="Editar Precio">
                   <mat-icon>edit</mat-icon> 
@@ -68,12 +68,21 @@
 
                 <span class="icon">🏆</span>
                 
-                <button *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'"
+                <button *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4"
                         mat-icon-button
                         class="edit-icon"
                         (click)="editarActividad(act)"
                         aria-label="Editar actividad">
                   <mat-icon>edit</mat-icon>
+                </button>
+
+                <button *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4"
+                        mat-icon-button
+                        class="delete-icon"
+                        (click)="eliminarEventoActividad(act.idEventoActividad, act.nombreActividad)"
+                        matTooltip="Eliminar actividad del evento"
+                        aria-label="Eliminar actividad">
+                  <mat-icon>delete</mat-icon>
                 </button>
                 
               </div>
@@ -140,7 +149,7 @@
 
   <div *ngIf="!actividadesEvento || actividadesEvento.length === 0" class="empty-state">
     <img src="Empty Box.gif" alt="notfound"/>
-    <div style="text-align: center; margin-top: 20px;" *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR'">
+    <div style="text-align: center; margin-top: 20px;" *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4">
        <button mat-raised-button color="primary" (click)="crearActividad()">
           <mat-icon>add</mat-icon> Crear primera actividad
        </button>
@@ -218,7 +227,7 @@
                 </button>
 
                 <button mat-icon-button color="warn" 
-                        *ngIf="rolUsuario === 'ADMINISTRADOR' || rolUsuario === 'ORGANIZADOR' || material.idUsuario === idUsuarioActual"
+                        *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4 || material.idUsuario === idUsuarioActual"
                         (click)="borrarMaterial(material.idMaterial)"
                         matTooltip="Eliminar solicitud">
                   <mat-icon>delete</mat-icon>
@@ -310,8 +319,8 @@
         <div class="card-header-gradient">
           <div class="header-content">
             <mat-icon class="header-icon">sports_soccer</mat-icon>
-            <h2>Nueva Actividad</h2>
-            <p>Crea una nueva actividad para el evento</p>
+            <h2>Añadir Actividad al Evento</h2>
+            <p>Selecciona una actividad existente para añadirla a este evento</p>
             <button type="button" class="btn-close" (click)="cerrarModalCrearActividad()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -322,49 +331,34 @@
           <form class="enrollment-form">
             
             <mat-form-field appearance="outline" class="custom-field">
-              <mat-label>Nombre de la Actividad</mat-label>
+              <mat-label>Selecciona una Actividad</mat-label>
               <div matPrefix class="white-box box-icon">
-                <mat-icon>label</mat-icon>
+                <mat-icon>list</mat-icon>
               </div>
-              <input matInput type="text" [(ngModel)]="actividadNueva.nombreActividad" name="nombreActividad" placeholder="Nombre de la actividad" required>
+              <mat-select [(ngModel)]="idActividadSeleccionada" name="actividad" placeholder="Elige una actividad" required>
+                <mat-option *ngFor="let act of actividadesDisponibles" [value]="act.idActividad">
+                  {{ act.nombreActividad }}
+                </mat-option>
+              </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="custom-field">
-              <mat-label>Posición</mat-label>
-              <div matPrefix class="white-box box-icon">
-                <mat-icon>format_list_numbered</mat-icon>
-              </div>
-              <input matInput type="number" [(ngModel)]="actividadNueva.posicion" name="posicion" placeholder="Posición" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="custom-field">
-              <mat-label>Mínimo de Jugadores</mat-label>
-              <div matPrefix class="white-box box-icon">
-                <mat-icon>people</mat-icon>
-              </div>
-              <input matInput type="number" [(ngModel)]="actividadNueva.minimoJugadores" name="minimoJugadores" placeholder="Mínimo de jugadores" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="custom-field">
-              <mat-label>ID Profesor</mat-label>
-              <div matPrefix class="white-box box-icon">
-                <mat-icon>person_outline</mat-icon>
-              </div>
-              <input matInput type="number" [(ngModel)]="actividadNueva.idProfesor" name="idProfesor" placeholder="ID del profesor">
-            </mat-form-field>
+            <div *ngIf="actividadesDisponibles.length === 0" style="text-align: center; padding: 20px; color: #666;">
+              Cargando actividades...
+            </div>
 
             <button mat-raised-button 
                     class="enroll-submit-btn" 
+                    [disabled]="!idActividadSeleccionada"
                     (click)="crearActividadEnviar()">
               <mat-icon>add_circle</mat-icon>
-              CREAR ACTIVIDAD
+              AÑADIR AL EVENTO
             </button>
 
           </form>
         </mat-card-content>
 
         <mat-card-footer class="footer-note">
-          <p>Al crear una actividad, esta se asociará al evento actual.</p>
+          <p>La actividad seleccionada se asociará a este evento.</p>
         </mat-card-footer>
       </mat-card>
     </div>
