@@ -61,4 +61,23 @@ export class EventosService {
         headers = headers.set('Authorization', `Bearer ${token}`);
         return this._http.delete(url, {headers: headers});
     }
+
+
+    apuntarseProfesorEvento(idEvento: number, idProfesor: number): Observable<any> {
+        let request = "api/ProfesEventos/AsociarProfesorEvento/" + idEvento + "/" + idProfesor;
+        let url = environment.urlApiEventos + request;
+        let headers = new HttpHeaders();
+        let token = this._serviceTorneo.getToken();
+        headers = headers.set('Authorization', `Bearer ${token}`);
+        return this._http.post(url, "", {headers: headers});
+    }
+
+    desapuntarseProfesorEvento(idEvento: number): Observable<any> {
+        let request = "api/ProfesEventos/EliminarProfesorEvento/" + idEvento;
+        let url = environment.urlApiEventos + request;
+        let headers = new HttpHeaders();
+        let token = this._serviceTorneo.getToken();
+        headers = headers.set('Authorization', `Bearer ${token}`);
+        return this._http.delete(url, {headers: headers});
+    }
 }

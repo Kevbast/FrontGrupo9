@@ -90,6 +90,43 @@ export class HomeComponent {
     this.modalInstanceEditar.show();
   }
 
+  profesorApuntaEvento(idEvento: number, idProfesor: number): void {
+    this._service.apuntarseProfesorEvento(idEvento, idProfesor).subscribe(result => {
+      Swal.fire({
+        title: "Hecho",
+        text: "Se ha apuntado al evento correctamente",
+        icon: 'success',
+        confirmButtonText: "Cerrar"
+      }).then(() => {
+        window.location.reload();
+      })
+    })
+  }
+
+  profesorDesapuntaEvento(idEvento: number): void {
+    this._service.desapuntarseProfesorEvento(idEvento).subscribe(result => {
+      Swal.fire({
+        title: "Hecho",
+        text: "Se ha desapuntado del evento correctamente",
+        icon: 'success',
+        confirmButtonText: "Cerrar"
+      }).then(() => {
+        window.location.reload();
+      })
+    })
+  }
+
+  // COMPROBACION PARA VER SI EL USUARIO LOGADO (PROFESOR) ESTÁ APUNTADO A ALGUN EVENTO
+  profesorApuntado(): boolean {
+    let apuntado = false;
+    this.eventos.forEach(evento => {
+      if(evento.idProfesor == this.usuarioLogado.idUsuario){
+        apuntado = true;
+      }
+    });
+    return apuntado;
+  }
+
   //METODOS CRUD
   crearEvento(): void {
     if (!this.nuevoEvento.fechaEvento) {
