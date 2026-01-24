@@ -8,7 +8,7 @@ import { ServiceTorneo } from '../../services/service.torneo';
 import { MatDialog } from '@angular/material/dialog';
 import { PrecioDialogComponent } from '../precio-dialog/precio-dialog';
 
-// Modelos
+// Modelosss
 import { Actividad } from '../../models/Actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Material } from '../../models/Material';
