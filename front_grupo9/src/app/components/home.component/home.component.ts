@@ -120,7 +120,7 @@ export class HomeComponent {
   profesorApuntado(): boolean {
     let apuntado = false;
     this.eventos.forEach(evento => {
-      if(evento.idProfesor == this.usuarioLogado.idUsuario){
+      if(evento.idProfesor == this.usuarioLogado?.idUsuario){
         apuntado = true;
       }
     });

@@ -118,8 +118,8 @@ export class EquiposComponents implements OnInit {
         });
 
         //DISPARADOR QUE EJECUTARA ASIGNAR CAPITAN RANDOM SI LA FECHA ACTUAL
-        //ES TRES DIAS ANTES AL EVENTO
-        if(this.isFechaTresDiasAntes() == true){
+        //ES UNA SEMANA ANTES AL EVENTO
+        if(this.isFechaSemanaAntes() == true){
           this.randomCapitanEventoActividad();
         }
 
@@ -136,18 +136,18 @@ export class EquiposComponents implements OnInit {
     });
   }
 
-  //METODO DISPARADOR PARA HACER CAPITAN, COMPRUEBA SI LA FECHA ACTUAL ES TRES DIAS ANTES DEL EVENTO PARA 
+  //METODO DISPARADOR PARA HACER CAPITAN, COMPRUEBA SI LA FECHA ACTUAL ES UNA SEMANA ANTES DEL EVENTO PARA 
   //ASIGNAR UN CAPITAN
-  isFechaTresDiasAntes(): boolean {
+  isFechaSemanaAntes(): boolean {
     let fechaEvento = new Date(this.eventoActual.fechaEvento);
-    let tresDiasAntes = new Date(fechaEvento);
-    tresDiasAntes.setDate(fechaEvento.getDate() - 3);
+    let semanaAntes = new Date(fechaEvento);
+    semanaAntes.setDate(fechaEvento.getDate() - 7);
     let fechaActual = new Date();
 
-    tresDiasAntes.setHours(0, 0, 0, 0);
+    semanaAntes.setHours(0, 0, 0, 0);
     fechaActual.setHours(0, 0, 0, 0);
 
-    if (fechaActual.getTime() === tresDiasAntes.getTime()) {
+    if (fechaActual.getTime() === semanaAntes.getTime()) {
       return true;
     }
     return false;
