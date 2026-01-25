@@ -46,6 +46,8 @@ export class ActivitiesComponent implements OnInit {
   public participantesCache: { [idActividad: number]: Usuario[] } = {};
   public actividadAbierta: number | null = null;
   public loadingLista: boolean = false;
+  // Diccionario para guardar el número de inscritos por actividad
+  public contadoresParticipantes: { [idActividad: number]: number } = {};
 
   public inscripcion: Inscripcion;
   public actividadNueva: Actividad;
@@ -103,7 +105,15 @@ export class ActivitiesComponent implements OnInit {
             act.idProfesor || 0, act.idActividad || 0, act.nombreActividad || '',
             act.minimoJugadores || 0, act.idEventoActividad || 0
         ));
-      },
+       // AÑADE ESTO AQUÍ: Cargar contadores para cada actividad---------(nuevo cambio implementado para getNumParticipantes-Kevin)
+      this.actividadesEvento.forEach(act => {
+        this.actividadesService.findUsuariosInscritosPorActividadEvento(this.idEvento, act.idActividad)
+          .subscribe(users => {
+            // Guardamos el número en el diccionario
+            this.contadoresParticipantes[act.idEventoActividad] = users.length;
+          });
+      });
+    },
       error: (err) => console.error('Error actividades:', err)
     });
   }
@@ -296,8 +306,9 @@ export class ActivitiesComponent implements OnInit {
   }
 
   getNumeroParticipantes(idEventoActividad: number): number {
-    return this.getInscripciones(idEventoActividad).length;
-  }
+  // Devuelve el valor guardado o 0 si aún no se ha cargado
+  return this.contadoresParticipantes[idEventoActividad] || 0;
+}
 
   toggleParticipantes(idEvento: number, idActividad: number): void {
     if (this.actividadAbierta === idActividad) {

@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Curso } from '../../models/Curso';
 import { UsuariosCurso } from '../../models/UsuariosCurso';
 import { Usuario } from '../../models/Usuario';
-// Importa tu modelo de Actividades (asegúrate que el nombre coincide con tu archivo)
 import { Actividad } from '../../models/Actividad'; 
 import { ServiceTorneo } from '../../services/service.torneo';
-import { ActividadesService } from '../../services/service.actividad'; // <--- IMPORTADO
+import { ActividadesService } from '../../services/service.actividad'; 
 import { Router } from '@angular/router';
 import { Actividades } from '../../models/Actividades';
 
@@ -16,21 +15,20 @@ import { Actividades } from '../../models/Actividades';
   styleUrl: './admin.component.css',
 })
 export class AdminComponent implements OnInit {
-  // --- TAB 1: USUARIOS ---
+  
+  // VARIABLES
   public cursos: Curso[] = [];
   public usuarios: UsuariosCurso[] = [];
   public idCursoSeleccionado: number = 0;
   public loading: boolean = false;
-  public adminUser: Usuario | null = null;
+  public adminUser: Usuario | null = null; // El usuario que está logueado
 
-  // --- TAB 2: ACTIVIDADES ---
   public listaActividades: Actividades[] = [];
   public loadingActividades: boolean = false;
   public mostrandoFormulario: boolean = false;
   public esEdicion: boolean = false;
   public actividadForm: Actividades = new Actividades(0, '', 0);
 
-  // Columnas de la tabla
   public displayedColumns: string[] = ['id', 'nombre', 'minJugadores', 'acciones'];
 
   constructor(
@@ -42,7 +40,10 @@ export class AdminComponent implements OnInit {
     this._service.getPerfil().subscribe({
       next: (user) => {
         this.adminUser = user;
-        if (user.idRole !== 3 && user.idRole !==4 ) {//
+        
+        // RESTRICCIÓN DE ACCESO A LA VISTA
+        // Solo entran Admin (3) y Organizador (4)
+        if (user.idRole !== 3 && user.idRole !== 4) {
           this._router.navigate(['/perfil']);
         } else {
           this.cargarCursos();
@@ -53,7 +54,7 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // --- LÓGICA USUARIOS ---
+  // ... (cargarCursos y cargarUsuarios igual) ...
   cargarCursos() {
     this._service.getCursosActivos().subscribe(data => this.cursos = data);
   }
@@ -72,6 +73,12 @@ export class AdminComponent implements OnInit {
   }
 
   ascenderAOrganizador(usuario: UsuariosCurso) {
+    // Doble seguridad: Si no es Admin (3), no hace nada.
+    if (this.adminUser?.idRole !== 3) {
+        alert("No tienes permisos para realizar esta acción.");
+        return;
+    }
+
     if (confirm(`¿Hacer ORGANIZADOR a ${usuario.usuario}?`)) {
       this._service.asignarRolOrganizador(usuario.idUsuario).subscribe({
         next: () => {
@@ -84,7 +91,7 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  // --- LÓGICA ACTIVIDADES (CRUD) ---
+  // ... (cargarActividades igual) ...
   cargarActividades() {
     this.loadingActividades = true;
     this._service.getActividades().subscribe({
@@ -99,18 +106,33 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  // --- AQUÍ ESTÁ EL ARREGLO DEL SCROLL ---
+
   mostrarFormularioCrear() {
     this.actividadForm = new Actividades(0, '', 0);
     this.esEdicion = false;
     this.mostrandoFormulario = true;
+    
+    // Subir suavemente al formulario
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   }
 
   editarActividad(act: Actividades) {
     this.actividadForm = new Actividades(act.idActividad, act.nombre, act.minimoJugadores);
     this.esEdicion = true;
     this.mostrandoFormulario = true;
+
+    // MAGIA: Hace scroll hacia arriba suavemente para ver el formulario
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Opcional: Si quieres ir a un elemento específico:
+        // document.getElementById('topForm')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100); 
   }
 
+  // ... (resto de funciones guardar/borrar igual) ...
   cancelarFormulario() {
     this.mostrandoFormulario = false;
   }

@@ -6,7 +6,10 @@
     </button>
     <div>
       <h2 class="fw-bold m-0 text-dark">Panel de Administración</h2>
-      <small class="text-muted">Gestión integral de la plataforma</small>
+      <small class="text-muted">
+        <span *ngIf="adminUser.idRole === 3">Control total de la plataforma</span>
+        <span *ngIf="adminUser.idRole === 4">Gestión de actividades y consultas</span>
+      </small>
     </div>
   </div>
 
@@ -59,9 +62,13 @@
               </div>
 
               <div class="actions">
-                <button mat-stroked-button color="primary" *ngIf="user.idRole === 2" (click)="ascenderAOrganizador(user)">
+                
+                <button mat-stroked-button color="primary" 
+                        *ngIf="user.idRole === 2 && adminUser.idRole === 3" 
+                        (click)="ascenderAOrganizador(user)">
                   <mat-icon>upgrade</mat-icon> Ascender
                 </button>
+
                 <div *ngIf="user.idRole === 4" class="text-success fw-bold d-flex align-items-center gap-1">
                   <mat-icon>check_circle</mat-icon> Organizador
                 </div>
@@ -101,7 +108,7 @@
           </button>
         </div>
 
-        <div *ngIf="mostrandoFormulario" class="form-container mb-4 fade-in">
+        <div id="topForm" *ngIf="mostrandoFormulario" class="form-container mb-4 fade-in">
           <h5 class="fw-bold mb-3 text-primary">{{ esEdicion ? 'Editar Actividad' : 'Nueva Actividad' }}</h5>
           <div class="row g-3">
             <div class="col-md-8">
