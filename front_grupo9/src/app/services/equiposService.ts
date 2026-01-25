@@ -9,6 +9,7 @@ import { Color } from "../models/Color";
 import { CapitanActividad } from "../models/CapitanActividad";
 import { MiembroEquipos } from "../models/MiembrosEquipo";
 import { ServiceTorneo } from "./service.torneo";
+import { Evento } from "../models/Evento";
 
 @Injectable()
 export class EquiposService {
@@ -79,6 +80,24 @@ export class EquiposService {
         let request = "api/ActividadesEvento/FindIdEventoActividad/" + idEvento + "/" + idActividad;
         let url = environment.urlApiEventos + request;
         return this._http.get(url);
+    }
+
+    getEvento(idEvento: number): Observable<Evento> {
+        let request = "api/Eventos/" + idEvento;
+        let url = environment.urlApiEventos + request;
+        return this._http.get<Evento>(url);
+    }
+
+    getInscripcionesQuiereCapitan(idEvento: number, idActividad: number): Observable<Array<Usuario>> {
+        let request = "api/Inscripciones/InscripcionesUsuariosEventoCapitanActividad/" + idEvento;
+        let url = environment.urlApiEventos + request + "?idActividad=" + idActividad;
+        return this._http.get<Array<Usuario>>(url);
+    }
+
+    getInscripcionesEventoActividad(idEvento: number, idActividad: number): Observable<Array<Usuario>> {
+        let request = "api/Inscripciones/InscripcionesUsuariosEventoActividad/" + idEvento;
+        let url = environment.urlApiEventos + request + "?idActividad=" + idActividad;
+        return this._http.get<Array<Usuario>>(url);
     }
 
 // ----------------------------------------------------------------------------
@@ -158,10 +177,10 @@ export class EquiposService {
         return this._http.post(url, "");
     }
 
-    crearColor(nombreColor: string): Observable<any> {
-        let request = "api/Colores/create/" + nombreColor;
+    asignarCapitan(usuarioCapitan: CapitanActividad): Observable<any> {
+        let request = "api/CapitanActividades/create";
         let url = environment.urlApiEventos + request;
-        return this._http.post(url, "");
+        return this._http.post(url, usuarioCapitan);
     }
 
 

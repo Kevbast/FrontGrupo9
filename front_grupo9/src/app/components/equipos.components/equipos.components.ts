@@ -10,6 +10,9 @@ import { ServiceTorneo } from '../../services/service.torneo';
 import { MiembroEquipos } from '../../models/MiembrosEquipo';
 import Swal from 'sweetalert2';
 import { forkJoin } from 'rxjs';
+import { Evento } from '../../models/Evento';
+import { DatePipe } from '@angular/common';
+import { CapitanActividad } from '../../models/CapitanActividad';
 
 @Component({
   selector: 'app-equipos.components',
@@ -52,6 +55,9 @@ export class EquiposComponents implements OnInit {
   public coloresDisponiblesEdicion: Array<Color> = [];
   public todosLosColores: Array<Color> = [];
   public coloresDisponibles: Array<Color> = [];
+  public eventoActual!: Evento; 
+  public inscripcionesQuiereCapitan!: Array<Usuario>;
+  public inscripcionesEventoActividad!: Array<Usuario>;
 
   constructor(private _serviceEquipo: EquiposService, private _serviceUsuario: UsuariosService, private _serviceTorneo: ServiceTorneo, private _route: ActivatedRoute){}
 
@@ -73,7 +79,10 @@ export class EquiposComponents implements OnInit {
       miembros: this._serviceEquipo.getMiembrosEquipo(),
       colores: this._serviceEquipo.getColores(),
       eventoActividad: this._serviceEquipo.getEventoActividad(this.idEvento, this.idActividad),
-      perfil: this._serviceTorneo.getPerfil()
+      perfil: this._serviceTorneo.getPerfil(),
+      eventoActual: this._serviceEquipo.getEvento(this.idEvento),
+      inscripcionesQuiereCapitan: this._serviceEquipo.getInscripcionesQuiereCapitan(this.idEvento, this.idActividad),
+      inscripcionesEventoActividad: this._serviceEquipo.getInscripcionesEventoActividad(this.idEvento, this.idActividad)
     }).subscribe({
       next: (resultado) => {
         // Asignar resultados
@@ -84,6 +93,9 @@ export class EquiposComponents implements OnInit {
         this.todosLosColores = resultado.colores;
         this.idEventoActividad = Number(resultado.eventoActividad.idEventoActividad);
         this.usuarioLogado = resultado.perfil;
+        this.eventoActual = resultado.eventoActual;
+        this.inscripcionesQuiereCapitan = resultado.inscripcionesQuiereCapitan;
+        this.inscripcionesEventoActividad = resultado.inscripcionesEventoActividad;
 
         // Cargar colores únicos de los equipos
         this.listaColores = [];
@@ -104,6 +116,13 @@ export class EquiposComponents implements OnInit {
             this.esCapitan = true;
           }
         });
+
+        //DISPARADOR QUE EJECUTARA ASIGNAR CAPITAN RANDOM SI LA FECHA ACTUAL
+        //ES TRES DIAS ANTES AL EVENTO
+        if(this.isFechaTresDiasAntes() == true){
+          this.randomCapitanEventoActividad();
+        }
+
       },
       error: (error) => {
         console.error('Error al cargar los datos:', error);
@@ -115,6 +134,64 @@ export class EquiposComponents implements OnInit {
         });
       }
     });
+  }
+
+  //METODO DISPARADOR PARA HACER CAPITAN, COMPRUEBA SI LA FECHA ACTUAL ES TRES DIAS ANTES DEL EVENTO PARA 
+  //ASIGNAR UN CAPITAN
+  isFechaTresDiasAntes(): boolean {
+    let fechaEvento = new Date(this.eventoActual.fechaEvento);
+    let tresDiasAntes = new Date(fechaEvento);
+    tresDiasAntes.setDate(fechaEvento.getDate() - 3);
+    let fechaActual = new Date();
+
+    tresDiasAntes.setHours(0, 0, 0, 0);
+    fechaActual.setHours(0, 0, 0, 0);
+
+    if (fechaActual.getTime() === tresDiasAntes.getTime()) {
+      return true;
+    }
+    return false;
+  }
+
+  randomCapitanEventoActividad(): void {
+    let usuarioElegido;
+
+    //SI HAY MAS DE UNA INSCRIPCION QUE QUIERE SER CAPITAN
+    if(this.inscripcionesQuiereCapitan.length > 1) {
+      const randomIndex = Math.floor(Math.random() * this.inscripcionesQuiereCapitan.length);
+      usuarioElegido = this.inscripcionesQuiereCapitan[randomIndex];
+      console.log("Elegido por inscripciones que querian");
+
+    } else if(this.inscripcionesQuiereCapitan.length == 1){ //SI SOLO HAY UNA INSCRIPCION QUE QUIERE SER CAPITAN
+      usuarioElegido = this.inscripcionesQuiereCapitan[0];
+      console.log("Elegido por el unico que queria");
+
+    } else {
+      //RANDOM ENTRE TODOS LOS INSCRITOS, SOLO ENTRA SI NADIE HA ELEGIDO SER CAPITAN
+      const randomIndex = Math.floor(Math.random() * this.inscripcionesEventoActividad.length);
+      usuarioElegido = this.inscripcionesEventoActividad[randomIndex];
+      console.log("Elegido por inscripciones que no querian");
+    }
+
+    //CREACION DEL OBJETO A ENVIAR
+    let nuevoCapitan = new CapitanActividad (
+      0,
+      this.idEventoActividad,
+      usuarioElegido.idUsuario
+    )
+
+    //ASIGNACION DE CAPITAN
+    this._serviceEquipo.asignarCapitan(nuevoCapitan).subscribe(result => {
+      if(this.usuarioLogado.idUsuario == usuarioElegido.idUsuario){
+        Swal.fire({
+          title: "¡Felicidades!",
+          text: "Has sido elegido como capitán de esta actividad",
+          icon: "success",
+          confirmButtonText: "Aceptar"
+        });
+      }
+    })
+
   }
 
   //METODO PARA OBTENER EL STRING NOMBRE CURSO A PARTIR DE SU ID PARA MOSTRARLO EN EL EQUIPO
