@@ -1,0 +1,132 @@
+<div class="container-fluid">
+  
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between p-4 mt-5 bg-light mx-3 rounded rounded-5 shadow">
+    <div class="d-flex align-items-center">
+      <div style="width: 6px; height: 43px; background-color: #09a4ec;" class="rounded rounded-pill me-3"></div>
+      <h1 class="mb-0">Resultados de Partidos</h1>
+    </div>
+    
+    <button mat-mini-fab 
+            color="primary"
+            class="add-result-btn"
+            (click)="abrirModalCrearPartido()"
+            matTooltip="Crear nuevo partido">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <!-- Botón volver -->
+  <div class="mb-4 mt-3 mx-3">
+    <button class="btn d-flex align-items-center gap-2 px-3 py-2" 
+            [routerLink]="['/']"
+            style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
+            onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
+            onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
+      <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
+      <span class="fw-semibold">Volver a eventos</span>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <mat-spinner diameter="50" style="margin: 0 auto;"></mat-spinner>
+    <p class="mt-3">Cargando resultados...</p>
+  </div>
+
+  <!-- Tabla de resultados -->
+  <div *ngIf="!loading && partidos.length > 0" class="mx-3 mb-5">
+    <mat-card class="results-card">
+      <mat-card-content>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Local</th>
+              <th class="text-center">Resultado</th>
+              <th class="text-end">Visitante</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let partido of partidos" class="result-row">
+              <td class="team-local">
+                <div class="team-name">
+                  <mat-icon class="team-icon">sports</mat-icon>
+                  {{ getNombreEquipo(partido.idEquipoLocal) }}
+                </div>
+              </td>
+              <td class="result-score">
+                <div class="score-box">
+                  <span class="score-local">{{ partido.puntosLocal }}</span>
+                  <span class="score-separator">-</span>
+                  <span class="score-visitante">{{ partido.puntosVisitante }}</span>
+                </div>
+              </td>
+              <td class="team-visitante">
+                <div class="team-name text-end">
+                  {{ getNombreEquipo(partido.idEquipoVisitante) }}
+                  <mat-icon class="team-icon">sports</mat-icon>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="!loading && partidos.length === 0" class="empty-state mx-3">
+    <mat-icon class="empty-icon">sports_score</mat-icon>
+    <h3>No hay resultados disponibles</h3>
+    <p>Aún no se han registrado partidos para esta actividad</p>
+  </div>
+</div>
+
+<!-- Modal Crear Partido -->
+<div class="modal" [class.show]="showModalCrear" (click)="cerrarModalCrear()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Crear Nuevo Partido</h2>
+      <button class="close-btn" (click)="cerrarModalCrear()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <form>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Equipo Local</mat-label>
+          <mat-select [(ngModel)]="nuevoPartido.idEquipoLocal" name="equipoLocal" required>
+            <mat-option *ngFor="let equipo of equipos" [value]="equipo.idEquipo">
+              {{ equipo.nombreEquipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Equipo Visitante</mat-label>
+          <mat-select [(ngModel)]="nuevoPartido.idEquipoVisitante" name="equipoVisitante" required>
+            <mat-option *ngFor="let equipo of equipos" [value]="equipo.idEquipo">
+              {{ equipo.nombreEquipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Puntos Local</mat-label>
+          <input matInput type="number" [(ngModel)]="nuevoPartido.puntosLocal" name="puntosLocal" min="0" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Puntos Visitante</mat-label>
+          <input matInput type="number" [(ngModel)]="nuevoPartido.puntosVisitante" name="puntosVisitante" min="0" required>
+        </mat-form-field>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button mat-raised-button (click)="cerrarModalCrear()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="crearPartido()">Crear Partido</button>
+    </div>
+  </div>
+</div>

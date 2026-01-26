@@ -36,6 +36,8 @@ import { MatSpinner } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ColoresComponent } from './components/colores.component/colores.component';
 import { ColoresService } from './services/coloresService';
+import { ResultadosComponent } from './components/resultados.component/resultados.component';
+import { PartidoResultadoService } from './services/partidoResultadoService';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,8 @@ import { ColoresService } from './services/coloresService';
     EquiposComponents,
     PrecioDialogComponent,
     PagosComponent,
-    ColoresComponent 
+    ColoresComponent,
+    ResultadosComponent
   ],
   imports: [
     BrowserModule,
@@ -68,7 +71,7 @@ import { ColoresService } from './services/coloresService';
     FormsModule
   ],
   providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService,
-              EquiposService, UsuariosService, ColoresService
+              EquiposService, UsuariosService, ColoresService, PartidoResultadoService
   ],
   bootstrap: [App]
 })
