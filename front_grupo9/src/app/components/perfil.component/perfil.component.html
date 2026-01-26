@@ -1,6 +1,6 @@
 <div class="container-fluid mb-5" *ngIf="user">
   
-  <div class="d-flex align-items-center justify-content-between p-4 mt-5 bg-white mx-3 rounded-4 shadow-sm border-start border-5 border-primary">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 mt-5 bg-white mx-3 rounded-4 shadow-sm border-start border-5 border-primary">
     <div>
       <h1 class="mb-0 fw-bold text-dark">Mi Perfil</h1>
     </div>
@@ -8,9 +8,9 @@
     <button mat-raised-button 
             color="warn" 
             class="shadow-sm"
-            *ngIf="user.idRole === 3||user.idRole===4"
+            *ngIf="user.idRole === 3 || user.idRole === 4"
             [routerLink]="['/admin']">
-      <mat-icon>admin_panel_settings</mat-icon> IR Al PANEL DE GESTIÓN 
+      <mat-icon>admin_panel_settings</mat-icon> IR AL PANEL DE GESTIÓN 
     </button>
   </div>
 
@@ -29,7 +29,7 @@
           <div class="text-center mt-3 mb-5">
             <h2 class="fw-bold fs-2 mb-1 text-dark">{{ user.nombre }} {{ user.apellidos }}</h2>
             
-            <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+            <div class="d-flex justify-content-center align-items-center gap-2 mt-2 flex-wrap">
               
               <span class="role-badge"
                     [ngClass]="{
@@ -38,8 +38,8 @@
                       'badge-org': user.idRole === 4
                     }">
                 
-                <mat-icon *ngIf="user.idRole === 3" class="icon-tiny">shield</mat-icon>
-                <mat-icon *ngIf="user.idRole === 4" class="icon-tiny">verified</mat-icon>
+                <mat-icon *ngIf="user.idRole === 3" class="icon-tiny me-1">shield</mat-icon>
+                <mat-icon *ngIf="user.idRole === 4" class="icon-tiny me-1">verified</mat-icon>
                 
                 <span *ngIf="user.idRole === 3">ADMINISTRADOR</span>
                 <span *ngIf="user.idRole === 4">ORGANIZADOR</span>
@@ -48,26 +48,26 @@
 
               <span class="id-badge">ID: #{{ user.idUsuario }}</span>
             </div>
-            </div>
+          </div>
 
           <div class="row g-4 justify-content-center">
-            <div class="col-md-5">
+            <div class="col-md-5 col-12">
               <div class="info-box shadow-sm">
                 <div class="icon-circle bg-blue-light">
                   <mat-icon class="text-primary">email</mat-icon>
                 </div>
-                <div>
+                <div class="info-text">
                   <label>Correo Electrónico</label>
                   <p>{{ user.email }}</p>
                 </div>
               </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-5 col-12">
               <div class="info-box shadow-sm">
                 <div class="icon-circle bg-cyan-light">
                   <mat-icon class="text-info">school</mat-icon>
                 </div>
-                <div>
+                <div class="info-text">
                   <label>Curso Académico</label>
                   <p>{{ user.curso ? user.curso : 'Sin asignar' }}</p>
                 </div>
@@ -92,20 +92,24 @@
       <div class="row g-4" *ngIf="!loadingActividades && actividades.length > 0">
         <div class="col-md-6 col-lg-4" *ngFor="let act of actividades">
           <mat-card class="activity-card h-100 border-0 shadow-sm">
+            
             <div class="activity-header">
               <div class="activity-icon">
                 <mat-icon>sports_soccer</mat-icon>
               </div>
               <span class="activity-status" [class.captain-badge]="act.quiereSerCapitan">
-                {{ act.quiereSerCapitan ? 'Capitán' : 'Jugador' }}
+                {{ act.quiereSerCapitan ? 'Solicitas ser Capitán' : 'Jugador' }}
               </span>
             </div>
+
             <mat-card-content class="activity-content text-center">
               <h3 class="activity-title text-uppercase">{{ act.nombreActividad }}</h3>
+              
               <div class="activity-date">
                 <mat-icon style="font-size: 16px; width: 16px; height: 16px;">edit_calendar</mat-icon> 
                 <span>Inscrito: {{ act.fechaInscripcion | date:'dd/MM/yyyy' }}</span>
               </div>
+
               <div class="activity-meta">
                 <div class="meta-item">
                   <span class="meta-value highlight">#{{ act.idEvento }}</span>
@@ -117,16 +121,18 @@
                 </div>
               </div>
             </mat-card-content>
+
             <mat-card-actions class="activity-actions justify-content-center pb-4 px-4">
               <button mat-stroked-button color="primary" (click)="irAEvento(act.idEvento)">
                 Ver Evento
               </button>
             </mat-card-actions>
+
           </mat-card>
         </div>
       </div>
 
-      <div *ngIf="!loadingActividades && actividades.length === 0" class="empty-state text-center p-5 bg-white rounded-4 shadow-sm">
+      <div *ngIf="!loadingActividades && actividades.length === 0" class="empty-state text-center p-5 rounded-4 shadow-sm">
         <mat-icon style="font-size: 60px; width: 60px; height: 60px; color: #ccc;">assignment_late</mat-icon>
         <h4 class="fw-bold text-secondary mt-3">Aún no tienes inscripciones</h4>
         <p class="text-muted">¡Anímate a participar en los torneos disponibles!</p>

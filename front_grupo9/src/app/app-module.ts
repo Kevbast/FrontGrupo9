@@ -38,6 +38,7 @@ import { ColoresComponent } from './components/colores.component/colores.compone
 import { ColoresService } from './services/coloresService';
 import { AdminComponent } from './components/admin.component/admin.component';
 import { MatTab, MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { MatTab, MatTabGroup, MatTabsModule } from '@angular/material/tabs';
     FormsModule,
     MatTab,
     MatTabGroup,
-    MatTabsModule
+    MatTabsModule,
+    MatTooltip
   ],
   providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService,
               EquiposService, UsuariosService, ColoresService
