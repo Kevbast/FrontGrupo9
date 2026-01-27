@@ -864,6 +864,39 @@ mat-card-actions {
   .section-title {
     font-size: 1.6rem;
   }
+
+  .header-top h3 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Tablets medianas - Optimización especial */
+@media (min-width: 577px) and (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .activity-card mat-card-header {
+    padding: 16px;
+  }
+
+  .header-top h3 {
+    font-size: 1.15rem;
+  }
+
+  mat-card-content {
+    padding: 16px !important;
+  }
+
+  .stats {
+    font-size: 0.9rem;
+  }
+
+  .btn-enroll {
+    font-size: 0.95rem !important;
+    padding: 13px !important;
+  }
 }
 
 /* Tablets */
@@ -953,40 +986,52 @@ mat-card-actions {
   /* Header mobile */
   .section-header-wrapper {
     margin-bottom: 15px;
+    gap: 10px;
   }
 
   .section-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     padding-left: 10px;
+    margin: 15px 0;
   }
 
   .sports-border,
   .games-border {
     border-left-width: 4px;
+    padding-left: 10px;
   }
 
   /* Admin panel mobile */
   .admin-panel {
-    padding: 12px;
+    padding: 10px;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .badge-role {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+  }
+
+  .admin-info {
+    width: 100%;
+    order: 1;
   }
 
   .admin-info span:last-child {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .btn-caja-global {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     padding: 8px 12px !important;
+    order: 3;
+    flex: 1;
   }
 
   .add-activity-btn-mini {
-    width: 40px !important;
-    height: 40px !important;
+    width: 42px !important;
+    height: 42px !important;
+    order: 2;
   }
 
   /* Botón volver */
@@ -1004,6 +1049,7 @@ mat-card-actions {
   /* Cards más compactos */
   .activity-card {
     border-radius: 12px !important;
+    margin-bottom: 12px;
   }
 
   .activity-card mat-card-header {
@@ -1013,16 +1059,19 @@ mat-card-actions {
   .header-top {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
   }
 
   .header-top h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    word-break: break-word;
   }
 
   .header-actions {
     width: 100%;
     justify-content: space-between !important;
+    flex-wrap: wrap;
   }
 
   .price-badge {
@@ -1045,30 +1094,45 @@ mat-card-actions {
   .stats {
     font-size: 0.85rem;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 8px;
+    padding: 8px 0;
   }
 
   .stats .arrow-indicator {
-    margin-left: 5px;
+    margin-left: 8px;
+    display: inline-block;
+  }
+
+  .stats.clickable:active {
+    opacity: 0.7;
   }
 
   .progress-bar {
     height: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
 
   .material-btn {
-    padding: 10px;
-    font-size: 0.9rem;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    min-height: 44px;
+    align-items: center;
   }
 
   mat-card-actions {
     padding: 0 12px 12px !important;
+    display: flex !important;
   }
 
   .btn-enroll {
     padding: 12px !important;
     font-size: 0.9rem !important;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
+  mat-card-actions button {
+    flex: 1;
   }
 
   /* Lista de participantes mobile */
@@ -1272,10 +1336,38 @@ mat-card-actions {
   /* Empty state mobile */
   .empty-state {
     padding: 30px 15px;
+    margin: 10px;
   }
 
   .empty-state img {
-    max-width: 200px;
+    max-width: 180px;
+    height: auto;
+  }
+
+  .empty-state h3 {
+    font-size: 1.1rem;
+    margin: 15px 0 10px;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+  }
+
+  /* Loading indicator mobile */
+  .loading-mini {
+    text-align: center;
+    padding: 15px;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
 
@@ -1338,5 +1430,121 @@ mat-card-actions {
   button[mat-raised-button] {
     min-height: 44px;
     min-width: 44px;
+  }
+}
+
+/* ============================ */
+/* LANDSCAPE MOBILE OPTIMIZATION */
+/* ============================ */
+
+/* Móviles en landscape */
+@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
+  .container {
+    padding: 8px;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    margin: 10px 0;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+  }
+
+  .activity-card mat-card-header {
+    padding: 10px;
+  }
+
+  .header-top h3 {
+    font-size: 0.95rem;
+  }
+
+  mat-card-content {
+    padding: 10px !important;
+  }
+
+  mat-card-actions {
+    padding: 0 10px 10px !important;
+  }
+
+  .btn-enroll {
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .modal-container {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .enrollment-form {
+    padding: 10px 0;
+  }
+}
+
+/* ============================ */
+/* ACCESIBILIDAD Y UX */
+/* ============================ */
+
+/* Mejoras de contraste y focus para accesibilidad */
+@media (max-width: 576px) {
+  button:focus-visible,
+  .btn:focus-visible {
+    outline: 2px solid #00a8ff;
+    outline-offset: 2px;
+  }
+
+  .activity-card:focus-within {
+    box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.3);
+  }
+
+  /* Mejorar área táctil de los botones */
+  button[mat-icon-button]::before,
+  button[mat-mini-fab]::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+  }
+
+  /* Scroll suave */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevenir zoom accidental en inputs */
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ============================ */
+/* PRINT STYLES */
+/* ============================ */
+
+@media print {
+  .admin-panel,
+  .add-activity-btn-mini,
+  .edit-icon,
+  .delete-icon,
+  .edit-price-btn,
+  button {
+    display: none !important;
+  }
+
+  .activity-card {
+    page-break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  .container {
+    background-color: white !important;
   }
 }

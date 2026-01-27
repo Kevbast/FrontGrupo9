@@ -7,6 +7,7 @@ import { ServiceTorneo } from '../../services/service.torneo';
 // Importaciones para el Modal
 import { MatDialog } from '@angular/material/dialog';
 import { PrecioDialogComponent } from '../precio-dialog/precio-dialog';
+import Swal from 'sweetalert2';
 
 // Modelos
 import { Actividad } from '../../models/Actividad';
@@ -518,9 +519,16 @@ export class ActivitiesComponent implements OnInit {
     // Cargar todas las actividades disponibles
     this.actividadesService.getActividades().subscribe({
       next: (actividades: any[]) => {
-        console.log('Actividades recibidas:', actividades);
-        // Mapear las actividades para que tengan nombreActividad desde nombre
-        this.actividadesDisponibles = actividades.map(act => ({
+        // Obtener los IDs de las actividades ya asociadas al evento
+        const actividadesYaEnEvento = this.actividadesEvento.map(act => act.idActividad);
+        
+        // Filtrar las actividades que NO están ya en el evento
+        const actividadesFiltradas = actividades.filter(act => 
+          !actividadesYaEnEvento.includes(act.idActividad)
+        );
+        
+        // Mapear las actividades filtradas para que tengan nombreActividad desde nombre
+        this.actividadesDisponibles = actividadesFiltradas.map(act => ({
           idActividad: act.idActividad,
           nombre: act.nombre,
           nombreActividad: act.nombre,
@@ -531,6 +539,13 @@ export class ActivitiesComponent implements OnInit {
           idProfesor: 0,
           idEventoActividad: 0
         }));
+        
+        // Validar si hay actividades disponibles para añadir
+        if (this.actividadesDisponibles.length === 0) {
+          alert('ℹ️ No hay actividades disponibles. Todas las actividades ya están añadidas a este evento.');
+          return;
+        }
+        
         this.idActividadSeleccionada = 0;
         this.mostrarModalCrearActividad = true;
       },
@@ -592,20 +607,68 @@ export class ActivitiesComponent implements OnInit {
       return;
     }
 
-    this.actividadesService.eliminarEventoActividad(idEventoActividad).subscribe({
-      next: () => {
-        alert('✅ Actividad eliminada del evento correctamente.');
-        // Limpiar cachés relacionados
-        delete this.preciosCache[idEventoActividad];
-        if (this.participantesCache[idEventoActividad]) {
-          delete this.participantesCache[idEventoActividad];
-        }
-        // Recargar datos
-        this.cargarDatos();
-        this.cargarPrecios();
-      },
-      error: (err) => {
-        console.error('Error al eliminar actividad:', err);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      html: `Se eliminará la actividad <strong>${nombreActividad}</strong> del evento.<br><br>
+             <span style="color: #d33;">⚠️ Esta acción también eliminará:</span><br>
+             • Todas las inscripciones<br>
+             • Todos los equipos asociados<br>
+             • Todos los materiales solicitados<br>
+             • Todos los resultados/partidos<br><br>
+             <strong>Esta acción no se puede deshacer.</strong>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+      focusCancel: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Mostrar loading mientras se elimina
+        Swal.fire({
+          title: 'Eliminando...',
+          text: 'Por favor espera',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        this.actividadesService.eliminarEventoActividad(idEventoActividad).subscribe({
+          next: () => {
+            // Limpiar cachés relacionados
+            delete this.preciosCache[idEventoActividad];
+            if (this.participantesCache[idEventoActividad]) {
+              delete this.participantesCache[idEventoActividad];
+            }
+            
+            // Mostrar mensaje de éxito
+            Swal.fire({
+              title: '¡Eliminada!',
+              text: 'La actividad ha sido eliminada del evento correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#3085d6'
+            });
+            
+            // Recargar datos
+            this.cargarDatos();
+            this.cargarPrecios();
+          },
+          error: (err) => {
+            console.error('Error al eliminar actividad:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo eliminar la actividad. Intente nuevamente.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#3085d6'
+            });
+          }
+        });
       }
     });
   }
