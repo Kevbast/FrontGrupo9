@@ -73,8 +73,6 @@ export class ResultadosComponent implements OnInit {
           // Obtener idEventoActividad del primer equipo
           if (equiposActividad.length > 0 && equiposActividad[0].idEventoActividad) {
             this.idEventoActividad = equiposActividad[0].idEventoActividad;
-            console.log('✅ Equipos cargados para esta actividad:', this.equipos.length);
-            console.log('✅ idEventoActividad:', this.idEventoActividad);
             this.verificarCapitan();
             this.cargarPartidos();
           } else {
@@ -116,10 +114,8 @@ export class ResultadosComponent implements OnInit {
       next: (capitan) => {
         if (capitan && capitan.idUsuario === this.usuarioPerfil?.idUsuario) {
           this.esCapitan = true;
-          console.log('✅ Usuario es capitán de esta actividad');
         } else {
           this.esCapitan = false;
-          console.log('❌ Usuario NO es capitán de esta actividad');
         }
       },
       error: (err) => {
@@ -138,7 +134,6 @@ export class ResultadosComponent implements OnInit {
     const eventoActividadId = this.idEventoActividad || 0;
     this.nuevoPartido = new PartidoResultado(0, eventoActividadId, 0, 0, 0, 0);
     this.showModalCrear = true;
-    console.log('Abriendo modal con idEventoActividad:', eventoActividadId);
   }
 
   cerrarModalCrear(): void {
@@ -167,13 +162,6 @@ export class ResultadosComponent implements OnInit {
       return;
     }
 
-    console.log('📋 Datos del partido a crear:');
-    console.log('  - idEventoActividad:', this.nuevoPartido.idEventoActividad);
-    console.log('  - idEquipoLocal:', this.nuevoPartido.idEquipoLocal, '(' + this.getNombreEquipo(this.nuevoPartido.idEquipoLocal) + ')');
-    console.log('  - idEquipoVisitante:', this.nuevoPartido.idEquipoVisitante, '(' + this.getNombreEquipo(this.nuevoPartido.idEquipoVisitante) + ')');
-    console.log('  - puntosLocal:', this.nuevoPartido.puntosLocal);
-    console.log('  - puntosVisitante:', this.nuevoPartido.puntosVisitante);
-
     this.partidoService.crearPartido(this.nuevoPartido).subscribe({
       next: (response) => {
         alert('Partido creado correctamente');
@@ -196,7 +184,6 @@ export class ResultadosComponent implements OnInit {
     // Copiar los datos del partido a editar
     this.partidoEditar = { ...partido };
     this.showModalEditar = true;
-    console.log('Editando partido:', this.partidoEditar);
   }
 
   cerrarModalEditar(): void {
@@ -218,8 +205,6 @@ export class ResultadosComponent implements OnInit {
       alert('Los equipos deben ser diferentes');
       return;
     }
-
-    console.log('📝 Actualizando partido:', this.partidoEditar);
 
     this.partidoService.actualizarPartido(this.partidoEditar).subscribe({
       next: (response) => {
@@ -243,8 +228,6 @@ export class ResultadosComponent implements OnInit {
     if (!confirm('¿Estás seguro de que deseas eliminar este partido? Esta acción no se puede deshacer.')) {
       return;
     }
-
-    console.log('🗑️ Eliminando partido ID:', idPartidoResultado);
 
     this.partidoService.eliminarPartido(idPartidoResultado).subscribe({
       next: (response) => {

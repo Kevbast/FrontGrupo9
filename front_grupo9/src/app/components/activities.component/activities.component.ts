@@ -131,12 +131,6 @@ export class ActivitiesComponent implements OnInit {
         this.usuarioPerfil = usuario;
         this.rolUsuario = usuario.role; 
         this.idUsuarioActual = usuario.idUsuario;
-        console.log('👤 Perfil cargado:', {
-          idUsuario: usuario.idUsuario,
-          nombre: usuario.usuario,
-          role: usuario.role,
-          idRole: usuario.idRole
-        });
       }
     });
 
@@ -159,7 +153,6 @@ export class ActivitiesComponent implements OnInit {
                   precio: item.precioTotal
                 };
             });
-            console.log("💰 Precios cargados (con IDs):", this.preciosCache);
         }
       },
       error: (err) => console.error("Error al cargar precios:", err)
@@ -275,7 +268,6 @@ export class ActivitiesComponent implements OnInit {
             });
 
             if (cursosAgenerar.length === 0) {
-              console.log("Todos los cursos inscritos ya tienen su recibo generado.");
               return;
             }
 
@@ -283,7 +275,7 @@ export class ActivitiesComponent implements OnInit {
               cursosAgenerar.forEach(idCurso => {
                 const nuevoPago = new Pagos(0, idCurso, idPrecioActividad, 0, "Sin pagar");
                 this.actividadesService.crearPago(nuevoPago).subscribe({
-                  next: () => console.log(`Recibo generado para curso ${idCurso}`),
+                  next: () => {},
                   error: (e) => console.error(e)
                 });
               });
@@ -518,7 +510,6 @@ export class ActivitiesComponent implements OnInit {
     // Cargar todas las actividades disponibles
     this.actividadesService.getActividades().subscribe({
       next: (actividades: any[]) => {
-        console.log('Actividades recibidas:', actividades);
         // Mapear las actividades para que tengan nombreActividad desde nombre
         this.actividadesDisponibles = actividades.map(act => ({
           idActividad: act.idActividad,

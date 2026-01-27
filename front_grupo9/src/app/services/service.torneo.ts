@@ -28,7 +28,6 @@ export class ServiceTorneo {
       userName: nombre,
       password: contraseña,
     };
-    console.log(credentials);
     return this._http.post<LoginResponse>(apiUrl, credentials).pipe(
       tap((data: LoginResponse) => {
         if (data.response) {

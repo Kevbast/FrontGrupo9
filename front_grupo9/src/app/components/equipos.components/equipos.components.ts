@@ -165,17 +165,14 @@ export class EquiposComponents implements OnInit {
     if(this.inscripcionesQuiereCapitan.length > 1) {
       const randomIndex = Math.floor(Math.random() * this.inscripcionesQuiereCapitan.length);
       usuarioElegido = this.inscripcionesQuiereCapitan[randomIndex];
-      console.log("Elegido por inscripciones que querian");
 
     } else if(this.inscripcionesQuiereCapitan.length == 1){ //SI SOLO HAY UNA INSCRIPCION QUE QUIERE SER CAPITAN
       usuarioElegido = this.inscripcionesQuiereCapitan[0];
-      console.log("Elegido por el unico que queria");
 
     } else {
       //RANDOM ENTRE TODOS LOS INSCRITOS, SOLO ENTRA SI NADIE HA ELEGIDO SER CAPITAN
       const randomIndex = Math.floor(Math.random() * this.inscripcionesEventoActividad.length);
       usuarioElegido = this.inscripcionesEventoActividad[randomIndex];
-      console.log("Elegido por inscripciones que no querian");
     }
 
     //CREACION DEL OBJETO A ENVIAR
@@ -232,7 +229,6 @@ export class EquiposComponents implements OnInit {
       this._serviceEquipo.getJugadoresEquipo(idEquipo).subscribe(result => {
         this.jugadoresEquipo = result;
         this.loadingJugadores = false;
-        console.log('Jugadores del equipo', idEquipo, ':', result);
       });
     }
   }

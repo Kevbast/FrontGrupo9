@@ -33,7 +33,6 @@ export class PerfilComponent implements OnInit {
       this._service.getActividadesInscritas().subscribe({
         next: (data) => {
           this.actividades = data;
-          console.log(data);
           this.loadingActividades = false;
         },
         error: (err) => {

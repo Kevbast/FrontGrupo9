@@ -37,7 +37,6 @@ export class LoginComponent {
     this._service.login(usuarioCompleto, password).subscribe({
       next: (response) => {
         localStorage.setItem('authToken', response.response);
-        console.log('Login OK');       
         // 2. DESACTIVAR CARGA Y REDIRIGIR
         this.isLoading = false;         
         this.updateToken.emit();

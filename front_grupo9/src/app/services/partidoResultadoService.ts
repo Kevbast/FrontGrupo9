@@ -67,10 +67,6 @@ export class PartidoResultadoService {
       puntosVisitante: partido.puntosVisitante || 0
     };
     
-    console.log('🏀 Enviando partido con payload:', payload);
-    console.log('🔑 Token existe:', !!token);
-    console.log('🔑 Token value (primeros 20 chars):', token ? token.substring(0, 20) + '...' : 'NO TOKEN');
-    
     return this.http.post<PartidoResultado>(url, payload, { headers: headers });
   }
 
@@ -92,9 +88,6 @@ export class PartidoResultadoService {
       puntosVisitante: partido.puntosVisitante || 0
     };
     
-    console.log('📝 Actualizando partido con payload:', payload);
-    console.log('🔑 Token existe:', !!token);
-    
     return this.http.put(url, payload, { headers: headers });
   }
 
@@ -106,9 +99,6 @@ export class PartidoResultadoService {
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-    
-    console.log('🗑️ Eliminando partido ID:', id);
-    console.log('🔑 Token existe:', !!token);
     
     return this.http.delete(url, { headers: headers });
   }

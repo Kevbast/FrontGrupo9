@@ -19,7 +19,6 @@ export class App {
     
    updateToken(): void {
     this.token = this._service.getToken();
-    console.log("Token vista app: "+this._service.getToken())
   }
 
 }

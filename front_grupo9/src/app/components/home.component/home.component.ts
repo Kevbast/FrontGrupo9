@@ -36,7 +36,6 @@ export class HomeComponent {
 
     this._serviceTorneo.getPerfil().subscribe(result => {
       this.usuarioLogado = result;
-      console.log(this.usuarioLogado);
     })
   }
 
@@ -70,7 +69,6 @@ export class HomeComponent {
   getProfesoresSinEvento(): void {
     this._service.getProfesoresActivosSinEvento().subscribe(result => {
       this.profesoresActivosSinEvento = result;
-      console.log('Profesores sin evento:', this.profesoresActivosSinEvento);
     })
   }
 

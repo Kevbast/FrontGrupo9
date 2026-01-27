@@ -16,7 +16,6 @@ export class MenuComponent {
   
   cerrarSesion():void{
     this._service.cerrarSesion();
-    console.log("SESION CERRADA!")
     this.updateToken.emit();
   }
 }
