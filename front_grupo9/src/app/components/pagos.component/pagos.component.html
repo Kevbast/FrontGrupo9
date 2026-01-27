@@ -88,8 +88,8 @@
                 (selectionChange)="cambiarEstado(element, $event.value)"
                 [ngClass]="element.estado === 'PAGADO' ? 'select-pagado' : 'select-pendiente'"
               >
-                <mat-option value="Sin pagar">🔴 Sin pagar</mat-option>
-                <!-- <mat-option value="No tiene que pagar">✖️ Exento</mat-option> -->
+                <mat-option value="SIN PAGAR">🔴 Sin pagar</mat-option>
+                <mat-option value="NO TIENE QUE PAGAR">✖️ Exento</mat-option>
                 <mat-option value="PAGADO">🟢 PAGADO</mat-option>
               </mat-select>
             </mat-form-field>
@@ -160,8 +160,8 @@
               (selectionChange)="cambiarEstado(element, $event.value)"
               [ngClass]="element.estado === 'PAGADO' ? 'select-pagado' : 'select-pendiente'"
             >
-              <mat-option value="Sin pagar">🔴 Sin pagar</mat-option>
-              <!-- <mat-option value="No tiene que pagar">✖️ Exento</mat-option> -->
+              <mat-option value="SIN PAGAR">🔴 Sin pagar</mat-option>
+              <mat-option value="NO TIENE QUE PAGAR">✖️ Exento</mat-option>
               <mat-option value="PAGADO">🟢 PAGADO</mat-option>
             </mat-select>
           </mat-form-field>

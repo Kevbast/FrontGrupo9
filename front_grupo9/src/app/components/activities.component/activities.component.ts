@@ -7,6 +7,7 @@ import { ServiceTorneo } from '../../services/service.torneo';
 // Importaciones para el Modal
 import { MatDialog } from '@angular/material/dialog';
 import { PrecioDialogComponent } from '../precio-dialog/precio-dialog';
+import Swal from 'sweetalert2';
 
 // Modelos
 import { Actividad } from '../../models/Actividad';
@@ -43,6 +44,7 @@ export class ActivitiesComponent implements OnInit {
 
   public rolUsuario: string = '';
   public idUsuarioActual: number = 0;
+  public idCursoActual: number = 0;
   public idEventoActividadSeleccionada: number = 0;
 
   // Cache y Control de Desplegable
@@ -140,6 +142,7 @@ export class ActivitiesComponent implements OnInit {
         this.usuarioPerfil = usuario;
         this.rolUsuario = usuario.role;
         this.idUsuarioActual = usuario.idUsuario;
+        this.idCursoActual = usuario.idCurso;
         console.log('👤 Perfil cargado:', {
           idUsuario: usuario.idUsuario,
           nombre: usuario.usuario,
@@ -205,11 +208,22 @@ export class ActivitiesComponent implements OnInit {
     this.actividadesService.eliminarPrecioActividad(idPrecio).subscribe({
       next: () => {
         delete this.preciosCache[idEventoActividad];
-        alert('🗑️ Precio eliminado. La actividad vuelve a ser gratis.');
+        Swal.fire({
+          icon: 'success',
+          title: 'Precio eliminado',
+          text: 'La actividad vuelve a ser gratis.',
+          timer: 2500,
+          showConfirmButton: false
+        });
       },
       error: (err) => {
         console.error(err);
-        alert('❌ Error al eliminar el precio.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el precio. Inténtalo de nuevo.',
+          confirmButtonColor: '#d33'
+        });
       },
     });
   }
@@ -218,95 +232,170 @@ export class ActivitiesComponent implements OnInit {
   guardarPrecioEnApi(idEventoActividad: number, idActividad: number, precio: number) {
     const registroExistente = this.preciosCache[idEventoActividad];
 
+    // CASO 1: ACTUALIZAR PRECIO EXISTENTE
     if (registroExistente) {
+      console.log('📝 Actualizando precio existente:', {
+        idPrecio: registroExistente.idPrecio,
+        idEventoActividad,
+        precio
+      });
+
       this.actividadesService
         .actualizarPrecioActividad(registroExistente.idPrecio, idEventoActividad, precio)
         .subscribe({
           next: (res) => {
             this.preciosCache[idEventoActividad].precio = precio;
-            alert(`✅ Precio actualizado a ${precio}€.`);
+            console.log('✅ Precio actualizado correctamente');
+            
+            // Si el precio es mayor a 0, generamos recibos automáticamente
+            if (precio > 0) {
+              console.log('💰 Iniciando generación de recibos pendientes...');
+              this.generarRecibosPendientes(this.idEvento, idActividad, registroExistente.idPrecio);
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Precio actualizado',
+                text: `El precio se actualizó a ${precio}€`,
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
           },
           error: (err) => {
-            console.error(err);
-            alert('❌ Error al actualizar el precio.');
+            console.error('❌ Error al actualizar precio:', err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo actualizar el precio.',
+              confirmButtonColor: '#d33'
+            });
           },
         });
-    } else {
+    } 
+    // CASO 2: CREAR NUEVO PRECIO
+    else {
+      console.log('🆕 Creando nuevo precio:', { idEventoActividad, precio });
+
       this.actividadesService.crearPrecioActividad(idEventoActividad, precio).subscribe({
         next: (res: any) => {
-          const nuevoIdPrecio = res.idPrecioActividad || 0;
-
-          this.preciosCache[idEventoActividad] = {
-            idPrecio: nuevoIdPrecio,
-            precio: precio,
-          };
-
-          alert(`✅ Precio asignado correctamente.`);
+          console.log('📦 Respuesta de crear precio:', res);
+          
+          // Intentar obtener el ID del precio de múltiples formas
+          const nuevoIdPrecio = res.idPrecioActividad || res.IdPrecioActividad || res.id || res.Id || 0;
+          
+          console.log('🔑 ID precio obtenido:', nuevoIdPrecio);
 
           if (nuevoIdPrecio > 0) {
-            this.generarRecibosPendientes(this.idEvento, idActividad, nuevoIdPrecio);
-          }
+            this.preciosCache[idEventoActividad] = {
+              idPrecio: nuevoIdPrecio,
+              precio: precio,
+            };
 
-          if (!nuevoIdPrecio) this.cargarPrecios();
+            // Si el precio es > 0, generamos recibos automáticamente SIN timeout
+            if (precio > 0) {
+              console.log('💰 Iniciando generación de recibos pendientes...');
+              this.generarRecibosPendientes(this.idEvento, idActividad, nuevoIdPrecio);
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Precio asignado',
+                text: 'El precio se asignó correctamente.',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
+          } else {
+            console.warn('⚠️ No se pudo obtener el ID del precio. Recargando lista...');
+            Swal.fire({
+              icon: 'warning',
+              title: 'Precio creado',
+              text: 'El precio fue creado pero sin ID. Recarga la página para ver los cambios.',
+              confirmButtonColor: '#f39c12'
+            });
+            this.cargarPrecios();
+          }
         },
         error: (err) => {
-          console.error(err);
-          alert('❌ Error al crear el precio.');
+          console.error('❌ Error al crear precio:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo crear el precio.',
+            confirmButtonColor: '#d33'
+          });
         },
       });
     }
   }
 
-  // Genera recibos de pago automáticamente para los cursos inscritos que no tienen recibo
+  // Genera recibos de pago automáticamente
   generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActividad: number) {
-    this.actividadesService
-      .findUsuariosInscritosPorActividadEvento(idEvento, idActividad)
-      .subscribe({
-        next: (usuarios) => {
-          const cursosInscritos = new Set<number>();
-          usuarios.forEach((u: any) => {
-            if (u.idCurso && u.idCurso > 0) cursosInscritos.add(u.idCurso);
+    console.log('🎫 Iniciando generación de pago automático:', {
+      idEvento,
+      idActividad,
+      idPrecioActividad,
+      idCursoActual: this.idCursoActual
+    });
+    
+    // Verificar si ya existe un pago para este curso y actividad
+    this.actividadesService.getPagosEvento(idEvento).subscribe({
+      next: (pagosExistentes) => {
+        console.log('💳 Pagos existentes en el evento:', pagosExistentes.length);
+        
+        // Comprobar si ya existe un pago para el curso actual y esta actividad
+        const yaTienePago = pagosExistentes.find(
+          (p: any) => p.idCurso === this.idCursoActual && p.idActividad === idActividad
+        );
+
+        if (yaTienePago) {
+          console.log('⚠️ Ya existe un pago para este curso y actividad.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Precio asignado',
+            text: 'Ya existe un recibo de pago para esta actividad.',
+            timer: 2500,
+            showConfirmButton: false
           });
+          return;
+        }
 
-          if (cursosInscritos.size === 0) return;
-
-          this.actividadesService.getPagosEvento(idEvento).subscribe({
-            next: (pagosExistentes) => {
-              let cursosAgenerar: number[] = [];
-
-              cursosInscritos.forEach((idCurso) => {
-                const yaTienePago = pagosExistentes.find(
-                  (p: any) => p.idCurso === idCurso && p.idActividad === idActividad,
-                );
-
-                if (!yaTienePago) {
-                  cursosAgenerar.push(idCurso);
-                }
-              });
-
-              if (cursosAgenerar.length === 0) {
-                console.log('Todos los cursos inscritos ya tienen su recibo generado.');
-                return;
-              }
-
-              if (
-                confirm(
-                  `Se han detectado ${cursosAgenerar.length} cursos nuevos sin recibo. ¿Generar recibos ahora?`,
-                )
-              ) {
-                cursosAgenerar.forEach((idCurso) => {
-                  const nuevoPago = new Pagos(0, idCurso, idPrecioActividad, 0, 'Sin pagar');
-                  this.actividadesService.crearPago(nuevoPago).subscribe({
-                    next: () => console.log(`Recibo generado para curso ${idCurso}`),
-                    error: (e) => console.error(e),
-                  });
-                });
-              }
-            },
-            error: (err) => console.error('Error comprobando pagos existentes', err),
-          });
-        },
-      });
+        // Crear el pago automáticamente usando el curso del usuario logueado
+        const nuevoPago = new Pagos(0, this.idCursoActual, idPrecioActividad, 0, 'SIN PAGAR');
+        
+        console.log('📄 Creando pago automático:', nuevoPago);
+        
+        this.actividadesService.crearPago(nuevoPago).subscribe({
+          next: () => {
+            console.log('✅ Pago generado correctamente');
+            Swal.fire({
+              icon: 'success',
+              title: '¡Precio y recibo creados!',
+              text: 'El precio se asignó y se generó el recibo de pago automáticamente.',
+              timer: 3000,
+              showConfirmButton: false
+            });
+          },
+          error: (e) => {
+            console.error('❌ Error generando pago:', e);
+            Swal.fire({
+              icon: 'warning',
+              title: 'Precio asignado',
+              text: 'El precio se asignó, pero hubo un error al generar el recibo de pago.',
+              confirmButtonColor: '#f39c12'
+            });
+          },
+        });
+      },
+      error: (err) => {
+        console.error('❌ Error comprobando pagos existentes:', err);
+        Swal.fire({
+          icon: 'warning',
+          title: 'Precio asignado',
+          text: 'El precio se asignó, pero no se pudo verificar los recibos existentes.',
+          confirmButtonColor: '#f39c12'
+        });
+      },
+    });
   }
 
   // --- NAVEGACIÓN A PAGOS ---
@@ -416,7 +505,12 @@ export class ActivitiesComponent implements OnInit {
 
     // Permitimos si es Admin/Org O si está inscrito
     if (!this.esAdminOOrganizador() && !estaInscrito) {
-      alert('❌ Solo los participantes inscritos pueden solicitar material para esta actividad.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Acceso denegado',
+        text: 'Solo los participantes inscritos pueden solicitar material para esta actividad.',
+        confirmButtonColor: '#d33'
+      });
       return;
     }
 
@@ -435,19 +529,60 @@ export class ActivitiesComponent implements OnInit {
       next: (res) => {
         this.nuevoMaterialNombre = '';
         this.recargarMateriales();
+        Swal.fire({
+          icon: 'success',
+          title: 'Material solicitado',
+          text: 'La solicitud de material se creó correctamente.',
+          timer: 2000,
+          showConfirmButton: false
+        });
       },
-      error: (err) => alert('Error al crear solicitud de material'),
+      error: (err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo crear la solicitud de material.',
+          confirmButtonColor: '#d33'
+        });
+      }
     });
   }
 
   // Elimina un material de la lista (solo organizador o creador del material)
   borrarMaterial(idMaterial: number): void {
-    if (confirm('¿Eliminar este material de la lista?')) {
-      this.materialesService.deleteMateriales(idMaterial).subscribe({
-        next: () => this.recargarMateriales(),
-        error: (err) => alert('Error al eliminar'),
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar material?',
+      text: 'Esta solicitud de material se eliminará de la lista',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.materialesService.deleteMateriales(idMaterial).subscribe({
+          next: () => {
+            this.recargarMateriales();
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: 'El material se eliminó de la lista.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          },
+          error: (err) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar el material.',
+              confirmButtonColor: '#d33'
+            });
+          }
+        });
+      }
+    });
   }
 
   // Registra al usuario como aportador de un material (solo inscritos u organizadores)
@@ -457,19 +592,48 @@ export class ActivitiesComponent implements OnInit {
     const estaInscrito = inscritos.some((u) => u.idUsuario === this.idUsuarioActual);
 
     if (!this.esAdminOOrganizador() && !estaInscrito) {
-      alert('❌ Solo los participantes inscritos pueden aportar material.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Acceso denegado',
+        text: 'Solo los participantes inscritos pueden aportar material.',
+        confirmButtonColor: '#d33'
+      });
       return;
     }
 
-    if (confirm(`¿Te comprometes a traer: ${material.nombreMaterial}?`)) {
-      this.materialesService.aportarMaterial(material.idMaterial, this.idUsuarioActual).subscribe({
-        next: () => {
-          alert('¡Gracias! Has sido registrado como aportador.');
-          this.recargarMateriales();
-        },
-        error: (err) => alert('Error al aportar material'),
-      });
-    }
+    Swal.fire({
+      title: '¿Aportar material?',
+      text: `¿Te comprometes a traer: ${material.nombreMaterial}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, lo traeré',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.materialesService.aportarMaterial(material.idMaterial, this.idUsuarioActual).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: '¡Gracias!',
+              text: 'Has sido registrado como aportador de este material.',
+              timer: 2500,
+              showConfirmButton: false
+            });
+            this.recargarMateriales();
+          },
+          error: (err) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo registrar tu aportación.',
+              confirmButtonColor: '#d33'
+            });
+          }
+        });
+      }
+    });
   }
 
   // Recarga la lista de materiales desde la API
