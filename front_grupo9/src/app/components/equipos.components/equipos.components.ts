@@ -11,7 +11,6 @@ import { MiembroEquipos } from '../../models/MiembrosEquipo';
 import Swal from 'sweetalert2';
 import { forkJoin } from 'rxjs';
 import { Evento } from '../../models/Evento';
-import { DatePipe } from '@angular/common';
 import { CapitanActividad } from '../../models/CapitanActividad';
 
 @Component({
@@ -36,16 +35,18 @@ export class EquiposComponents implements OnInit {
   public idEvento!: number;
   public equipoAbierto: number | null = null;
   public loadingJugadores: boolean = false;
+  //PARTICIPANTE Y EQUIPO SELECCIONADO PARA FICHAR A UN JUGADOR Y PARA INSCRIBIRSE 
+  //EL PROPIO JUGADOR
   public participanteSeleccionado!: Usuario;
   public equipoSeleccionado: number | string = '';
-  // Variables para crear nuevo equipo
+  // VARIABLE PARA CREAR NUEVO EQUIPO
   public nuevoEquipo = {
     nombreEquipo: '',
     minimoJugadores: 0,
     idColor: 0,
     idCurso: 0
   };
-  // Variables para editar equipo
+  // VARIABLE PARA EDITAR EL EQUIPO
   public equipoAEditar!: Equipo;
   public editarEquipo = {
     nombreEquipo: '',
@@ -55,6 +56,7 @@ export class EquiposComponents implements OnInit {
   public coloresDisponiblesEdicion: Array<Color> = [];
   public todosLosColores: Array<Color> = [];
   public coloresDisponibles: Array<Color> = [];
+  //ALMACENAR EL EVENTO SOBRE EL QUE ESTAMOS POR EL IDEVENTO
   public eventoActual!: Evento; 
   public inscripcionesQuiereCapitan!: Array<Usuario>;
   public inscripcionesEventoActividad!: Array<Usuario>;
@@ -71,7 +73,8 @@ export class EquiposComponents implements OnInit {
   }
 
   cargarDatos(): void {
-    // Usar forkJoin para esperar a que todas las llamadas se completen
+    // ESTE FORKJOIN HACE QUE SE ESPEREN TODAS LAS LLAMADAS PARA EJECUTARSE DEL TIRON Y QUE 
+    // CARGUE LA PÁGINA RÁPIDAMENTE
     forkJoin({
       equipos: this._serviceEquipo.getEquiposActividadEvento(this.idActividad, this.idEvento),
       participantes: this._serviceUsuario.getUsuariosInscritosEventoActividad(this.idEvento, this.idActividad),
@@ -85,7 +88,7 @@ export class EquiposComponents implements OnInit {
       inscripcionesEventoActividad: this._serviceEquipo.getInscripcionesEventoActividad(this.idEvento, this.idActividad)
     }).subscribe({
       next: (resultado) => {
-        // Asignar resultados
+        // ASIGNAR CADA RESULTADO OBTENIDO EN LAS LLAMADAS DEL SERVICE
         this.equiposActividadEvento = resultado.equipos;
         this.participantesInscritos = resultado.participantes;
         this.listaCursosActivos = resultado.cursos;
@@ -110,8 +113,9 @@ export class EquiposComponents implements OnInit {
         // Actualizar colores disponibles
         this.actualizarColoresDisponibles();
 
-        // Verificar si es capitán
+        // VERIFICAR SI ES CAPITAN
         this._serviceEquipo.getCapitanByIdEventoActividad(this.idEventoActividad).subscribe(capitan => {
+          //SI ME DEVUELVE ALGO EL GET CAPITAN Y SI LO ES EL USUARIO LOGADO, DEVUELVA TRUE
           if ((capitan != null || capitan != undefined) && capitan.idUsuario == this.usuarioLogado.idUsuario) {
             this.esCapitan = true;
           }
@@ -154,6 +158,7 @@ export class EquiposComponents implements OnInit {
   }
 
   randomCapitanEventoActividad(): void {
+    //EL ALMA CARITATIVA
     let usuarioElegido;
 
     //SI HAY MAS DE UNA INSCRIPCION QUE QUIERE SER CAPITAN
@@ -215,6 +220,7 @@ export class EquiposComponents implements OnInit {
     return 'Cargando...';
   }
 
+  //MOSTRAR JUGADORES DE UN EQUIPO AL ABRIR EL DESPLEGABLE
   toggleJugadores(idEquipo: number): void {
     if (this.equipoAbierto === idEquipo) {
       this.equipoAbierto = null;
@@ -343,7 +349,7 @@ export class EquiposComponents implements OnInit {
     let miembrosEquipos!: Array<MiembroEquipos>
     return miembrosEquipos;
   }
-
+  
   eliminarJugadorEquipo(idUsuario: number, idEquipo: number){
       this.miembroEquipos.forEach(miembro => {
         if(miembro.idUsuario == idUsuario && miembro.idEquipo == idEquipo){

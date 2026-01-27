@@ -128,6 +128,8 @@
 
         </mat-card-content>
 
+        <!-- BOTON DE INSCRIBIRSE, SE OCULTA SI EL PLAZO DE INSCRIPCIONES SE CIERRA (UNA SEMANA)
+        ANTES DEL EVENTO, O SI EL USUARIO LOGADO ES PROFESOR -->
         <mat-card-actions *ngIf="isFechaSemanaAntes() == false && usuarioPerfil?.idRole != 1">
           <button mat-raised-button color="primary" class="btn-enroll" (click)="abrirModalInscripcion(act.idEventoActividad)">Inscribirse</button>
         </mat-card-actions>

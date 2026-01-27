@@ -42,6 +42,8 @@ export class ColoresComponent implements OnInit {
 
   }
 
+
+  //METODO PARA OBTENER LOS COLORES YA ELEGIDOS POR EQUIPOS EN EL EVENTO ACTIVIDAD
   obtenerColoresElegidos(idActividad: number, idEvento: number): void {
       if (idActividad && idEvento) {
         this._equiposService.getEquiposActividadEvento(idActividad, idEvento).subscribe(equipos => {
