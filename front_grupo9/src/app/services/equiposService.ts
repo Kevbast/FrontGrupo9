@@ -28,6 +28,13 @@ export class EquiposService {
         return headers;
     }
 
+    getTodosEquipos(): Observable<Array<Equipo>> {
+        let request = "api/Equipos";
+        let url = environment.urlApiEventos + request;
+        const headers = this.getAuthHeaders();
+        return this._http.get<Array<Equipo>>(url, { headers: headers });
+    }
+
     getEquiposActividadEvento(idActividad: number, idEvento: number): Observable<Array<Equipo>> {
         let request = "api/Equipos/EquiposActividadEvento/" + idActividad + "/" + idEvento;
         let url = environment.urlApiEventos + request;
