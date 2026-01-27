@@ -1,178 +1,227 @@
-/* --- VARIABLES (Mismas que el Login) --- */
-:root {
-  --sport-primary: #0077b6;
-  --sport-hover: #023e8a;
-  --white-translucent: rgba(255, 255, 255, 0.95);
-}
-.navbar {
+/* ========================================= */
+/* DISEÑO PC (INTACTO)                 */
+/* ========================================= */
+
+/* 1. BARRA DE NAVEGACIÓN PRINCIPAL */
+.custom-navbar {
+  background: #0077b6;
+  padding: 0.7rem 1rem; /* Pequeño ajuste: añadido padding lateral para que no pegue a los bordes */
+  box-shadow: 0 4px 20px rgba(0, 119, 182, 0.4);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* ESTO ES CRUCIAL: Asegura la alineación base */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.nav-link {
-  transition: transform 0.2s ease;
-}
-
-/* 1. BARRA DE NAVEGACIÓN (El contenedor azul) */
-.custom-navbar {
-  /* Degradado Azul Deportivo */
-  background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%);
-  padding: 1rem 0;
-  box-shadow: 0 4px 20px rgba(0, 119, 182, 0.4); /* Sombra difusa azulada */
-  position: relative;
-  z-index: 100;
-}
-
-/* 2. LOGO Y TÍTULOS */
+/* 2. LOGO Y MARCA */
 .navbar-logo {
-  height: 65px;
-  margin-right: 20px;
-  /* Sombra al logo para que resalte sobre el azul */
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-  transition: transform 0.3s;
+  height: 75px;
+  margin-right: 15px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease;
 }
 
-.navbar-logo:hover {
-  transform: scale(1.05) rotate(-5deg);
-}
-.navbar-logo {
-  height: 65px;
-  margin-right: 20px;
-  /* Esto invierte el color oscuro a claro, pero al 85% para que sea grisáceo/plata */
-  filter: brightness(0) invert(0.85);
-  transition: transform 0.3s;
+.brand-section:hover .navbar-logo {
+  transform: scale(1.05);
 }
 
 .navbar-brand {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  line-height: 1.1;
+  color: #ffffff;
   text-decoration: none;
 }
 
 .brand-title {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
-  color: white;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .brand-subtitle {
   font-size: 0.85rem;
-  color: #e0f7fa; /* Blanco azulado */
+  color: #e0f7fa;
   font-weight: 400;
   letter-spacing: 0.5px;
 }
 
-/* 3. ICONOS DE NAVEGACIÓN (Cajas Blancas) */
+/* 3. ICONOS DE NAVEGACIÓN (Cajas) */
+.navbar-nav {
+  display: flex;
+  flex-direction: row; /* Asegura fila en PC también */
+  align-items: center;
+  gap: 10px;
+}
+
 .nav-link-custom {
   text-decoration: none;
   position: relative;
+  display: block;
+  padding-bottom: 5px;
 }
 
-/* La caja blanca del icono */
 .nav-box {
-  width: 50px;
-  height: 50px;
-  background-color: rgba(255, 255, 255, 0.15); /* Semitransparente por defecto */
+  width: 46px;
+  height: 46px;
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #ffffff;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .nav-box mat-icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+  font-size: 26px;
+  width: 26px;
+  height: 26px;
+  transition: transform 0.3s ease;
 }
 
-/* Efecto Hover */
+/* Efectos Hover (PC) */
 .nav-box:hover {
-  background-color: white;
-  color: var(--sport-primary); /* El icono se vuelve azul */
-  transform: translateY(-5px); /* Flota hacia arriba */
+  background-color: #ffffff;
+  color: #0077b6;
+  transform: translateY(-4px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  border-color: #ffffff;
 }
 
-/* ESTADO ACTIVO (Cuando estás en esa página) */
+/* ESTADO ACTIVO (PC) */
 .active .nav-box {
-  background-color: white;
-  color: var(--sport-primary);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* Resplandor blanco */
-  transform: scale(1.1);
-  border-color: white;
+  background-color: #ffffff;
+  color: #0077b6;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  border-color: #ffffff;
 }
 
-/* Pequeño punto indicador debajo del activo */
 .active::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: -4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  background-color: white;
-  border-radius: 50%;
-  box-shadow: 0 0 5px white;
+  width: 20px;
+  height: 4px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
-/* 4. BOTÓN CERRAR SESIÓN */
+/* 4. BOTÓN LOGOUT (PC) */
 .logout-btn {
-  background-color: rgba(255, 0, 0, 0.1); /* Fondo rojo muy suave */
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  padding: 8px 20px;
-  border-radius: 30px; /* Forma de píldora */
+  background-color: rgba(220, 53, 69, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 0 22px;
+  height: 46px;
+  border-radius: 25px;
   font-weight: 600;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  gap: 8px;
+  white-space: nowrap; /* Evita que el texto baje si hay poco espacio */
 }
 
 .logout-btn mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
 }
 
 .logout-btn:hover {
-  background-color: #ff5252; /* Rojo vivo al pasar el ratón */
-  border-color: #ff5252;
-  box-shadow: 0 4px 12px rgba(255, 82, 82, 0.4);
+  background-color: #ff3d3d;
+  border-color: #ff3d3d;
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 61, 61, 0.4);
   transform: translateY(-2px);
 }
 
-/* Ajustes Responsive */
+/* ========================================= */
+/* CORRECCIÓN DE ALINEACIÓN MÓVIL       */
+/* ========================================= */
+
 @media (max-width: 768px) {
+  .custom-navbar {
+    padding: 0.7rem 2.5rem 0.7rem 1.5rem;
+    /* Forzamos que NUNCA se rompa la línea */
+    flex-wrap: nowrap;
+  }
+
+  /* 1. Ocultar textos para ganar espacio */
+  .brand-title,
   .brand-subtitle {
     display: none;
-  } /* Ocultar subtítulo en móvil */
-  .brand-title {
-    font-size: 1.1rem;
   }
+
+  /* Ajuste de Logo en Móvil */
   .navbar-logo {
-    height: 45px;
-    margin-right: 10px;
+    height: 60px; /* Un poco más pequeño para alinear mejor */
+    margin-right: 0;
   }
+
+  /* 2. CONTENEDOR DE ICONOS */
+  .navbar-nav {
+    flex-direction: row !important; /* IMPORTANTE: Siempre en fila */
+    gap: 8px; /* Espacio entre iconos */
+    margin: 0;
+  }
+
+  /* 3. CAJAS DE NAVEGACIÓN (Home, User) */
   .nav-box {
     width: 40px;
     height: 40px;
+    border-radius: 10px;
   }
-  .logout-btn span {
-    display: none;
-  } /* Solo icono salir en móvil */
+
+  .nav-box mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  /* 4. BOTÓN LOGOUT (Transformación a cuadrado) */
   .logout-btn {
-    padding: 8px;
-    border-radius: 50%;
+    width: 42px !important; /* Forzamos ancho fijo */
+    height: 42px !important; /* Forzamos alto fijo */
+    padding: 0 !important; /* Quitamos relleno */
+    border-radius: 10px !important; /* Igual que los otros iconos */
+    background-color: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+
+  /* Ocultamos el TEXTO "Salir" */
+  .logout-btn span,
+  .logout-btn div,
+  .logout-btn p {
+    display: none !important;
+  }
+
+  /* Centramos el icono */
+  .logout-btn mat-icon {
+    margin: 0 !important;
+  }
+
+  /* Quitamos la línea inferior de activo en móvil para limpieza */
+  .active::after {
+    display: none;
   }
 }
