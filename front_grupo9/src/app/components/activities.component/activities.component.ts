@@ -16,6 +16,7 @@ import { Usuario } from '../../models/Usuario';
 import { Pagos } from '../../models/Pagos';
 import { Evento } from '../../models/Evento';
 import { EventosService } from '../../services/eventosService';
+import { UsuariosCurso } from '../../models/UsuariosCurso';
 
 @Component({
   selector: 'app-activities',
@@ -24,7 +25,6 @@ import { EventosService } from '../../services/eventosService';
   styleUrls: ['./activities.component.css'],
 })
 export class ActivitiesComponent implements OnInit {
-  
   public actividadesEvento!: Array<Actividad>;
   public actividadesDisponibles: Array<Actividad> = [];
   public idActividadSeleccionada: number = 0;
@@ -40,13 +40,13 @@ export class ActivitiesComponent implements OnInit {
   public mensajeError: string = '';
   public idEvento!: number;
   public eventoActual!: Evento;
-  
-  public rolUsuario: string = ''; 
+
+  public rolUsuario: string = '';
   public idUsuarioActual: number = 0;
   public idEventoActividadSeleccionada: number = 0;
 
   // Cache y Control de Desplegable
-  public participantesCache: { [idActividad: number]: Usuario[] } = {};
+  public participantesCache: { [idActividad: number]: UsuariosCurso[] } = {};
   public actividadAbierta: number | null = null;
   public loadingLista: boolean = false;
   // Diccionario para guardar el número de inscritos por actividad
@@ -55,28 +55,28 @@ export class ActivitiesComponent implements OnInit {
   public inscripcion: Inscripcion;
   public actividadNueva: Actividad;
   public actividadEditar: Actividad;
-  
+
   // Perfil
   public usuarioPerfil: Usuario | null = null;
-  
+
   // Diccionario para guardar precios
-  public preciosCache: { [key: number]: { idPrecio: number, precio: number } } = {};
+  public preciosCache: { [key: number]: { idPrecio: number; precio: number } } = {};
 
   // Variables para Materiales
-  public idEventoActividadMateriales: number = 0; 
-  public nuevoMaterialNombre: string = ''; 
+  public idEventoActividadMateriales: number = 0;
+  public nuevoMaterialNombre: string = '';
   // Mapa para almacenar el ID de actividad actual para materiales y verificar participantes
   public idActividadParaMateriales: number = 0;
 
   constructor(
-    private actividadesService: ActividadesService, 
+    private actividadesService: ActividadesService,
     private materialesService: MaterialesService,
     private inscripcionesService: InscripcionesService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private serviceTorneo: ServiceTorneo,
     private router: Router,
-    private eventosService: EventosService
+    private eventosService: EventosService,
   ) {
     this.inscripcion = new Inscripcion(0, 0, 0, false, new Date().toISOString());
     this.actividadNueva = new Actividad(0, 0, new Date().toISOString(), 0, 0, '', 0, 0);
@@ -85,12 +85,12 @@ export class ActivitiesComponent implements OnInit {
 
   // Inicializa el componente y carga los datos del evento
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.idEvento = +params['idEvento'];
-      
-      this.cargarDatos();       
-      this.cargarPerfil();      
-      this.cargarPrecios();     
+
+      this.cargarDatos();
+      this.cargarPerfil();
+      this.cargarPrecios();
     });
   }
 
@@ -101,26 +101,35 @@ export class ActivitiesComponent implements OnInit {
         this.inscripciones = data;
         this.agruparInscripcionesPorActividad();
       },
-      error: (err) => {}
+      error: (err) => {},
     });
 
     this.actividadesService.getActividadesEvento(this.idEvento).subscribe({
       next: (data) => {
-        this.actividadesEvento = data.map(act => new Actividad(
-            act.posicion || 0, act.idEvento || 0, act.fechaEvento || '',
-            act.idProfesor || 0, act.idActividad || 0, act.nombreActividad || '',
-            act.minimoJugadores || 0, act.idEventoActividad || 0
-        ));
-       // AÑADE ESTO AQUÍ: Cargar contadores para cada actividad---------(nuevo cambio implementado para getNumParticipantes-Kevin)
-      this.actividadesEvento.forEach(act => {
-        this.actividadesService.findUsuariosInscritosPorActividadEvento(this.idEvento, act.idActividad)
-          .subscribe(users => {
-            // Guardamos el número en el diccionario
-            this.contadoresParticipantes[act.idEventoActividad] = users.length;
-          });
-      });
-    },
-      error: (err) => console.error('Error actividades:', err)
+        this.actividadesEvento = data.map(
+          (act) =>
+            new Actividad(
+              act.posicion || 0,
+              act.idEvento || 0,
+              act.fechaEvento || '',
+              act.idProfesor || 0,
+              act.idActividad || 0,
+              act.nombreActividad || '',
+              act.minimoJugadores || 0,
+              act.idEventoActividad || 0,
+            ),
+        );
+        // AÑADE ESTO AQUÍ: Cargar contadores para cada actividad---------(nuevo cambio implementado para getNumParticipantes-Kevin)
+        this.actividadesEvento.forEach((act) => {
+          this.actividadesService
+            .findUsuariosInscritosPorActividadEvento(this.idEvento, act.idActividad)
+            .subscribe((users: UsuariosCurso[]) => {
+              // Guardamos el número en el diccionario
+              this.contadoresParticipantes[act.idEventoActividad] = users.length;
+            });
+        });
+      },
+      error: (err) => console.error('Error actividades:', err),
     });
   }
 
@@ -129,20 +138,20 @@ export class ActivitiesComponent implements OnInit {
     this.serviceTorneo.getPerfil().subscribe({
       next: (usuario) => {
         this.usuarioPerfil = usuario;
-        this.rolUsuario = usuario.role; 
+        this.rolUsuario = usuario.role;
         this.idUsuarioActual = usuario.idUsuario;
         console.log('👤 Perfil cargado:', {
           idUsuario: usuario.idUsuario,
           nombre: usuario.usuario,
           role: usuario.role,
-          idRole: usuario.idRole
+          idRole: usuario.idRole,
         });
-      }
+      },
     });
 
-    this.eventosService.getEventoById(this.idEvento).subscribe(result => {
+    this.eventosService.getEventoById(this.idEvento).subscribe((result) => {
       this.eventoActual = result;
-    })
+    });
   }
 
   // --- LÓGICA DE PRECIOS ---
@@ -151,18 +160,18 @@ export class ActivitiesComponent implements OnInit {
   cargarPrecios(): void {
     this.actividadesService.getPrecios().subscribe({
       next: (data) => {
-        if(data){
-            this.preciosCache = {}; 
-            data.forEach((item: any) => {
-                this.preciosCache[item.idEventoActividad] = {
-                  idPrecio: item.idPrecioActividad,
-                  precio: item.precioTotal
-                };
-            });
-            console.log("💰 Precios cargados (con IDs):", this.preciosCache);
+        if (data) {
+          this.preciosCache = {};
+          data.forEach((item: any) => {
+            this.preciosCache[item.idEventoActividad] = {
+              idPrecio: item.idPrecioActividad,
+              precio: item.precioTotal,
+            };
+          });
+          console.log('💰 Precios cargados (con IDs):', this.preciosCache);
         }
       },
-      error: (err) => console.error("Error al cargar precios:", err)
+      error: (err) => console.error('Error al cargar precios:', err),
     });
   }
 
@@ -172,22 +181,21 @@ export class ActivitiesComponent implements OnInit {
     const precioActual = infoPrecio ? infoPrecio.precio : null;
 
     const dialogRef = this.dialog.open(PrecioDialogComponent, {
-      width: '500px', 
+      width: '500px',
       maxWidth: '95vw',
-      data: { 
+      data: {
         nombreActividad: act.nombreActividad,
-        precioActual: precioActual 
-      }
+        precioActual: precioActual,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(resultado => {
+    dialogRef.afterClosed().subscribe((resultado) => {
       if (resultado === 'borrar') {
         if (infoPrecio && infoPrecio.idPrecio) {
           this.borrarPrecioApi(infoPrecio.idPrecio, act.idEventoActividad);
         }
-      }
-      else if (resultado !== undefined && resultado !== null && typeof resultado === 'number') {
-        this.guardarPrecioEnApi(act.idEventoActividad, act.idActividad, resultado); 
+      } else if (resultado !== undefined && resultado !== null && typeof resultado === 'number') {
+        this.guardarPrecioEnApi(act.idEventoActividad, act.idActividad, resultado);
       }
     });
   }
@@ -202,7 +210,7 @@ export class ActivitiesComponent implements OnInit {
       error: (err) => {
         console.error(err);
         alert('❌ Error al eliminar el precio.');
-      }
+      },
     });
   }
 
@@ -211,7 +219,8 @@ export class ActivitiesComponent implements OnInit {
     const registroExistente = this.preciosCache[idEventoActividad];
 
     if (registroExistente) {
-      this.actividadesService.actualizarPrecioActividad(registroExistente.idPrecio, idEventoActividad, precio)
+      this.actividadesService
+        .actualizarPrecioActividad(registroExistente.idPrecio, idEventoActividad, precio)
         .subscribe({
           next: (res) => {
             this.preciosCache[idEventoActividad].precio = precio;
@@ -220,79 +229,84 @@ export class ActivitiesComponent implements OnInit {
           error: (err) => {
             console.error(err);
             alert('❌ Error al actualizar el precio.');
-          }
+          },
         });
     } else {
-      this.actividadesService.crearPrecioActividad(idEventoActividad, precio)
-        .subscribe({
-          next: (res: any) => {
-            const nuevoIdPrecio = res.idPrecioActividad || 0; 
-            
-            this.preciosCache[idEventoActividad] = {
-              idPrecio: nuevoIdPrecio,
-              precio: precio
-            };
-            
-            alert(`✅ Precio asignado correctamente.`);
+      this.actividadesService.crearPrecioActividad(idEventoActividad, precio).subscribe({
+        next: (res: any) => {
+          const nuevoIdPrecio = res.idPrecioActividad || 0;
 
-            if (nuevoIdPrecio > 0) {
-              this.generarRecibosPendientes(this.idEvento, idActividad, nuevoIdPrecio);
-            }
+          this.preciosCache[idEventoActividad] = {
+            idPrecio: nuevoIdPrecio,
+            precio: precio,
+          };
 
-            if(!nuevoIdPrecio) this.cargarPrecios(); 
-          },
-          error: (err) => {
-            console.error(err);
-            alert('❌ Error al crear el precio.');
+          alert(`✅ Precio asignado correctamente.`);
+
+          if (nuevoIdPrecio > 0) {
+            this.generarRecibosPendientes(this.idEvento, idActividad, nuevoIdPrecio);
           }
-        });
+
+          if (!nuevoIdPrecio) this.cargarPrecios();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('❌ Error al crear el precio.');
+        },
+      });
     }
   }
 
   // Genera recibos de pago automáticamente para los cursos inscritos que no tienen recibo
   generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActividad: number) {
-    this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
-      next: (usuarios) => {
-        const cursosInscritos = new Set<number>();
-        usuarios.forEach((u: any) => {
-          if (u.idCurso && u.idCurso > 0) cursosInscritos.add(u.idCurso);
-        });
+    this.actividadesService
+      .findUsuariosInscritosPorActividadEvento(idEvento, idActividad)
+      .subscribe({
+        next: (usuarios) => {
+          const cursosInscritos = new Set<number>();
+          usuarios.forEach((u: any) => {
+            if (u.idCurso && u.idCurso > 0) cursosInscritos.add(u.idCurso);
+          });
 
-        if (cursosInscritos.size === 0) return;
+          if (cursosInscritos.size === 0) return;
 
-        this.actividadesService.getPagosEvento(idEvento).subscribe({
-          next: (pagosExistentes) => {
-            let cursosAgenerar: number[] = [];
+          this.actividadesService.getPagosEvento(idEvento).subscribe({
+            next: (pagosExistentes) => {
+              let cursosAgenerar: number[] = [];
 
-            cursosInscritos.forEach(idCurso => {
-              const yaTienePago = pagosExistentes.find((p: any) => 
-                p.idCurso === idCurso && p.idActividad === idActividad
-              );
+              cursosInscritos.forEach((idCurso) => {
+                const yaTienePago = pagosExistentes.find(
+                  (p: any) => p.idCurso === idCurso && p.idActividad === idActividad,
+                );
 
-              if (!yaTienePago) {
-                cursosAgenerar.push(idCurso);
-              }
-            });
-
-            if (cursosAgenerar.length === 0) {
-              console.log("Todos los cursos inscritos ya tienen su recibo generado.");
-              return;
-            }
-
-            if (confirm(`Se han detectado ${cursosAgenerar.length} cursos nuevos sin recibo. ¿Generar recibos ahora?`)) {
-              cursosAgenerar.forEach(idCurso => {
-                const nuevoPago = new Pagos(0, idCurso, idPrecioActividad, 0, "Sin pagar");
-                this.actividadesService.crearPago(nuevoPago).subscribe({
-                  next: () => console.log(`Recibo generado para curso ${idCurso}`),
-                  error: (e) => console.error(e)
-                });
+                if (!yaTienePago) {
+                  cursosAgenerar.push(idCurso);
+                }
               });
-            }
-          },
-          error: (err) => console.error("Error comprobando pagos existentes", err)
-        });
-      }
-    });
+
+              if (cursosAgenerar.length === 0) {
+                console.log('Todos los cursos inscritos ya tienen su recibo generado.');
+                return;
+              }
+
+              if (
+                confirm(
+                  `Se han detectado ${cursosAgenerar.length} cursos nuevos sin recibo. ¿Generar recibos ahora?`,
+                )
+              ) {
+                cursosAgenerar.forEach((idCurso) => {
+                  const nuevoPago = new Pagos(0, idCurso, idPrecioActividad, 0, 'Sin pagar');
+                  this.actividadesService.crearPago(nuevoPago).subscribe({
+                    next: () => console.log(`Recibo generado para curso ${idCurso}`),
+                    error: (e) => console.error(e),
+                  });
+                });
+              }
+            },
+            error: (err) => console.error('Error comprobando pagos existentes', err),
+          });
+        },
+      });
   }
 
   // --- NAVEGACIÓN A PAGOS ---
@@ -303,8 +317,8 @@ export class ActivitiesComponent implements OnInit {
 
   // Navega a la vista de pagos filtrando por una actividad específica
   irAPagos(act: Actividad): void {
-    this.router.navigate(['/pagos', this.idEvento], { 
-      queryParams: { actividad: act.nombreActividad } 
+    this.router.navigate(['/pagos', this.idEvento], {
+      queryParams: { actividad: act.nombreActividad },
     });
   }
 
@@ -312,7 +326,7 @@ export class ActivitiesComponent implements OnInit {
   // Agrupa las inscripciones por ID de evento-actividad
   agruparInscripcionesPorActividad(): void {
     this.inscripcionesPorActividad = {};
-    this.inscripciones.forEach(inscripcion => {
+    this.inscripciones.forEach((inscripcion) => {
       if (!this.inscripcionesPorActividad[inscripcion.idEventoActividad]) {
         this.inscripcionesPorActividad[inscripcion.idEventoActividad] = [];
       }
@@ -327,9 +341,9 @@ export class ActivitiesComponent implements OnInit {
 
   // Obtiene el número de participantes inscritos en una actividad
   getNumeroParticipantes(idEventoActividad: number): number {
-  // Devuelve el valor guardado o 0 si aún no se ha cargado
-  return this.contadoresParticipantes[idEventoActividad] || 0;
-}
+    // Devuelve el valor guardado o 0 si aún no se ha cargado
+    return this.contadoresParticipantes[idEventoActividad] || 0;
+  }
 
   // Abre o cierra la lista desplegable de participantes de una actividad
   toggleParticipantes(idEvento: number, idActividad: number): void {
@@ -341,16 +355,18 @@ export class ActivitiesComponent implements OnInit {
 
     if (!this.participantesCache[idActividad]) {
       this.loadingLista = true;
-      this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
-        next: (users) => {
-          this.participantesCache[idActividad] = users;
-          this.loadingLista = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.loadingLista = false;
-        }
-      });
+      this.actividadesService
+        .findUsuariosInscritosPorActividadEvento(idEvento, idActividad)
+        .subscribe({
+          next: (users: UsuariosCurso[]) => {
+            this.participantesCache[idActividad] = users;
+            this.loadingLista = false;
+          },
+          error: (err) => {
+            console.error(err);
+            this.loadingLista = false;
+          },
+        });
     }
   }
 
@@ -359,33 +375,35 @@ export class ActivitiesComponent implements OnInit {
   // Abre el modal de materiales y carga la lista de materiales de la actividad
   getMaterialesEventoActividad(idEventoActividad: number, nombreActividad: string): void {
     this.actividadSeleccionada = nombreActividad;
-    this.idEventoActividadMateriales = idEventoActividad; 
-    
-    // Necesitamos el idActividad para buscar participantes. 
+    this.idEventoActividadMateriales = idEventoActividad;
+
+    // Necesitamos el idActividad para buscar participantes.
     // Lo buscamos en el array de actividades
-    const actividad = this.actividadesEvento.find(a => a.idEventoActividad === idEventoActividad);
-    if(actividad) {
-        this.idActividadParaMateriales = actividad.idActividad;
-        // Cargamos los participantes si no están en caché para validaciones posteriores
-        if(!this.participantesCache[actividad.idActividad]) {
-            this.actividadesService.findUsuariosInscritosPorActividadEvento(this.idEvento, actividad.idActividad).subscribe(users => {
-                this.participantesCache[actividad.idActividad] = users;
-            });
-        }
+    const actividad = this.actividadesEvento.find((a) => a.idEventoActividad === idEventoActividad);
+    if (actividad) {
+      this.idActividadParaMateriales = actividad.idActividad;
+      // Cargamos los participantes si no están en caché para validaciones posteriores
+      if (!this.participantesCache[actividad.idActividad]) {
+        this.actividadesService
+          .findUsuariosInscritosPorActividadEvento(this.idEvento, actividad.idActividad)
+          .subscribe((users: UsuariosCurso[]) => {
+            this.participantesCache[actividad.idActividad] = users;
+          });
+      }
     }
 
-    this.materialesEventoActividad = []; 
-    this.materialesService.getMaterialesEvento(idEventoActividad).subscribe(result => {
+    this.materialesEventoActividad = [];
+    this.materialesService.getMaterialesEvento(idEventoActividad).subscribe((result) => {
       this.materialesEventoActividad = result;
       this.mostrarModal = true;
-    })
+    });
   }
 
   // Cierra el modal de materiales y limpia los datos
   cerrarModal(): void {
     this.mostrarModal = false;
     this.materialesEventoActividad = [];
-    this.nuevoMaterialNombre = ''; 
+    this.nuevoMaterialNombre = '';
   }
 
   // Crea una nueva solicitud de material (solo participantes inscritos u organizadores)
@@ -394,39 +412,40 @@ export class ActivitiesComponent implements OnInit {
 
     // VALIDACIÓN: Usamos el caché de participantes que cargamos al abrir el modal
     const inscritos = this.participantesCache[this.idActividadParaMateriales] || [];
-    const estaInscrito = inscritos.some(u => u.idUsuario === this.idUsuarioActual);
+    const estaInscrito = inscritos.some((u) => u.idUsuario === this.idUsuarioActual);
 
     // Permitimos si es Admin/Org O si está inscrito
     if (!this.esAdminOOrganizador() && !estaInscrito) {
-      alert("❌ Solo los participantes inscritos pueden solicitar material para esta actividad.");
+      alert('❌ Solo los participantes inscritos pueden solicitar material para esta actividad.');
       return;
     }
 
     const nuevoMat = new Material(
-      0, 
-      this.idEventoActividadMateriales, 
+      0,
+      this.idEventoActividadMateriales,
       this.idUsuarioActual, // Solicitante (quien crea la petición)
-      this.nuevoMaterialNombre, 
-      true, 
-      new Date().toISOString(), 
-      0 
+      this.nuevoMaterialNombre,
+      true,
+      new Date().toISOString(),
+      0,
     );
 
-    this.materialesService.crearMaterial(nuevoMat).subscribe({ // Ojo: tu servicio se llama crearPago
+    this.materialesService.crearMaterial(nuevoMat).subscribe({
+      // Ojo: tu servicio se llama crearPago
       next: (res) => {
-        this.nuevoMaterialNombre = ''; 
+        this.nuevoMaterialNombre = '';
         this.recargarMateriales();
       },
-      error: (err) => alert('Error al crear solicitud de material')
+      error: (err) => alert('Error al crear solicitud de material'),
     });
   }
 
   // Elimina un material de la lista (solo organizador o creador del material)
   borrarMaterial(idMaterial: number): void {
-    if(confirm('¿Eliminar este material de la lista?')) {
+    if (confirm('¿Eliminar este material de la lista?')) {
       this.materialesService.deleteMateriales(idMaterial).subscribe({
         next: () => this.recargarMateriales(),
-        error: (err) => alert('Error al eliminar')
+        error: (err) => alert('Error al eliminar'),
       });
     }
   }
@@ -435,29 +454,31 @@ export class ActivitiesComponent implements OnInit {
   aportarMaterial(material: Material): void {
     // VALIDACIÓN: Usamos el caché de participantes
     const inscritos = this.participantesCache[this.idActividadParaMateriales] || [];
-    const estaInscrito = inscritos.some(u => u.idUsuario === this.idUsuarioActual);
+    const estaInscrito = inscritos.some((u) => u.idUsuario === this.idUsuarioActual);
 
     if (!this.esAdminOOrganizador() && !estaInscrito) {
-        alert("❌ Solo los participantes inscritos pueden aportar material.");
-        return;
+      alert('❌ Solo los participantes inscritos pueden aportar material.');
+      return;
     }
 
-    if(confirm(`¿Te comprometes a traer: ${material.nombreMaterial}?`)) {
+    if (confirm(`¿Te comprometes a traer: ${material.nombreMaterial}?`)) {
       this.materialesService.aportarMaterial(material.idMaterial, this.idUsuarioActual).subscribe({
         next: () => {
           alert('¡Gracias! Has sido registrado como aportador.');
           this.recargarMateriales();
         },
-        error: (err) => alert('Error al aportar material')
+        error: (err) => alert('Error al aportar material'),
       });
     }
   }
 
   // Recarga la lista de materiales desde la API
   recargarMateriales() {
-    this.materialesService.getMaterialesEvento(this.idEventoActividadMateriales).subscribe(res => {
-      this.materialesEventoActividad = res;
-    });
+    this.materialesService
+      .getMaterialesEvento(this.idEventoActividadMateriales)
+      .subscribe((res) => {
+        this.materialesEventoActividad = res;
+      });
   }
 
   //--------MODAL INSCRIPCIÓN, ETC... (RESTO IGUAL)
@@ -494,20 +515,22 @@ export class ActivitiesComponent implements OnInit {
       return;
     }
 
-    this.actividadesService.crearEventoActividad(this.idEvento, this.idActividadSeleccionada).subscribe({
-      next: (respuesta) => {
-        this.cerrarModalCrearActividad();
-        alert('✅ Actividad añadida al evento correctamente');
-        setTimeout(() => {
-          this.cargarDatos();
-          this.cargarPrecios();
-        }, 500);
-      },
-      error: (err) => {
-        console.error('Error al añadir actividad:', err);
-        alert('❌ Error al añadir la actividad al evento');
-      }
-    });
+    this.actividadesService
+      .crearEventoActividad(this.idEvento, this.idActividadSeleccionada)
+      .subscribe({
+        next: (respuesta) => {
+          this.cerrarModalCrearActividad();
+          alert('✅ Actividad añadida al evento correctamente');
+          setTimeout(() => {
+            this.cargarDatos();
+            this.cargarPrecios();
+          }, 500);
+        },
+        error: (err) => {
+          console.error('Error al añadir actividad:', err);
+          alert('❌ Error al añadir la actividad al evento');
+        },
+      });
   }
 
   // Carga todas las actividades disponibles y abre el modal de selección
@@ -520,7 +543,7 @@ export class ActivitiesComponent implements OnInit {
       next: (actividades: any[]) => {
         console.log('Actividades recibidas:', actividades);
         // Mapear las actividades para que tengan nombreActividad desde nombre
-        this.actividadesDisponibles = actividades.map(act => ({
+        this.actividadesDisponibles = actividades.map((act) => ({
           idActividad: act.idActividad,
           nombre: act.nombre,
           nombreActividad: act.nombre,
@@ -529,7 +552,7 @@ export class ActivitiesComponent implements OnInit {
           idEvento: 0,
           fechaEvento: '',
           idProfesor: 0,
-          idEventoActividad: 0
+          idEventoActividad: 0,
         }));
         this.idActividadSeleccionada = 0;
         this.mostrarModalCrearActividad = true;
@@ -537,7 +560,7 @@ export class ActivitiesComponent implements OnInit {
       error: (err) => {
         console.error('Error al cargar actividades:', err);
         alert('❌ Error al cargar las actividades disponibles');
-      }
+      },
     });
   }
 
@@ -554,7 +577,7 @@ export class ActivitiesComponent implements OnInit {
       actividad.idActividad,
       actividad.nombreActividad,
       actividad.minimoJugadores,
-      actividad.idEventoActividad
+      actividad.idEventoActividad,
     );
     this.mostrarModalEditarActividad = true;
   }
@@ -574,8 +597,7 @@ export class ActivitiesComponent implements OnInit {
           this.cargarDatos();
         }, 500);
       },
-      error: (err) => {
-      }
+      error: (err) => {},
     });
   }
 
@@ -587,7 +609,7 @@ export class ActivitiesComponent implements OnInit {
   // Elimina una actividad del evento (solo organizadores)
   eliminarEventoActividad(idEventoActividad: number, nombreActividad: string): void {
     const esOrganizador = this.usuarioPerfil?.idRole === 4;
-    
+
     if (!esOrganizador) {
       return;
     }
@@ -606,7 +628,7 @@ export class ActivitiesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar actividad:', err);
-      }
+      },
     });
   }
 
@@ -618,10 +640,11 @@ export class ActivitiesComponent implements OnInit {
 
   // Envía la inscripción del usuario a una actividad (validando que no esté ya inscrito en otra)
   public enviarInscripcion(): void {
-    const actividadesDelEvento = this.actividadesEvento.map(act => act.idEventoActividad);
-    const yaInscrito = this.inscripciones.some(insc => 
-      insc.idUsuario === this.idUsuarioActual && 
-      actividadesDelEvento.includes(insc.idEventoActividad)
+    const actividadesDelEvento = this.actividadesEvento.map((act) => act.idEventoActividad);
+    const yaInscrito = this.inscripciones.some(
+      (insc) =>
+        insc.idUsuario === this.idUsuarioActual &&
+        actividadesDelEvento.includes(insc.idEventoActividad),
     );
 
     if (yaInscrito) {
@@ -644,7 +667,7 @@ export class ActivitiesComponent implements OnInit {
       error: (err) => {
         console.error('Error al crear inscripción:', err);
         this.cerrarModalInscripcion();
-      }
+      },
     });
   }
 

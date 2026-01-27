@@ -1,104 +1,133 @@
 <div class="container">
-
-  <div *ngIf="actividadesEvento"> <div class="section-header-wrapper">
+  <div *ngIf="actividadesEvento">
+    <div class="section-header-wrapper">
       <h2 class="section-title sports-border">Actividades</h2>
-      
+
       <div class="admin-panel" *ngIf="usuarioPerfil?.idRole == 4">
         <div class="admin-info">
           <span class="badge-role">{{ rolUsuario }}</span>
           <span>Panel de Control</span>
         </div>
-        
-        <button mat-raised-button 
-                color="accent" 
-                class="btn-caja-global"
-                [routerLink]="['/pagos', idEvento]">
+
+        <button
+          mat-raised-button
+          color="accent"
+          class="btn-caja-global"
+          [routerLink]="['/pagos', idEvento]"
+        >
           <mat-icon>account_balance_wallet</mat-icon>
           GESTIONAR CAJA Y PAGOS
         </button>
-
       </div>
     </div>
 
     <div class="mb-4 mt-3">
-      <button class="btn d-flex align-items-center gap-2 px-3 py-2" 
-              [routerLink]="['/']"
-              style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
-              onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
-              onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
-        <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
+      <button
+        class="btn d-flex align-items-center gap-2 px-3 py-2"
+        [routerLink]="['/']"
+        style="
+          background: transparent;
+          color: #097aec;
+          border: none;
+          transition: all 0.3s;
+          text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);
+        "
+        onmouseover="
+          this.style.textShadow = '0 3px 6px rgba(9, 122, 236, 0.5)';
+          this.style.transform = 'translateX(-5px)';
+        "
+        onmouseout="
+          this.style.textShadow = '0 2px 4px rgba(9, 122, 236, 0.3)';
+          this.style.transform = 'translateX(0)';
+        "
+      >
+        <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem"
+          >arrow_back</mat-icon
+        >
         <span class="fw-semibold">Volver a los eventos</span>
       </button>
     </div>
 
     <div class="grid" *ngIf="actividadesEvento.length > 0">
       <mat-card *ngFor="let act of actividadesEvento" class="activity-card">
-        
         <mat-card-header class="sports-bg">
           <mat-card-title>
             <div class="header-top">
               <h3>{{ act.nombreActividad }}</h3>
-              
-              <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
-                
-                <div class="price-badge" 
-                  *ngIf="preciosCache[act.idEventoActividad] && preciosCache[act.idEventoActividad].precio > 0">
+
+              <div class="header-actions" style="display: flex; align-items: center; gap: 8px">
+                <div
+                  class="price-badge"
+                  *ngIf="
+                    preciosCache[act.idEventoActividad] &&
+                    preciosCache[act.idEventoActividad].precio > 0
+                  "
+                >
                   {{ preciosCache[act.idEventoActividad].precio }}€
                 </div>
 
-                <div class="free-badge" 
-                  *ngIf="!preciosCache[act.idEventoActividad] || preciosCache[act.idEventoActividad].precio === 0">
+                <div
+                  class="free-badge"
+                  *ngIf="
+                    !preciosCache[act.idEventoActividad] ||
+                    preciosCache[act.idEventoActividad].precio === 0
+                  "
+                >
                   Gratis
                 </div>
 
-                <button mat-icon-button 
-                        class="edit-price-btn"
-                        *ngIf="usuarioPerfil?.idRole == 4"
-                        (click)="$event.stopPropagation(); gestionarPrecio(act)"
-                        matTooltip="Editar Precio">
-                  <mat-icon>edit</mat-icon> 
-                </button>
-
-                <span class="icon">🏆</span>
-                
-                <button *ngIf="usuarioPerfil?.idRole == 4"
-                        mat-icon-button
-                        class="edit-icon"
-                        (click)="editarActividad(act)"
-                        aria-label="Editar actividad">
+                <button
+                  mat-icon-button
+                  class="edit-price-btn"
+                  *ngIf="usuarioPerfil?.idRole == 4"
+                  (click)="$event.stopPropagation(); gestionarPrecio(act)"
+                  matTooltip="Editar Precio"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
 
-                <button *ngIf="usuarioPerfil?.idRole == 4"
-                        mat-icon-button
-                        class="delete-icon"
-                        (click)="eliminarEventoActividad(act.idEventoActividad, act.nombreActividad)"
-                        matTooltip="Eliminar actividad del evento"
-                        aria-label="Eliminar actividad">
+                <span class="icon">🏆</span>
+
+                <button
+                  *ngIf="usuarioPerfil?.idRole == 4"
+                  mat-icon-button
+                  class="edit-icon"
+                  (click)="editarActividad(act)"
+                  aria-label="Editar actividad"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="usuarioPerfil?.idRole == 4"
+                  mat-icon-button
+                  class="delete-icon"
+                  (click)="eliminarEventoActividad(act.idEventoActividad, act.nombreActividad)"
+                  matTooltip="Eliminar actividad del evento"
+                  aria-label="Eliminar actividad"
+                >
                   <mat-icon>delete</mat-icon>
                 </button>
-                
               </div>
-
             </div>
           </mat-card-title>
           <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
-          
           <div class="stats clickable" (click)="toggleParticipantes(idEvento, act.idActividad)">
             <span>👥 Participantes</span>
             <span>
               <strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50
-              <span class="arrow-indicator" [class.rotated]="actividadAbierta === act.idActividad">▼</span>
+              <span class="arrow-indicator" [class.rotated]="actividadAbierta === act.idActividad"
+                >▼</span
+              >
             </span>
           </div>
 
           <div class="participants-dropdown" *ngIf="actividadAbierta === act.idActividad">
-            
             <div *ngIf="loadingLista && !participantesCache[act.idActividad]" class="loading-mini">
-               Cargando lista...
+              Cargando lista...
             </div>
 
             <div *ngIf="participantesCache[act.idActividad]" class="fade-in">
@@ -107,72 +136,124 @@
               </div>
 
               <div *ngFor="let user of participantesCache[act.idActividad]" class="user-row">
-                 <div class="user-avatar">
-                   <mat-icon>person</mat-icon>
-                 </div>
-                 <div class="user-name">
-                   {{ user.usuario }}
-                 </div>
+                <div class="user-avatar">
+                  <mat-icon>person</mat-icon>
+                </div>
+                <div class="user-name">
+                  {{ user.usuario }}
+                </div>
               </div>
             </div>
           </div>
 
           <div class="progress-bar">
-            <div class="fill blue" [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / 50) * 100"></div>
+            <div
+              class="fill blue"
+              [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / 50) * 100"
+            ></div>
           </div>
-          
-          <div class="material-btn" (click)="getMaterialesEventoActividad(act.idEventoActividad, act.nombreActividad)">
+
+          <div
+            class="material-btn"
+            (click)="getMaterialesEventoActividad(act.idEventoActividad, act.nombreActividad)"
+          >
             <span>📦 Ver Materiales</span>
             <span class="arrow">→</span>
           </div>
-
         </mat-card-content>
 
         <!-- BOTON DE INSCRIBIRSE, SE OCULTA SI EL PLAZO DE INSCRIPCIONES SE CIERRA (UNA SEMANA)
         ANTES DEL EVENTO, O SI EL USUARIO LOGADO ES PROFESOR -->
         <mat-card-actions *ngIf="isFechaSemanaAntes() == false && usuarioPerfil?.idRole != 1">
-          <button mat-raised-button color="primary" class="btn-enroll" (click)="abrirModalInscripcion(act.idEventoActividad)">Inscribirse</button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="btn-enroll"
+            (click)="abrirModalInscripcion(act.idEventoActividad)"
+          >
+            Inscribirse
+          </button>
         </mat-card-actions>
 
         <mat-card-actions>
-          <button mat-raised-button color="success" class="btn-enroll" [routerLink]="['/equipos', act.idActividad, act.idEvento]">ir a equipos →</button>
+          <button
+            mat-raised-button
+            color="success"
+            class="btn-enroll"
+            [routerLink]="['/equipos', act.idActividad, act.idEvento]"
+          >
+            ir a equipos →
+          </button>
         </mat-card-actions>
 
         <mat-card-actions>
-          <button mat-raised-button color="accent" class="btn-enroll" [routerLink]="['/resultados', act.idActividad, act.idEvento]">Ver resultados 🏆</button>
-        </mat-card-actions>    
+          <button
+            mat-raised-button
+            color="accent"
+            class="btn-enroll"
+            [routerLink]="['/resultados', act.idActividad, act.idEvento]"
+          >
+            Ver resultados 🏆
+          </button>
+        </mat-card-actions>
       </mat-card>
-      
+
       <!-- Tarjeta crear actividad -->
-      <mat-card *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4" 
-                class="activity-card create-activity-card"
-                (click)="crearActividad()"
-                style="cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;"
-                onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.25)'"
-                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow=''">
-        
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                    background: linear-gradient(135deg, rgba(20, 178, 34, 0.85) 0%, rgba(141, 253, 113, 0.75) 100%); 
-                    border-radius: 8px;
-                    z-index: 1;">
-        </div>
-        
-        <div class="card-body d-flex flex-column justify-content-center align-items-center" 
-             style="position: relative; z-index: 2; height: 100%; min-height: 400px;">
-          <mat-icon class="text-white mb-3" style="font-size: 80px; height: 80px; width: 80px;">add_circle</mat-icon>
+      <mat-card
+        *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4"
+        class="activity-card create-activity-card"
+        (click)="crearActividad()"
+        style="
+          cursor: pointer;
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        "
+        onmouseover="
+          this.style.transform = 'scale(1.03)';
+          this.style.boxShadow = '0 8px 20px rgba(0,0,0,0.25)';
+        "
+        onmouseout="
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = '';
+        "
+      >
+        <div
+          style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              135deg,
+              rgba(20, 178, 34, 0.85) 0%,
+              rgba(141, 253, 113, 0.75) 100%
+            );
+            border-radius: 8px;
+            z-index: 1;
+          "
+        ></div>
+
+        <div
+          class="card-body d-flex flex-column justify-content-center align-items-center"
+          style="position: relative; z-index: 2; height: 100%; min-height: 400px"
+        >
+          <mat-icon class="text-white mb-3" style="font-size: 80px; height: 80px; width: 80px"
+            >add_circle</mat-icon
+          >
           <h3 class="text-white fw-bold text-center mb-0">AÑADIR ACTIVIDAD AL EVENTO</h3>
         </div>
       </mat-card>
-      
     </div>
   </div>
 
   <div *ngIf="!actividadesEvento || actividadesEvento.length === 0" class="empty-state">
-    <img src="Empty Box.gif" alt="notfound"/>
-    <div style="text-align: center; margin-top: 20px;" *ngIf="usuarioPerfil?.idRole == 4">
-       <button mat-raised-button color="primary" (click)="crearActividad()">
-          <mat-icon>add</mat-icon> Crear primera actividad
-       </button>
+    <img src="Empty Box.gif" alt="notfound" />
+    <div style="text-align: center; margin-top: 20px" *ngIf="usuarioPerfil?.idRole == 4">
+      <button mat-raised-button color="primary" (click)="crearActividad()">
+        <mat-icon>add</mat-icon> Crear primera actividad
+      </button>
     </div>
   </div>
 </div>
@@ -180,11 +261,10 @@
 <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="modal-content">
-      
-      <div class="modal-header" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
-        <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #ff9800, #f57c00)">
+        <div style="display: flex; align-items: center; gap: 10px">
           <mat-icon>inventory_2</mat-icon>
-          <h4 class="modal-title" style="margin:0;">Materiales: {{ actividadSeleccionada }}</h4>
+          <h4 class="modal-title" style="margin: 0">Materiales: {{ actividadSeleccionada }}</h4>
         </div>
         <button type="button" class="btn-close" (click)="cerrarModal()">
           <span aria-hidden="true">&times;</span>
@@ -192,68 +272,106 @@
       </div>
 
       <div class="modal-body">
-        
         <div class="add-material-section">
-          <mat-form-field appearance="outline" class="full-width" style="margin-bottom: 0;">
+          <!-- Que solo vea esta vista los usuarios que están inscritos (HAY QUE ARREGLARLO) -->
+
+          <mat-form-field appearance="outline" class="full-width" style="margin-bottom: 0">
             <mat-label>Solicitar Material (Ej: Balón, Petos...)</mat-label>
-            <input matInput 
-                   [(ngModel)]="nuevoMaterialNombre" 
-                   placeholder="Escribe el material necesario..." 
-                   (keyup.enter)="crearMaterial()">
-            
-            <button mat-icon-button matSuffix color="primary" 
-                    (click)="crearMaterial()" 
-                    [disabled]="!nuevoMaterialNombre"
-                    matTooltip="Crear solicitud">
+            <input
+              matInput
+              [(ngModel)]="nuevoMaterialNombre"
+              placeholder="Escribe el material necesario..."
+              (keyup.enter)="crearMaterial()"
+            />
+
+            <button
+              mat-icon-button
+              matSuffix
+              color="primary"
+              (click)="crearMaterial()"
+              [disabled]="!nuevoMaterialNombre"
+              matTooltip="Crear solicitud"
+            >
               <mat-icon>add_circle</mat-icon>
             </button>
           </mat-form-field>
-          <div style="font-size: 0.75rem; color: #666; margin-top: 5px; margin-left: 5px;">
+
+          <div style="font-size: 0.75rem; color: #666; margin-top: 5px; margin-left: 5px">
             * Solo participantes inscritos pueden crear solicitudes.
           </div>
         </div>
 
-        <div *ngIf="materialesEventoActividad && materialesEventoActividad.length > 0; else noMateriales">
+        <div
+          *ngIf="
+            materialesEventoActividad && materialesEventoActividad.length > 0;
+            else noMateriales
+          "
+        >
           <div class="list-group">
-            
-            <div *ngFor="let material of materialesEventoActividad; let i = index" class="material-item">
-              
+            <div
+              *ngFor="let material of materialesEventoActividad; let i = index"
+              class="material-item"
+            >
               <div class="material-status">
-                <mat-icon *ngIf="material.idUsuarioAportacion > 0" class="status-ok" matTooltip="Material cubierto">check_circle</mat-icon>
-                <mat-icon *ngIf="!material.idUsuarioAportacion || material.idUsuarioAportacion === 0" class="status-pending" matTooltip="Pendiente">help_outline</mat-icon>
+                <mat-icon
+                  *ngIf="material.idUsuarioAportacion > 0"
+                  class="status-ok"
+                  matTooltip="Material cubierto"
+                  >check_circle</mat-icon
+                >
+                <mat-icon
+                  *ngIf="!material.idUsuarioAportacion || material.idUsuarioAportacion === 0"
+                  class="status-pending"
+                  matTooltip="Pendiente"
+                  >help_outline</mat-icon
+                >
               </div>
 
               <div class="material-info">
                 <span class="mat-name">{{ material.nombreMaterial }}</span>
-                
+
                 <span class="mat-desc" *ngIf="material.idUsuarioAportacion > 0">
-                  <span class="badge-covered">Cubierto</span> 
-                  <span style="font-size: 0.75rem; color: #888;"> (Por Usuario ID: {{ material.idUsuarioAportacion }})</span>
+                  <span class="badge-covered">Cubierto</span>
+                  <span style="font-size: 0.75rem; color: #888">
+                    (Por Usuario ID: {{ material.idUsuarioAportacion }})</span
+                  >
                 </span>
-                
-                <span class="mat-desc" *ngIf="!material.idUsuarioAportacion || material.idUsuarioAportacion === 0">
+
+                <span
+                  class="mat-desc"
+                  *ngIf="!material.idUsuarioAportacion || material.idUsuarioAportacion === 0"
+                >
                   <span class="badge-pending">Se necesita</span>
-                  <span style="font-size: 0.75rem; color: #888;"> (Solicitado por ID: {{ material.idUsuario }})</span>
+                  <span style="font-size: 0.75rem; color: #888">
+                    (Solicitado por ID: {{ material.idUsuario }})</span
+                  >
                 </span>
               </div>
 
               <div class="material-actions">
-                
-                <button mat-stroked-button color="primary" 
-                        class="btn-aportar"
-                        *ngIf="(!material.idUsuarioAportacion || material.idUsuarioAportacion === -1) && material.idUsuario !== idUsuarioActual"
-                        (click)="aportarMaterial(material)">
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  class="btn-aportar"
+                  *ngIf="
+                    (!material.idUsuarioAportacion || material.idUsuarioAportacion === -1) &&
+                    material.idUsuario !== idUsuarioActual
+                  "
+                  (click)="aportarMaterial(material)"
+                >
                   ✋ Yo lo traigo
                 </button>
 
-                <button mat-icon-button color="warn" 
-                        *ngIf="usuarioPerfil?.idRole == 4 || material.idUsuario === idUsuarioActual"
-                        (click)="borrarMaterial(material.idMaterial)"
-                        matTooltip="Eliminar solicitud">
+                <button
+                  mat-icon-button
+                  color="warn"
+                  *ngIf="usuarioPerfil?.idRole == 4 || material.idUsuario === idUsuarioActual"
+                  (click)="borrarMaterial(material.idMaterial)"
+                  matTooltip="Eliminar solicitud"
+                >
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -262,12 +380,11 @@
           <div class="empty-state-mat">
             <mat-icon>category</mat-icon>
             <p>No hay materiales solicitados para esta actividad.</p>
-            <p style="font-size: 0.85rem; color: #999;">¡Sé el primero en crear una solicitud!</p>
+            <p style="font-size: 0.85rem; color: #999">¡Sé el primero en crear una solicitud!</p>
           </div>
         </ng-template>
-
       </div>
-      
+
       <div class="modal-footer">
         <button mat-button (click)="cerrarModal()">Cerrar</button>
       </div>
@@ -279,13 +396,17 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="enrollment-container">
       <mat-card class="enrollment-card">
-        
         <div class="card-header-gradient">
           <div class="header-content">
             <mat-icon class="header-icon">assignment_ind</mat-icon>
             <h2>Nueva Inscripción</h2>
             <p>Completa tus datos para participar en el evento</p>
-            <button type="button" class="btn-close" (click)="cerrarModalInscripcion()" aria-label="Close">
+            <button
+              type="button"
+              class="btn-close"
+              (click)="cerrarModalInscripcion()"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -293,13 +414,19 @@
 
         <mat-card-content>
           <form class="enrollment-form">
-            
             <mat-form-field appearance="outline" class="custom-field">
               <mat-label>ID de Usuario</mat-label>
               <div matPrefix class="white-box box-icon">
                 <mat-icon>person</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="inscripcion.idUsuario" name="idUsuario" placeholder="Tu identificador" disabled>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="inscripcion.idUsuario"
+                name="idUsuario"
+                placeholder="Tu identificador"
+                disabled
+              />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
@@ -307,23 +434,31 @@
               <div matPrefix class="white-box box-icon">
                 <mat-icon>sports_soccer</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="inscripcion.idEventoActividad" name="idEvento" placeholder="ID del evento" disabled>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="inscripcion.idEventoActividad"
+                name="idEvento"
+                placeholder="ID del evento"
+                disabled
+              />
             </mat-form-field>
 
             <div class="option-container">
               <div class="option-box">
                 <mat-icon [color]="inscripcion.quiereSerCapitan ? 'primary' : ''">stars</mat-icon>
                 <span>¿Quieres ser Capitán del equipo?</span>
-                <mat-slide-toggle color="primary" [(ngModel)]="inscripcion.quiereSerCapitan" name="capitan">
+                <mat-slide-toggle
+                  color="primary"
+                  [(ngModel)]="inscripcion.quiereSerCapitan"
+                  name="capitan"
+                >
                 </mat-slide-toggle>
               </div>
             </div>
-            <button mat-raised-button 
-                    class="enroll-submit-btn" 
-                    (click)="enviarInscripcion()">
+            <button mat-raised-button class="enroll-submit-btn" (click)="enviarInscripcion()">
               CONFIRMAR INSCRIPCIÓN
             </button>
-
           </form>
         </mat-card-content>
       </mat-card>
@@ -335,13 +470,17 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="enrollment-container">
       <mat-card class="enrollment-card">
-        
         <div class="card-header-gradient">
           <div class="header-content">
             <mat-icon class="header-icon">sports_soccer</mat-icon>
             <h2>Añadir Actividad al Evento</h2>
             <p>Selecciona una actividad existente para añadirla a este evento</p>
-            <button type="button" class="btn-close" (click)="cerrarModalCrearActividad()" aria-label="Close">
+            <button
+              type="button"
+              class="btn-close"
+              (click)="cerrarModalCrearActividad()"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -349,31 +488,39 @@
 
         <mat-card-content>
           <form class="enrollment-form">
-            
             <mat-form-field appearance="outline" class="custom-field">
               <mat-label>Selecciona una Actividad</mat-label>
               <div matPrefix class="white-box box-icon">
                 <mat-icon>list</mat-icon>
               </div>
-              <mat-select [(ngModel)]="idActividadSeleccionada" name="actividad" placeholder="Elige una actividad" required>
+              <mat-select
+                [(ngModel)]="idActividadSeleccionada"
+                name="actividad"
+                placeholder="Elige una actividad"
+                required
+              >
                 <mat-option *ngFor="let act of actividadesDisponibles" [value]="act.idActividad">
                   {{ act.nombreActividad }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
 
-            <div *ngIf="actividadesDisponibles.length === 0" style="text-align: center; padding: 20px; color: #666;">
+            <div
+              *ngIf="actividadesDisponibles.length === 0"
+              style="text-align: center; padding: 20px; color: #666"
+            >
               Cargando actividades...
             </div>
 
-            <button mat-raised-button 
-                    class="enroll-submit-btn" 
-                    [disabled]="!idActividadSeleccionada"
-                    (click)="crearActividadEnviar()">
+            <button
+              mat-raised-button
+              class="enroll-submit-btn"
+              [disabled]="!idActividadSeleccionada"
+              (click)="crearActividadEnviar()"
+            >
               <mat-icon>add_circle</mat-icon>
               AÑADIR AL EVENTO
             </button>
-
           </form>
         </mat-card-content>
 
@@ -385,17 +532,25 @@
   </div>
 </div>
 
-<div class="modal-overlay" *ngIf="mostrarModalEditarActividad" (click)="cerrarModalEditarActividad()">
+<div
+  class="modal-overlay"
+  *ngIf="mostrarModalEditarActividad"
+  (click)="cerrarModalEditarActividad()"
+>
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="enrollment-container">
       <mat-card class="enrollment-card">
-        
         <div class="card-header-gradient">
           <div class="header-content">
             <mat-icon class="header-icon">edit</mat-icon>
             <h2>Editar Actividad</h2>
             <p>Modifica los datos de la actividad</p>
-            <button type="button" class="btn-close" (click)="cerrarModalEditarActividad()" aria-label="Close">
+            <button
+              type="button"
+              class="btn-close"
+              (click)="cerrarModalEditarActividad()"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -403,13 +558,19 @@
 
         <mat-card-content>
           <form class="enrollment-form">
-            
             <mat-form-field appearance="outline" class="custom-field">
               <mat-label>Nombre de la Actividad</mat-label>
               <div matPrefix class="white-box box-icon">
                 <mat-icon>label</mat-icon>
               </div>
-              <input matInput type="text" [(ngModel)]="actividadEditar.nombreActividad" name="nombreActividadEdit" placeholder="Nombre de la actividad" required>
+              <input
+                matInput
+                type="text"
+                [(ngModel)]="actividadEditar.nombreActividad"
+                name="nombreActividadEdit"
+                placeholder="Nombre de la actividad"
+                required
+              />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
@@ -417,7 +578,14 @@
               <div matPrefix class="white-box box-icon">
                 <mat-icon>format_list_numbered</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="actividadEditar.posicion" name="posicionEdit" placeholder="Posición" required>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="actividadEditar.posicion"
+                name="posicionEdit"
+                placeholder="Posición"
+                required
+              />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
@@ -425,7 +593,14 @@
               <div matPrefix class="white-box box-icon">
                 <mat-icon>people</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="actividadEditar.minimoJugadores" name="minimoJugadoresEdit" placeholder="Mínimo de jugadores" required>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="actividadEditar.minimoJugadores"
+                name="minimoJugadoresEdit"
+                placeholder="Mínimo de jugadores"
+                required
+              />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="custom-field">
@@ -433,16 +608,19 @@
               <div matPrefix class="white-box box-icon">
                 <mat-icon>person_outline</mat-icon>
               </div>
-              <input matInput type="number" [(ngModel)]="actividadEditar.idProfesor" name="idProfesorEdit" placeholder="ID del profesor">
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="actividadEditar.idProfesor"
+                name="idProfesorEdit"
+                placeholder="ID del profesor"
+              />
             </mat-form-field>
 
-            <button mat-raised-button 
-                    class="enroll-submit-btn" 
-                    (click)="guardarCambiosActividad()">
+            <button mat-raised-button class="enroll-submit-btn" (click)="guardarCambiosActividad()">
               <mat-icon>save</mat-icon>
               GUARDAR CAMBIOS
             </button>
-
           </form>
         </mat-card-content>
 
@@ -458,8 +636,10 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="enrollment-container">
       <mat-card class="enrollment-card">
-        
-        <div class="card-header-gradient" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+        <div
+          class="card-header-gradient"
+          style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)"
+        >
           <div class="header-content">
             <mat-icon class="header-icon">error_outline</mat-icon>
             <h2>Error de Inscripción</h2>
@@ -470,15 +650,19 @@
         </div>
 
         <mat-card-content>
-          <div style="text-align: center; padding: 20px;">
-            <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #e74c3c;">cancel</mat-icon>
-            <p style="margin-top: 20px; font-size: 16px; color: #555;">{{ mensajeError }}</p>
+          <div style="text-align: center; padding: 20px">
+            <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #e74c3c"
+              >cancel</mat-icon
+            >
+            <p style="margin-top: 20px; font-size: 16px; color: #555">{{ mensajeError }}</p>
           </div>
-          
-          <button mat-raised-button 
-                  class="enroll-submit-btn" 
-                  style="background: #e74c3c;"
-                  (click)="cerrarModalError()">
+
+          <button
+            mat-raised-button
+            class="enroll-submit-btn"
+            style="background: #e74c3c"
+            (click)="cerrarModalError()"
+          >
             <mat-icon>close</mat-icon>
             CERRAR
           </button>
