@@ -28,6 +28,12 @@ export class EventosService {
         return this._http.get<Array<Evento>>(url, { headers: headers });
     }
 
+    getEventoById(idEvento: number): Observable<Evento> {
+        let request = "api/Eventos/" + idEvento 
+        let url = environment.urlApiEventos + request;
+        return this._http.get<Evento>(url);
+    }
+
     getProfesoresActivosSinEvento(): Observable<Array<Usuario>> {
         let request = "api/ProfesEventos/ProfesSinEventos";
         let url = environment.urlApiEventos + request;

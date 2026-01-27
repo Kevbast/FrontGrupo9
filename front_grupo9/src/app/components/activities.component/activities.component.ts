@@ -14,6 +14,8 @@ import { Inscripcion } from '../../models/Inscripcion';
 import { Material } from '../../models/Material';
 import { Usuario } from '../../models/Usuario';
 import { Pagos } from '../../models/Pagos';
+import { Evento } from '../../models/Evento';
+import { EventosService } from '../../services/eventosService';
 
 @Component({
   selector: 'app-activities',
@@ -37,6 +39,7 @@ export class ActivitiesComponent implements OnInit {
   public mostrarModalError: boolean = false;
   public mensajeError: string = '';
   public idEvento!: number;
+  public eventoActual!: Evento;
   
   public rolUsuario: string = ''; 
   public idUsuarioActual: number = 0;
@@ -71,6 +74,7 @@ export class ActivitiesComponent implements OnInit {
     private dialog: MatDialog,
     private serviceTorneo: ServiceTorneo,
     private router: Router,
+    private eventosService: EventosService
   ) {
     this.inscripcion = new Inscripcion(0, 0, 0, false, new Date().toISOString());
     this.actividadNueva = new Actividad(0, 0, new Date().toISOString(), 0, 0, '', 0, 0);
@@ -122,6 +126,10 @@ export class ActivitiesComponent implements OnInit {
         });
       }
     });
+
+    this.eventosService.getEventoById(this.idEvento).subscribe(result => {
+      this.eventoActual = result;
+    })
   }
 
   // --- LÓGICA DE PRECIOS ---
@@ -600,5 +608,20 @@ export class ActivitiesComponent implements OnInit {
         this.cerrarModalInscripcion();
       }
     });
+  }
+
+  isFechaSemanaAntes(): boolean {
+    let fechaEvento = new Date(this.eventoActual.fechaEvento);
+    let semanaAntes = new Date(fechaEvento);
+    semanaAntes.setDate(fechaEvento.getDate() - 7);
+    let fechaActual = new Date();
+
+    semanaAntes.setHours(0, 0, 0, 0);
+    fechaActual.setHours(0, 0, 0, 0);
+
+    if (fechaActual.getTime() === semanaAntes.getTime()) {
+      return true;
+    }
+    return false;
   }
 }

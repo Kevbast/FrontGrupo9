@@ -37,6 +37,20 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
 }
 
+.create-activity-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.create-activity-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25) !important;
+}
+
 .activity-card mat-card-header {
   padding: 20px;
   color: white;
