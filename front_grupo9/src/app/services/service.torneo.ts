@@ -55,9 +55,6 @@ export class ServiceTorneo {
     if (token) {
       // Si hay token, lo añadimos como Authorization Bearer
       headers = headers.set('Authorization', `Bearer ${token}`);
-      //console.log('Headers creados manualmente con token.');
-    } else {
-      console.warn('Advertencia: Intento de acceso a ruta protegida sin token.');
     }
     return headers;
   }

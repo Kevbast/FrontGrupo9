@@ -129,7 +129,6 @@ export class EquiposComponents implements OnInit {
 
       },
       error: (error) => {
-        console.error('Error al cargar los datos:', error);
         Swal.fire({
           title: "Error",
           text: "No se pudieron cargar los datos correctamente",

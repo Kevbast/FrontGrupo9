@@ -149,7 +149,6 @@ export class HomeComponent {
         this.cargarEventos();
       },
       error: (error) => {
-        console.error('Error al crear evento:', error);
         Swal.fire({
           title: 'Error',
           text: 'No se pudo crear el evento. Intente nuevamente.',
@@ -183,7 +182,6 @@ export class HomeComponent {
         this.cargarEventos();
       },
       error: (error) => {
-        console.error('Error al editar evento:', error);
         Swal.fire({
           title: 'Error',
           text: 'No se pudo actualizar el evento. Intente nuevamente.',

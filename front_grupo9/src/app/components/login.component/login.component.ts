@@ -43,7 +43,6 @@ export class LoginComponent {
         this._router.navigate(["/"]);
       },
       error: (error) => {
-        console.error(error);
         this.errorMessage = "Credenciales incorrectas o error de servidor";
         // 3. IMPORTANTE: DESACTIVAR CARGA EN ERROR
         this.isLoading = false; 

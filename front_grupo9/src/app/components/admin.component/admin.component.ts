@@ -100,7 +100,6 @@ export class AdminComponent implements OnInit {
         this.loadingActividades = false;
       },
       error: (e) => {
-        console.error(e);
         this.loadingActividades = false;
       }
     });

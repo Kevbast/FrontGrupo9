@@ -48,7 +48,6 @@ export class PagosComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error(err);
         this.loading = false;
       }
     });
@@ -102,7 +101,6 @@ export class PagosComponent implements OnInit {
           // this.cargarPagos(); 
         },
         error: (err) => {
-          console.error(err);
           alert("❌ Error al actualizar. Inténtalo de nuevo.");
           this.cargarPagos(); // Recargamos por si acaso
         }

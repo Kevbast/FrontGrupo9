@@ -36,7 +36,6 @@ export class PerfilComponent implements OnInit {
           this.loadingActividades = false;
         },
         error: (err) => {
-          console.error(err);
           this.loadingActividades = false;
         }
       });

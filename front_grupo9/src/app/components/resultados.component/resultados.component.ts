@@ -41,9 +41,7 @@ export class ResultadosComponent implements OnInit {
       next: (usuario) => {
         this.usuarioPerfil = usuario;
       },
-      error: (err) => {
-        console.error('Error al cargar perfil:', err);
-      }
+      error: (err) => {}
     });
     
     this.route.params.subscribe(params => {
@@ -76,17 +74,14 @@ export class ResultadosComponent implements OnInit {
             this.verificarCapitan();
             this.cargarPartidos();
           } else {
-            console.warn('⚠️ No hay equipos para esta actividad');
             this.loading = false;
           }
         },
         error: (err) => {
-          console.error('Error al cargar equipos de la actividad:', err);
           this.loading = false;
         }
       });
     } else {
-      console.error('❌ IDs inválidos - idActividad:', this.idActividad, 'idEvento:', this.idEvento);
       this.loading = false;
     }
   }
@@ -98,7 +93,6 @@ export class ResultadosComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error al cargar partidos:', err);
         this.loading = false;
       }
     });
@@ -119,7 +113,6 @@ export class ResultadosComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Error al verificar capitán:', err);
         this.esCapitan = false;
       }
     });
@@ -169,7 +162,6 @@ export class ResultadosComponent implements OnInit {
         this.cargarPartidos();
       },
       error: (err) => {
-        console.error('Error al crear partido:', err);
         alert('Error al crear el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });
@@ -213,7 +205,6 @@ export class ResultadosComponent implements OnInit {
         this.cargarPartidos();
       },
       error: (err) => {
-        console.error('Error al actualizar partido:', err);
         alert('Error al actualizar el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });
@@ -235,7 +226,6 @@ export class ResultadosComponent implements OnInit {
         this.cargarPartidos();
       },
       error: (err) => {
-        console.error('Error al eliminar partido:', err);
         alert('Error al eliminar el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });

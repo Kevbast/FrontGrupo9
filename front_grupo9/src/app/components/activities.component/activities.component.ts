@@ -120,7 +120,7 @@ export class ActivitiesComponent implements OnInit {
           });
       });
     },
-      error: (err) => console.error('Error actividades:', err)
+      error: (err) => {}
     });
   }
 
@@ -155,7 +155,7 @@ export class ActivitiesComponent implements OnInit {
             });
         }
       },
-      error: (err) => console.error("Error al cargar precios:", err)
+      error: (err) => {}
     });
   }
 
@@ -193,7 +193,6 @@ export class ActivitiesComponent implements OnInit {
         alert('🗑️ Precio eliminado. La actividad vuelve a ser gratis.');
       },
       error: (err) => {
-        console.error(err);
         alert('❌ Error al eliminar el precio.');
       }
     });
@@ -211,7 +210,6 @@ export class ActivitiesComponent implements OnInit {
             alert(`✅ Precio actualizado a ${precio}€.`);
           },
           error: (err) => {
-            console.error(err);
             alert('❌ Error al actualizar el precio.');
           }
         });
@@ -235,7 +233,6 @@ export class ActivitiesComponent implements OnInit {
             if(!nuevoIdPrecio) this.cargarPrecios(); 
           },
           error: (err) => {
-            console.error(err);
             alert('❌ Error al crear el precio.');
           }
         });
@@ -276,12 +273,12 @@ export class ActivitiesComponent implements OnInit {
                 const nuevoPago = new Pagos(0, idCurso, idPrecioActividad, 0, "Sin pagar");
                 this.actividadesService.crearPago(nuevoPago).subscribe({
                   next: () => {},
-                  error: (e) => console.error(e)
+                  error: (e) => {}
                 });
               });
             }
           },
-          error: (err) => console.error("Error comprobando pagos existentes", err)
+          error: (err) => {}
         });
       }
     });
@@ -339,7 +336,6 @@ export class ActivitiesComponent implements OnInit {
           this.loadingLista = false;
         },
         error: (err) => {
-          console.error(err);
           this.loadingLista = false;
         }
       });
@@ -496,7 +492,6 @@ export class ActivitiesComponent implements OnInit {
         }, 500);
       },
       error: (err) => {
-        console.error('Error al añadir actividad:', err);
         alert('❌ Error al añadir la actividad al evento');
       }
     });
@@ -526,7 +521,6 @@ export class ActivitiesComponent implements OnInit {
         this.mostrarModalCrearActividad = true;
       },
       error: (err) => {
-        console.error('Error al cargar actividades:', err);
         alert('❌ Error al cargar las actividades disponibles');
       }
     });
@@ -595,9 +589,7 @@ export class ActivitiesComponent implements OnInit {
         this.cargarDatos();
         this.cargarPrecios();
       },
-      error: (err) => {
-        console.error('Error al eliminar actividad:', err);
-      }
+      error: (err) => {}
     });
   }
 
@@ -633,7 +625,6 @@ export class ActivitiesComponent implements OnInit {
         }, 500);
       },
       error: (err) => {
-        console.error('Error al crear inscripción:', err);
         this.cerrarModalInscripcion();
       }
     });
