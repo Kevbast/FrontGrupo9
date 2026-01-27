@@ -128,7 +128,7 @@
 
         </mat-card-content>
 
-        <mat-card-actions *ngIf="isFechaSemanaAntes() == false">
+        <mat-card-actions *ngIf="isFechaSemanaAntes() == false && usuarioPerfil?.idRole != 1">
           <button mat-raised-button color="primary" class="btn-enroll" (click)="abrirModalInscripcion(act.idEventoActividad)">Inscribirse</button>
         </mat-card-actions>
 
