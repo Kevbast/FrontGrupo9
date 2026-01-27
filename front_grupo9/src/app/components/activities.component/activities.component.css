@@ -849,3 +849,494 @@ mat-card-actions {
   margin-bottom: 10px;
   opacity: 0.5;
 }
+
+/* ============================ */
+/* RESPONSIVE DESIGN */
+/* ============================ */
+
+/* Tablets grandes y pantallas medianas */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  /* Header responsive */
+  .section-header-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .admin-panel {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .admin-info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .btn-caja-global {
+    width: 100%;
+  }
+
+  /* Grid responsive */
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  /* Cards */
+  .activity-card mat-card-header {
+    padding: 15px;
+  }
+
+  .header-top h3 {
+    font-size: 1.2rem;
+  }
+
+  mat-card-content {
+    padding: 15px !important;
+  }
+
+  /* Modal responsive */
+  .modal-container {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .enrollment-card {
+    max-width: 100%;
+  }
+
+  .modal-header {
+    padding: 15px 20px;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .enrollment-form {
+    padding: 20px 0;
+  }
+}
+
+/* Móviles */
+@media (max-width: 576px) {
+  .container {
+    padding: 10px;
+  }
+
+  /* Header mobile */
+  .section-header-wrapper {
+    margin-bottom: 15px;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    padding-left: 10px;
+  }
+
+  .sports-border,
+  .games-border {
+    border-left-width: 4px;
+  }
+
+  /* Admin panel mobile */
+  .admin-panel {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .badge-role {
+    font-size: 0.7rem;
+  }
+
+  .admin-info span:last-child {
+    font-size: 0.85rem;
+  }
+
+  .btn-caja-global {
+    font-size: 0.85rem;
+    padding: 8px 12px !important;
+  }
+
+  .add-activity-btn-mini {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  /* Botón volver */
+  .mb-4.mt-3 button {
+    font-size: 0.9rem;
+    padding: 8px 12px !important;
+  }
+
+  /* Grid a una columna */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Cards más compactos */
+  .activity-card {
+    border-radius: 12px !important;
+  }
+
+  .activity-card mat-card-header {
+    padding: 12px;
+  }
+
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header-top h3 {
+    font-size: 1.1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between !important;
+  }
+
+  .price-badge {
+    font-size: 0.85rem;
+    padding: 3px 8px;
+  }
+
+  .free-badge {
+    font-size: 0.75rem;
+  }
+
+  .icon {
+    font-size: 1.2rem;
+  }
+
+  mat-card-content {
+    padding: 12px !important;
+  }
+
+  .stats {
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .stats .arrow-indicator {
+    margin-left: 5px;
+  }
+
+  .progress-bar {
+    height: 8px;
+    margin-bottom: 15px;
+  }
+
+  .material-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  mat-card-actions {
+    padding: 0 12px 12px !important;
+  }
+
+  .btn-enroll {
+    padding: 12px !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Lista de participantes mobile */
+  .participants-dropdown {
+    max-height: 180px;
+    padding: 6px;
+  }
+
+  .user-row {
+    padding: 6px 10px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+  }
+
+  .user-avatar mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .user-name {
+    font-size: 0.85rem;
+  }
+
+  /* Modal mobile - Pantalla completa */
+  .modal-overlay {
+    padding: 0;
+  }
+
+  .modal-container {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-content {
+    height: 100%;
+  }
+
+  /* Modal header mobile */
+  .modal-header {
+    padding: 12px 15px;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+    gap: 8px;
+  }
+
+  .modal-title mat-icon {
+    font-size: 20px;
+  }
+
+  .icon-material {
+    font-size: 1.4rem;
+  }
+
+  .btn-close {
+    font-size: 1.5rem;
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Modal body mobile */
+  .modal-body {
+    padding: 15px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* Formulario de materiales mobile */
+  .add-material-section {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+
+  ::ng-deep .add-material-section mat-form-field {
+    font-size: 0.9rem;
+  }
+
+  .material-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .material-info {
+    width: 100%;
+  }
+
+  .mat-name {
+    font-size: 0.95rem;
+  }
+
+  .material-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .btn-aportar {
+    font-size: 0.85rem !important;
+    padding: 6px 12px !important;
+  }
+
+  .empty-state-mat {
+    padding: 30px 15px;
+  }
+
+  .empty-state-mat mat-icon {
+    font-size: 40px;
+    height: 40px;
+    width: 40px;
+  }
+
+  /* Modal footer mobile */
+  .modal-footer {
+    padding: 12px 15px;
+  }
+
+  /* Enrollment card mobile */
+  .enrollment-container {
+    padding: 0;
+    height: 100%;
+  }
+
+  .enrollment-card {
+    height: 100%;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-header-gradient {
+    padding: 30px 15px;
+  }
+
+  .header-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .header-content p {
+    font-size: 0.85rem;
+  }
+
+  .enrollment-form {
+    padding: 15px 0;
+  }
+
+  .custom-field {
+    width: 95%;
+  }
+
+  .white-box {
+    height: 36px;
+    width: 36px;
+    margin-right: 8px;
+  }
+
+  .option-container {
+    width: 95%;
+    margin: 8px 0 20px;
+  }
+
+  .option-box {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .option-box span {
+    font-size: 0.9rem;
+  }
+
+  .enroll-submit-btn {
+    width: 95%;
+    height: 50px;
+    font-size: 1rem !important;
+  }
+
+  .footer-note {
+    padding: 15px;
+    font-size: 0.8rem;
+  }
+
+  /* Empty state mobile */
+  .empty-state {
+    padding: 30px 15px;
+  }
+
+  .empty-state img {
+    max-width: 200px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 380px) {
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .header-top h3 {
+    font-size: 1rem;
+  }
+
+  .btn-caja-global {
+    font-size: 0.75rem;
+  }
+
+  .stats {
+    font-size: 0.8rem;
+  }
+
+  .material-btn {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .btn-enroll {
+    font-size: 0.85rem !important;
+    padding: 10px !important;
+  }
+
+  .header-content h2 {
+    font-size: 1.2rem;
+  }
+
+  .enroll-submit-btn {
+    height: 45px;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Ajuste para contenido overflow en móvil */
+@media (max-width: 576px) {
+  .clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .arrow-indicator {
+    transition: transform 0.3s ease;
+  }
+
+  .arrow-indicator.rotated {
+    transform: rotate(180deg);
+  }
+
+  /* Asegurar que las acciones de los botones sean táctiles */
+  button[mat-icon-button],
+  button[mat-mini-fab],
+  button[mat-raised-button] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

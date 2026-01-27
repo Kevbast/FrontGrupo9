@@ -6,6 +6,8 @@ import { PartidoResultado } from '../../models/PartidoResultado';
 import { Equipo } from '../../models/Equipo';
 import { Usuario } from '../../models/Usuario';
 import { ServiceTorneo } from '../../services/service.torneo';
+import { forkJoin } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-resultados',
@@ -36,21 +38,13 @@ export class ResultadosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Cargar perfil del usuario desde la API
-    this.serviceTorneo.getPerfil().subscribe({
-      next: (usuario) => {
-        this.usuarioPerfil = usuario;
-      },
-      error: (err) => {
-        console.error('Error al cargar perfil:', err);
-      }
-    });
+    this.loading = true;
     
     this.route.params.subscribe(params => {
       this.idActividad = +params['idActividad'];
       this.idEvento = +params['idEvento'];
       
-      // Primero necesitamos obtener el idEventoActividad
+      // Cargar todos los datos en paralelo con forkJoin
       this.cargarDatos();
     });
   }
@@ -58,37 +52,54 @@ export class ResultadosComponent implements OnInit {
   cargarDatos(): void {
     this.loading = true;
     
-    // Cargar equipos de la actividad específica
     if (this.idActividad > 0 && this.idEvento > 0) {
-      this.equiposService.getEquiposActividadEvento(this.idActividad, this.idEvento).subscribe({
-        next: (equiposActividad) => {
-          // Asignar los equipos de esta actividad
-          this.equipos = equiposActividad;
+      // Primero cargar perfil y equipos en paralelo
+      forkJoin({
+        perfil: this.serviceTorneo.getPerfil(),
+        equipos: this.equiposService.getEquiposActividadEvento(this.idActividad, this.idEvento)
+      }).pipe(
+        switchMap((resultado) => {
+          // Guardar usuario y equipos
+          this.usuarioPerfil = resultado.perfil;
+          this.equipos = resultado.equipos;
           
-          // Crear mapa de equipos para acceso rápido
+          // Crear mapa de equipos
           this.equipos.forEach(equipo => {
             this.equiposMap[equipo.idEquipo] = equipo.nombreEquipo;
           });
           
           // Obtener idEventoActividad del primer equipo
-          if (equiposActividad.length > 0 && equiposActividad[0].idEventoActividad) {
-            this.idEventoActividad = equiposActividad[0].idEventoActividad;
-            console.log('✅ Equipos cargados para esta actividad:', this.equipos.length);
-            console.log('✅ idEventoActividad:', this.idEventoActividad);
-            this.verificarCapitan();
-            this.cargarPartidos();
+          if (resultado.equipos.length > 0 && resultado.equipos[0].idEventoActividad) {
+            this.idEventoActividad = resultado.equipos[0].idEventoActividad;
+            
+            // Ahora cargar partidos y capitán en paralelo
+            return forkJoin({
+              partidos: this.partidoService.getPartidosPorActividad(this.idEventoActividad),
+              capitan: this.equiposService.getCapitanByIdEventoActividad(this.idEventoActividad)
+            });
           } else {
-            console.warn('⚠️ No hay equipos para esta actividad');
-            this.loading = false;
+            throw new Error('No hay equipos para esta actividad');
           }
+        })
+      ).subscribe({
+        next: (resultado) => {
+          // Guardar partidos
+          this.partidos = resultado.partidos;
+          
+          // Verificar si es capitán
+          if (resultado.capitan && resultado.capitan.idUsuario === this.usuarioPerfil?.idUsuario) {
+            this.esCapitan = true;
+          } else {
+            this.esCapitan = false;
+          }
+          
+          this.loading = false;
         },
         error: (err) => {
-          console.error('Error al cargar equipos de la actividad:', err);
           this.loading = false;
         }
       });
     } else {
-      console.error('❌ IDs inválidos - idActividad:', this.idActividad, 'idEvento:', this.idEvento);
       this.loading = false;
     }
   }
@@ -97,11 +108,8 @@ export class ResultadosComponent implements OnInit {
     this.partidoService.getPartidosPorActividad(this.idEventoActividad).subscribe({
       next: (partidos) => {
         this.partidos = partidos;
-        this.loading = false;
       },
       error: (err) => {
-        console.error('Error al cargar partidos:', err);
-        this.loading = false;
       }
     });
   }
@@ -116,14 +124,11 @@ export class ResultadosComponent implements OnInit {
       next: (capitan) => {
         if (capitan && capitan.idUsuario === this.usuarioPerfil?.idUsuario) {
           this.esCapitan = true;
-          console.log('✅ Usuario es capitán de esta actividad');
         } else {
           this.esCapitan = false;
-          console.log('❌ Usuario NO es capitán de esta actividad');
         }
       },
       error: (err) => {
-        console.error('Error al verificar capitán:', err);
         this.esCapitan = false;
       }
     });
@@ -138,7 +143,6 @@ export class ResultadosComponent implements OnInit {
     const eventoActividadId = this.idEventoActividad || 0;
     this.nuevoPartido = new PartidoResultado(0, eventoActividadId, 0, 0, 0, 0);
     this.showModalCrear = true;
-    console.log('Abriendo modal con idEventoActividad:', eventoActividadId);
   }
 
   cerrarModalCrear(): void {
@@ -167,13 +171,6 @@ export class ResultadosComponent implements OnInit {
       return;
     }
 
-    console.log('📋 Datos del partido a crear:');
-    console.log('  - idEventoActividad:', this.nuevoPartido.idEventoActividad);
-    console.log('  - idEquipoLocal:', this.nuevoPartido.idEquipoLocal, '(' + this.getNombreEquipo(this.nuevoPartido.idEquipoLocal) + ')');
-    console.log('  - idEquipoVisitante:', this.nuevoPartido.idEquipoVisitante, '(' + this.getNombreEquipo(this.nuevoPartido.idEquipoVisitante) + ')');
-    console.log('  - puntosLocal:', this.nuevoPartido.puntosLocal);
-    console.log('  - puntosVisitante:', this.nuevoPartido.puntosVisitante);
-
     this.partidoService.crearPartido(this.nuevoPartido).subscribe({
       next: (response) => {
         alert('Partido creado correctamente');
@@ -181,7 +178,6 @@ export class ResultadosComponent implements OnInit {
         this.cargarPartidos();
       },
       error: (err) => {
-        console.error('Error al crear partido:', err);
         alert('Error al crear el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });
@@ -196,7 +192,6 @@ export class ResultadosComponent implements OnInit {
     // Copiar los datos del partido a editar
     this.partidoEditar = { ...partido };
     this.showModalEditar = true;
-    console.log('Editando partido:', this.partidoEditar);
   }
 
   cerrarModalEditar(): void {
@@ -219,8 +214,6 @@ export class ResultadosComponent implements OnInit {
       return;
     }
 
-    console.log('📝 Actualizando partido:', this.partidoEditar);
-
     this.partidoService.actualizarPartido(this.partidoEditar).subscribe({
       next: (response) => {
         alert('Partido actualizado correctamente');
@@ -228,7 +221,6 @@ export class ResultadosComponent implements OnInit {
         this.cargarPartidos();
       },
       error: (err) => {
-        console.error('Error al actualizar partido:', err);
         alert('Error al actualizar el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });
@@ -244,15 +236,12 @@ export class ResultadosComponent implements OnInit {
       return;
     }
 
-    console.log('🗑️ Eliminando partido ID:', idPartidoResultado);
-
     this.partidoService.eliminarPartido(idPartidoResultado).subscribe({
       next: (response) => {
         alert('Partido eliminado correctamente');
         this.cargarPartidos();
       },
       error: (err) => {
-        console.error('Error al eliminar partido:', err);
         alert('Error al eliminar el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });
