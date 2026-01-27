@@ -8,10 +8,11 @@
     </div>
     
     <button mat-mini-fab 
+            *ngIf="esCapitan"
             color="primary"
-            class="add-result-btn"
+            class="add-result-btn text-light"
             (click)="abrirModalCrearPartido()"
-            matTooltip="Crear nuevo partido">
+            matTooltip="Crear nuevo partido (Solo Capitanes)">
       <mat-icon>add</mat-icon>
     </button>
   </div>
@@ -43,14 +44,14 @@
             <tr>
               <th>Local</th>
               <th class="text-center">Resultado</th>
-              <th class="text-end">Visitante</th>
+              <th class="text-center">Visitante</th>
+              <th *ngIf="esCapitan" class="text-center" style="width: 120px;"></th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let partido of partidos" class="result-row">
               <td class="team-local">
                 <div class="team-name">
-                  <mat-icon class="team-icon">sports</mat-icon>
                   {{ getNombreEquipo(partido.idEquipoLocal) }}
                 </div>
               </td>
@@ -61,11 +62,24 @@
                   <span class="score-visitante">{{ partido.puntosVisitante }}</span>
                 </div>
               </td>
-              <td class="team-visitante">
-                <div class="team-name text-end">
+              <td class="team-visitante text-center">
+                <div class="team-name">
                   {{ getNombreEquipo(partido.idEquipoVisitante) }}
-                  <mat-icon class="team-icon">sports</mat-icon>
                 </div>
+              </td>
+              <td *ngIf="esCapitan" class="text-center">
+                <button mat-icon-button 
+                        color="primary"
+                        (click)="editarPartido(partido)"
+                        matTooltip="Editar resultado">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        color="warn"
+                        (click)="eliminarPartido(partido.idPartidoResultado)"
+                        matTooltip="Eliminar partido">
+                  <mat-icon>delete</mat-icon>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -127,6 +141,55 @@
     <div class="modal-footer">
       <button mat-raised-button (click)="cerrarModalCrear()">Cancelar</button>
       <button mat-raised-button color="primary" (click)="crearPartido()">Crear Partido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Partido -->
+<div class="modal" [class.show]="showModalEditar" (click)="cerrarModalEditar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Editar Partido</h2>
+      <button class="close-btn" (click)="cerrarModalEditar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <form>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Equipo Local</mat-label>
+          <mat-select [(ngModel)]="partidoEditar.idEquipoLocal" name="equipoLocalEdit" required>
+            <mat-option *ngFor="let equipo of equipos" [value]="equipo.idEquipo">
+              {{ equipo.nombreEquipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Equipo Visitante</mat-label>
+          <mat-select [(ngModel)]="partidoEditar.idEquipoVisitante" name="equipoVisitanteEdit" required>
+            <mat-option *ngFor="let equipo of equipos" [value]="equipo.idEquipo">
+              {{ equipo.nombreEquipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Puntos Local</mat-label>
+          <input matInput type="number" [(ngModel)]="partidoEditar.puntosLocal" name="puntosLocalEdit" min="0" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Puntos Visitante</mat-label>
+          <input matInput type="number" [(ngModel)]="partidoEditar.puntosVisitante" name="puntosVisitanteEdit" min="0" required>
+        </mat-form-field>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button mat-raised-button (click)="cerrarModalEditar()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="actualizarPartido()">Actualizar Partido</button>
     </div>
   </div>
 </div>

@@ -8,7 +8,7 @@ import { ServiceTorneo } from '../../services/service.torneo';
 import { MatDialog } from '@angular/material/dialog';
 import { PrecioDialogComponent } from '../precio-dialog/precio-dialog';
 
-// Modelosss
+// Modelos
 import { Actividad } from '../../models/Actividad';
 import { Inscripcion } from '../../models/Inscripcion';
 import { Material } from '../../models/Material';
@@ -60,7 +60,7 @@ export class ActivitiesComponent implements OnInit {
   // Variables para Materiales
   public idEventoActividadMateriales: number = 0; 
   public nuevoMaterialNombre: string = ''; 
-  // Map to store current activity ID for materials to check participants
+  // Mapa para almacenar el ID de actividad actual para materiales y verificar participantes
   public idActividadParaMateriales: number = 0;
 
   constructor(
@@ -77,6 +77,7 @@ export class ActivitiesComponent implements OnInit {
     this.actividadEditar = new Actividad(0, 0, new Date().toISOString(), 0, 0, '', 0, 0);
   }
 
+  // Inicializa el componente y carga los datos del evento
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.idEvento = +params['idEvento'];
@@ -87,6 +88,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Carga las inscripciones y actividades del evento desde la API
   cargarDatos(): void {
     this.inscripcionesService.getInscripciones().subscribe({
       next: (data) => {
@@ -108,6 +110,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Obtiene el perfil del usuario autenticado
   cargarPerfil(): void {
     this.serviceTorneo.getPerfil().subscribe({
       next: (usuario) => {
@@ -126,6 +129,7 @@ export class ActivitiesComponent implements OnInit {
 
   // --- LÓGICA DE PRECIOS ---
 
+  // Carga todos los precios de las actividades y los almacena en caché
   cargarPrecios(): void {
     this.actividadesService.getPrecios().subscribe({
       next: (data) => {
@@ -144,6 +148,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Abre el diálogo para crear, editar o eliminar el precio de una actividad
   gestionarPrecio(act: Actividad): void {
     const infoPrecio = this.preciosCache[act.idEventoActividad];
     const precioActual = infoPrecio ? infoPrecio.precio : null;
@@ -169,6 +174,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Elimina el precio de una actividad en la API
   borrarPrecioApi(idPrecio: number, idEventoActividad: number) {
     this.actividadesService.eliminarPrecioActividad(idPrecio).subscribe({
       next: () => {
@@ -182,6 +188,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Crea o actualiza el precio de una actividad en la API
   guardarPrecioEnApi(idEventoActividad: number, idActividad: number, precio: number) {
     const registroExistente = this.preciosCache[idEventoActividad];
 
@@ -224,6 +231,7 @@ export class ActivitiesComponent implements OnInit {
     }
   }
 
+  // Genera recibos de pago automáticamente para los cursos inscritos que no tienen recibo
   generarRecibosPendientes(idEvento: number, idActividad: number, idPrecioActividad: number) {
     this.actividadesService.findUsuariosInscritosPorActividadEvento(idEvento, idActividad).subscribe({
       next: (usuarios) => {
@@ -270,10 +278,12 @@ export class ActivitiesComponent implements OnInit {
   }
 
   // --- NAVEGACIÓN A PAGOS ---
+  // Navega a la vista general de pagos del evento
   irAPagosGenerales(): void {
     this.router.navigate(['/pagos', this.idEvento]);
   }
 
+  // Navega a la vista de pagos filtrando por una actividad específica
   irAPagos(act: Actividad): void {
     this.router.navigate(['/pagos', this.idEvento], { 
       queryParams: { actividad: act.nombreActividad } 
@@ -281,6 +291,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   // --- LÓGICA EXISTENTE ---
+  // Agrupa las inscripciones por ID de evento-actividad
   agruparInscripcionesPorActividad(): void {
     this.inscripcionesPorActividad = {};
     this.inscripciones.forEach(inscripcion => {
@@ -291,14 +302,17 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Obtiene las inscripciones de una actividad específica
   getInscripciones(idEventoActividad: number): Inscripcion[] {
     return this.inscripcionesPorActividad[idEventoActividad] || [];
   }
 
+  // Obtiene el número de participantes inscritos en una actividad
   getNumeroParticipantes(idEventoActividad: number): number {
     return this.getInscripciones(idEventoActividad).length;
   }
 
+  // Abre o cierra la lista desplegable de participantes de una actividad
   toggleParticipantes(idEvento: number, idActividad: number): void {
     if (this.actividadAbierta === idActividad) {
       this.actividadAbierta = null;
@@ -323,7 +337,7 @@ export class ActivitiesComponent implements OnInit {
 
   // --- MATERIALES (MODIFICADO) ---
 
-  // Se añade el parámetro idActividad para poder buscar inscritos
+  // Abre el modal de materiales y carga la lista de materiales de la actividad
   getMaterialesEventoActividad(idEventoActividad: number, nombreActividad: string): void {
     this.actividadSeleccionada = nombreActividad;
     this.idEventoActividadMateriales = idEventoActividad; 
@@ -348,13 +362,14 @@ export class ActivitiesComponent implements OnInit {
     })
   }
 
+  // Cierra el modal de materiales y limpia los datos
   cerrarModal(): void {
     this.mostrarModal = false;
     this.materialesEventoActividad = [];
     this.nuevoMaterialNombre = ''; 
   }
 
-  // 1. CREAR SOLICITUD DE MATERIAL (Restringido a inscritos)
+  // Crea una nueva solicitud de material (solo participantes inscritos u organizadores)
   crearMaterial(): void {
     if (!this.nuevoMaterialNombre.trim()) return;
 
@@ -387,7 +402,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
-  // 2. BORRAR MATERIAL (Solo Admin/Org o Creador)
+  // Elimina un material de la lista (solo organizador o creador del material)
   borrarMaterial(idMaterial: number): void {
     if(confirm('¿Eliminar este material de la lista?')) {
       this.materialesService.deleteMateriales(idMaterial).subscribe({
@@ -397,7 +412,7 @@ export class ActivitiesComponent implements OnInit {
     }
   }
 
-  // 3. APORTAR MATERIAL (Solo inscritos)
+  // Registra al usuario como aportador de un material (solo inscritos u organizadores)
   aportarMaterial(material: Material): void {
     // VALIDACIÓN: Usamos el caché de participantes
     const inscritos = this.participantesCache[this.idActividadParaMateriales] || [];
@@ -419,6 +434,7 @@ export class ActivitiesComponent implements OnInit {
     }
   }
 
+  // Recarga la lista de materiales desde la API
   recargarMateriales() {
     this.materialesService.getMaterialesEvento(this.idEventoActividadMateriales).subscribe(res => {
       this.materialesEventoActividad = res;
@@ -426,6 +442,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   //--------MODAL INSCRIPCIÓN, ETC... (RESTO IGUAL)
+  // Abre el modal de inscripción para una actividad
   abrirModalInscripcion(idEventoActividad: number): void {
     this.idEventoActividadSeleccionada = idEventoActividad;
     this.inscripcion.idUsuario = this.idUsuarioActual;
@@ -433,21 +450,25 @@ export class ActivitiesComponent implements OnInit {
     this.mostrarModalInscripcion = true;
   }
 
+  // Cierra el modal de inscripción y limpia los datos
   cerrarModalInscripcion(): void {
     this.mostrarModalInscripcion = false;
     this.inscripcion = new Inscripcion(0, 0, 0, false, new Date().toISOString());
   }
 
+  // Abre el modal para añadir una actividad al evento
   abrirModalCrearActividad(): void {
     this.mostrarModalCrearActividad = true;
   }
 
+  // Cierra el modal de crear actividad y limpia los datos
   cerrarModalCrearActividad(): void {
     this.mostrarModalCrearActividad = false;
     this.idActividadSeleccionada = 0;
     this.actividadesDisponibles = [];
   }
 
+  // Envía la petición para añadir la actividad seleccionada al evento
   crearActividadEnviar(): void {
     if (!this.idActividadSeleccionada) {
       alert('❌ Por favor selecciona una actividad');
@@ -470,6 +491,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Carga todas las actividades disponibles y abre el modal de selección
   crearActividad(): void {
     if (!this.esAdminOOrganizador()) {
       return;
@@ -500,6 +522,7 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Abre el modal de edición con los datos de la actividad seleccionada
   editarActividad(actividad: Actividad): void {
     if (!this.esAdminOOrganizador()) {
       return;
@@ -517,11 +540,13 @@ export class ActivitiesComponent implements OnInit {
     this.mostrarModalEditarActividad = true;
   }
 
+  // Cierra el modal de editar actividad y limpia los datos
   cerrarModalEditarActividad(): void {
     this.mostrarModalEditarActividad = false;
     this.actividadEditar = new Actividad(0, 0, new Date().toISOString(), 0, 0, '', 0, 0);
   }
 
+  // Guarda los cambios realizados en una actividad
   guardarCambiosActividad(): void {
     this.actividadesService.actualizarActividad(this.actividadEditar).subscribe({
       next: (respuesta) => {
@@ -535,14 +560,14 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Verifica si el usuario actual es organizador
   public esAdminOOrganizador(): boolean {
-    return this.usuarioPerfil?.idRole === 3 || this.usuarioPerfil?.idRole === 4;
+    return this.usuarioPerfil?.idRole === 4;
   }
 
-  // Eliminar la relación entre evento y actividad (solo organizadores y administradores)
+  // Elimina una actividad del evento (solo organizadores)
   eliminarEventoActividad(idEventoActividad: number, nombreActividad: string): void {
-    // Verificar que el usuario es organizador (idRole = 3) o administrador (idRole = 4)
-    const esOrganizador = this.usuarioPerfil?.idRole === 3 || this.usuarioPerfil?.idRole === 4;
+    const esOrganizador = this.usuarioPerfil?.idRole === 4;
     
     if (!esOrganizador) {
       return;
@@ -566,11 +591,13 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+  // Cierra el modal de error
   public cerrarModalError(): void {
     this.mostrarModalError = false;
     this.mensajeError = '';
   }
 
+  // Envía la inscripción del usuario a una actividad (validando que no esté ya inscrito en otra)
   public enviarInscripcion(): void {
     const actividadesDelEvento = this.actividadesEvento.map(act => act.idEventoActividad);
     const yaInscrito = this.inscripciones.some(insc => 

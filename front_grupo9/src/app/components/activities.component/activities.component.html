@@ -3,7 +3,7 @@
   <div *ngIf="actividadesEvento"> <div class="section-header-wrapper">
       <h2 class="section-title sports-border">Actividades</h2>
       
-      <div class="admin-panel" *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4">
+      <div class="admin-panel" *ngIf="usuarioPerfil?.idRole == 4">
         <div class="admin-info">
           <span class="badge-role">{{ rolUsuario }}</span>
           <span>Panel de Control</span>
@@ -60,7 +60,7 @@
 
                 <button mat-icon-button 
                         class="edit-price-btn"
-                        *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4" 
+                        *ngIf="usuarioPerfil?.idRole == 4"
                         (click)="$event.stopPropagation(); gestionarPrecio(act)"
                         matTooltip="Editar Precio">
                   <mat-icon>edit</mat-icon> 
@@ -68,7 +68,7 @@
 
                 <span class="icon">🏆</span>
                 
-                <button *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4"
+                <button *ngIf="usuarioPerfil?.idRole == 4"
                         mat-icon-button
                         class="edit-icon"
                         (click)="editarActividad(act)"
@@ -76,7 +76,7 @@
                   <mat-icon>edit</mat-icon>
                 </button>
 
-                <button *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4"
+                <button *ngIf="usuarioPerfil?.idRole == 4"
                         mat-icon-button
                         class="delete-icon"
                         (click)="eliminarEventoActividad(act.idEventoActividad, act.nombreActividad)"
@@ -141,6 +141,10 @@
 
         <mat-card-actions>
           <button mat-raised-button color="success" class="btn-enroll" [routerLink]="['/equipos', act.idActividad, act.idEvento]">ir a equipos →</button>
+        </mat-card-actions>
+
+        <mat-card-actions>
+          <button mat-raised-button color="accent" class="btn-enroll" [routerLink]="['/resultados', act.idActividad, act.idEvento]">Ver resultados 🏆</button>
         </mat-card-actions>    
       </mat-card>
       
@@ -149,7 +153,7 @@
 
   <div *ngIf="!actividadesEvento || actividadesEvento.length === 0" class="empty-state">
     <img src="Empty Box.gif" alt="notfound"/>
-    <div style="text-align: center; margin-top: 20px;" *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4">
+    <div style="text-align: center; margin-top: 20px;" *ngIf="usuarioPerfil?.idRole == 4">
        <button mat-raised-button color="primary" (click)="crearActividad()">
           <mat-icon>add</mat-icon> Crear primera actividad
        </button>
@@ -227,7 +231,7 @@
                 </button>
 
                 <button mat-icon-button color="warn" 
-                        *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4 || material.idUsuario === idUsuarioActual"
+                        *ngIf="usuarioPerfil?.idRole == 4 || material.idUsuario === idUsuarioActual"
                         (click)="borrarMaterial(material.idMaterial)"
                         matTooltip="Eliminar solicitud">
                   <mat-icon>delete</mat-icon>

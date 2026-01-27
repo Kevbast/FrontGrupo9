@@ -282,3 +282,22 @@
   justify-content: flex-end;
   gap: 15px;
 }
+
+/* Estilos para botones de acción en la tabla */
+.result-row td button.mat-mdc-icon-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  line-height: 32px;
+}
+
+.result-row td button.mat-mdc-icon-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
+.result-row td {
+  vertical-align: middle;
+}
