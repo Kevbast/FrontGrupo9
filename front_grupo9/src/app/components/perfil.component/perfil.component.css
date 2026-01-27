@@ -4,23 +4,22 @@
     --sport-dark: #023e8a;
 }
 
-/* TARJETA PRINCIPAL */
+/* --- TARJETA DE PERFIL --- */
 .profile-card {
     border-radius: 20px !important;
     background: white;
-    min-height: 500px;
+    /* Quitamos min-height fija para evitar espacios blancos excesivos en móvil */
+    transition: transform 0.3s ease;
 }
 
-/* 1. BANNER SUPERIOR */
+/* BANNER */
 .profile-banner {
     height: 180px;
     width: 100%;
-    /* Degradado azul deportivo */
     background: linear-gradient(135deg, #0077b6 0%, #00b4d8 100%);
     position: relative;
 }
 
-/* Opcional: Patrón de fondo sutil para el banner */
 .profile-banner::after {
     content: '';
     position: absolute;
@@ -30,10 +29,10 @@
     opacity: 0.5;
 }
 
-/* 2. CONTENEDOR DE AVATAR (Para centrar y superponer) */
+/* AVATAR */
 .avatar-wrapper {
     position: relative;
-    margin-top: -90px; /* Esto hace que suba y se monte en el banner */
+    margin-top: -90px;
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
@@ -44,48 +43,59 @@
     height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    border: 6px solid white; /* Borde blanco grueso para separar del fondo */
+    border: 6px solid white;
     background-color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Bolita de estado (Activo/Inactivo) */
+/* INDICADOR DE ESTADO */
 .status-indicator {
     position: absolute;
     bottom: 15px;
-    margin-left: 110px; /* Ajuste para pegarlo a la derecha de la foto */
+    /* Ajustado dinámicamente con transform en vez de margen fijo */
+    left: 50%;
+    transform: translateX(50px); 
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #9e9e9e; /* Gris por defecto */
+    background-color: #9e9e9e;
     border: 3px solid white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .status-indicator.active {
-    background-color: #4caf50; /* Verde si activo */
+    background-color: #4caf50;
 }
 
-/* 3. ETIQUETAS (Badges) */
+/* --- BADGES (ROLES E ID) --- */
 .role-badge {
-    background-color: #e3f2fd;
-    color: #0277bd;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 800;
     font-size: 0.85rem;
     letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
+
+.badge-default { background-color: #e3f2fd; color: #0277bd; }
+.badge-admin   { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+.badge-org     { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+
+.icon-tiny { font-size: 18px; width: 18px; height: 18px; }
 
 .id-badge {
     background-color: #f5f5f5;
     color: #757575;
-    padding: 5px 12px;
+    padding: 8px 12px;
     border-radius: 20px;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* 4. CAJAS DE INFORMACIÓN (Email, Curso) */
+/* --- CAJAS DE INFORMACIÓN --- */
 .info-box {
     display: flex;
     align-items: center;
@@ -94,6 +104,7 @@
     border: 1px solid #f0f0f0;
     border-radius: 16px;
     transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%; /* Para igualar alturas en grid */
 }
 
 .info-box:hover {
@@ -102,7 +113,6 @@
     border-color: #e1f5fe;
 }
 
-/* Círculos de iconos */
 .icon-circle {
     width: 50px;
     height: 50px;
@@ -117,13 +127,16 @@
 .bg-blue-light { background-color: #e3f2fd; }
 .bg-cyan-light { background-color: #e0f7fa; }
 
-/* Textos dentro de las cajas */
+.info-text {
+    overflow: hidden; /* Previene desbordamiento de texto */
+}
+
 .info-box label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #90a4ae;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 2px;
 }
 
@@ -131,6 +144,188 @@
     margin: 0;
     font-weight: 600;
     color: #37474f;
-    font-size: 1.1rem;
-    word-break: break-all; /* Por si el email es muy largo */
+    font-size: 1rem;
+    word-break: break-word; /* Rompe el email si es largo */
+}
+
+/* --- SECCIONES E ICONOS --- */
+.icon-section-wrapper {
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+}
+
+/* --- TARJETAS DE ACTIVIDAD --- */
+.activity-card {
+    position: relative;
+    border-radius: 20px !important;
+    background: white;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+}
+
+.activity-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+    border-color: #e3f2fd;
+}
+
+.activity-header {
+    height: 100px;
+    background: linear-gradient(135deg, #0077b6 30%, #c3cfe2 100%);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    clip-path: ellipse(150% 100% at 50% 0%);
+}
+
+.activity-icon {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    color: #0d6efd;
+}
+
+.activity-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: white;
+    color: #555;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.captain-badge {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3) !important;
+    color: #f57f17 !important;
+    border: 1px solid #ffe082;
+}
+
+.activity-content { padding: 0 25px 25px 25px; }
+
+.activity-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.activity-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #f8f9fa;
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: #7f8c8d;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.activity-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    background-color: #fcfcfc;
+    border: 1px solid #f1f1f1;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.meta-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #34495e;
+}
+
+.meta-value.highlight { color: #097AEC; }
+
+.meta-label {
+    font-size: 0.65rem;
+    color: #95a5a6;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.activity-actions button {
+    width: 100%;
+    padding: 8px 0;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+/* --- EMPTY STATE --- */
+.empty-state {
+    background-color: white;
+    border: 2px dashed #e0e0e0;
+}
+
+/* ========================================= */
+/* MEJORAS RESPONSIVAS (MÓVIL)           */
+/* ========================================= */
+@media (max-width: 768px) {
+    /* Cabecera del perfil */
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: stretch !important;
+        text-align: center;
+    }
+
+    .d-flex button {
+        width: 100%; /* Botón "Ir a Panel" ancho completo */
+    }
+
+    /* Tarjeta Perfil */
+    .profile-banner { height: 140px; }
+    .avatar-wrapper { margin-top: -70px; }
+    .profile-avatar { width: 130px; height: 130px; }
+    .status-indicator { transform: translateX(40px); } /* Ajuste del puntito */
+
+    .info-box {
+        flex-direction: row; /* Mantener icono al lado del texto */
+        padding: 15px;
+    }
+    
+    /* Badges en móvil */
+    .role-badge, .id-badge {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+    
+    /* Títulos */
+    h2.fw-bold { font-size: 1.5rem !important; }
 }

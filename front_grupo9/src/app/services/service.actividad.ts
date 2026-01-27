@@ -7,6 +7,7 @@ import { Actividad } from '../models/Actividad';
 import { Usuario } from '../models/Usuario';
 import { Pagos } from '../models/Pagos';
 import { PagosCompletos } from '../models/PagosCompletos';
+import { ActividadUser } from '../models/ActividadesUser';
 
 @Injectable({
   providedIn: 'root',
@@ -165,5 +166,7 @@ export class ActividadesService {
     const headers = this.getAuthHeaders();
     return this.http.delete(url, { headers: headers });
   }
+
+  
 
 }

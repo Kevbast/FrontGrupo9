@@ -8,6 +8,7 @@ import { EquiposComponents } from './components/equipos.components/equipos.compo
 import { PagosComponent } from './components/pagos.component/pagos.component';
 import { ColoresComponent } from './components/colores.component/colores.component';
 import { ResultadosComponent } from './components/resultados.component/resultados.component';
+import { AdminComponent } from './components/admin.component/admin.component';
 
 const routes: Routes = [
   {path:"",component:HomeComponent},
@@ -17,7 +18,8 @@ const routes: Routes = [
   {path:"equipos/:idActividad/:idEvento", component: EquiposComponents},
   {path:"pagos/:idEvento", component: PagosComponent},
   {path: "colores/:idActividad/:idEvento", component: ColoresComponent},
-  {path: "resultados/:idActividad/:idEvento", component: ResultadosComponent}
+  {path: "resultados/:idActividad/:idEvento", component: ResultadosComponent},
+  {path:'admin', component: AdminComponent}
 ];
 
 @NgModule({

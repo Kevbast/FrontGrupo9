@@ -1,0 +1,370 @@
+/* ================================================= */
+/* 1. BARRA DE NAVEGACIÓN (NAVBAR)                   */
+/* ================================================= */
+
+.custom-navbar {
+  background: #0077b6;
+  padding: 0.7rem 1rem;
+  box-shadow: 0 4px 20px rgba(0, 119, 182, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 52px;
+  margin-right: 15px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease;
+}
+
+.brand-section:hover .navbar-logo {
+  transform: scale(1.05);
+}
+
+.navbar-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.brand-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  color: #e0f7fa;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.navbar-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-link-custom {
+  text-decoration: none;
+  position: relative;
+  display: block;
+  padding-bottom: 5px;
+}
+
+.nav-box {
+  width: 46px;
+  height: 46px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-box mat-icon {
+  font-size: 26px;
+  width: 26px;
+  height: 26px;
+  transition: transform 0.3s ease;
+}
+
+.nav-box:hover {
+  background-color: #ffffff;
+  color: #0077b6;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  border-color: #ffffff;
+}
+
+.active .nav-box {
+  background-color: #ffffff;
+  color: #0077b6;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  border-color: #ffffff;
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 4px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+.logout-btn {
+  background-color: rgba(220, 53, 69, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 0 22px;
+  height: 46px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.logout-btn mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.logout-btn:hover {
+  background-color: #ff3d3d;
+  border-color: #ff3d3d;
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 61, 61, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ================================================= */
+/* 2. CONTENIDO GENERAL Y TARJETAS (USER-ITEM)       */
+/* ================================================= */
+
+.min-h-500 {
+  min-height: 500px;
+}
+.bg-light-tab {
+  background-color: #f8f9fa;
+  min-height: 500px;
+}
+.no-bottom-space {
+  margin-bottom: -1.25em;
+}
+
+/* ESTILOS DE TARJETA (COMPARTIDO PARA USUARIOS Y ACTIVIDADES MÓVIL) */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.user-item {
+  background: white;
+  padding: 15px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s;
+  width: 100%; /* Asegurar ancho completo */
+}
+.user-item:hover {
+  transform: translateX(5px);
+  border-color: #e3f2fd;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ROLES Y BADGES */
+.badge-role {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-top: 2px;
+}
+.role-prof {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+}
+.role-user {
+  background-color: #eceff1;
+  color: #546e7a;
+}
+.role-admin {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.role-org {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+.role-cap {
+  background-color: #fff8e1;
+  color: #f57f17;
+}
+
+.icon-tiny-sport {
+  width: 28px;
+  height: 28px;
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bg-blue-subtle {
+  background-color: #e3f2fd;
+}
+.border-primary-subtle {
+  border-color: #bbdefb !important;
+}
+
+/* FORMULARIO Y TABLAS */
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.mat-mdc-table {
+  background: white;
+}
+th.mat-header-cell {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  height: 50px;
+  border-bottom: 1px solid #e0e0e0;
+}
+td.mat-cell {
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.hover-row:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================= */
+/* 3. RESPONSIVE (MÓVIL)                             */
+/* ================================================= */
+
+@media (max-width: 768px) {
+  /* NAVBAR */
+  .custom-navbar {
+    padding: 0.7rem 1rem;
+    flex-wrap: nowrap;
+  }
+  .brand-title,
+  .brand-subtitle {
+    display: none;
+  }
+  .navbar-logo {
+    height: 42px;
+    margin-right: 0;
+  }
+  .navbar-nav {
+    gap: 8px;
+    margin: 0;
+  }
+  .nav-box,
+  .logout-btn {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 10px !important;
+  }
+  .logout-btn span,
+  .active::after {
+    display: none !important;
+  }
+  .logout-btn {
+    justify-content: center;
+    padding: 0 !important;
+  }
+  .logout-btn mat-icon {
+    margin: 0;
+  }
+
+  /* COMPORTAMIENTO DE TARJETAS (User Item se usa para actividades también) */
+  .user-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* Botones a la derecha */
+    border-top: 1px solid #f0f0f0;
+    padding-top: 10px;
+    gap: 10px;
+  }
+
+  /* Botones de acción un poco más grandes */
+  .actions button {
+    transform: scale(1.1);
+  }
+
+  /* HEADER DE SECCIÓN */
+  .header-responsive {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 15px;
+  }
+  .header-responsive button {
+    width: 100%;
+    height: 45px;
+  }
+
+  /* FORMULARIO */
+  .form-container {
+    padding: 15px !important;
+  }
+  .form-actions-mobile {
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+  .form-actions-mobile button {
+    width: 100%;
+    margin: 0 !important;
+    margin-bottom: 8px !important;
+    height: 45px;
+  }
+}

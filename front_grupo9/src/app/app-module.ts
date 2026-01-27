@@ -38,6 +38,9 @@ import { ColoresComponent } from './components/colores.component/colores.compone
 import { ColoresService } from './services/coloresService';
 import { ResultadosComponent } from './components/resultados.component/resultados.component';
 import { PartidoResultadoService } from './services/partidoResultadoService';
+import { AdminComponent } from './components/admin.component/admin.component';
+import { MatTab, MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,8 @@ import { PartidoResultadoService } from './services/partidoResultadoService';
     PrecioDialogComponent,
     PagosComponent,
     ColoresComponent,
-    ResultadosComponent
+    ResultadosComponent,
+    AdminComponent 
   ],
   imports: [
     BrowserModule,
@@ -68,7 +72,11 @@ import { PartidoResultadoService } from './services/partidoResultadoService';
     MatTableModule,
     MatSpinner,
     MatSelectModule, 
-    FormsModule
+    FormsModule,
+    MatTab,
+    MatTabGroup,
+    MatTabsModule,
+    MatTooltip
   ],
   providers: [ServiceTorneo, EventosService, InscripcionesService, ActividadesService, DatePipe, MaterialesService,
               EquiposService, UsuariosService, ColoresService, PartidoResultadoService
