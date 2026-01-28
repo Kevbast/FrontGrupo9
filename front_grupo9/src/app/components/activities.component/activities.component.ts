@@ -734,9 +734,7 @@ export class ActivitiesComponent implements OnInit {
 
   // Abre el modal de edición con los datos de la actividad seleccionada
   editarActividad(actividad: Actividad): void {
-    if (!this.esAdminOOrganizador()) {
-      return;
-    }
+    
     this.actividadEditar = new Actividad(
       actividad.posicion,
       actividad.idEvento,
