@@ -690,9 +690,7 @@ export class ActivitiesComponent implements OnInit {
 
   // Carga todas las actividades disponibles y abre el modal de selección
   crearActividad(): void {
-    if (!this.esAdminOOrganizador()) {
-      return;
-    }
+    
     // Cargar todas las actividades disponibles
     this.actividadesService.getActividades().subscribe({
       next: (actividades: any[]) => {
