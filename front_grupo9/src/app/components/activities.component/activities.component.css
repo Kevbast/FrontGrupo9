@@ -733,6 +733,170 @@ mat-card-actions {
   letter-spacing: 0.5px;
 }
 
+/* ============================ */
+/* PANEL DE ADMINISTRACIÓN EN CARDS */
+/* ============================ */
+
+.admin-actions-panel {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.08), rgba(255, 193, 7, 0.04));
+  border-left: 4px solid #ff9800;
+  padding: 14px 18px;
+  margin: 0 16px 16px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.12);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-actions-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.admin-actions-panel:hover::before {
+  left: 100%;
+}
+
+.admin-actions-panel:hover {
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Título del panel */
+.admin-actions-panel > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f57c00;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-actions-panel mat-icon:first-child {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  color: #ff9800;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.admin-actions-panel span {
+  font-size: 0.95rem;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Contenedor de botones de gestión */
+.admin-actions-panel > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Estilos para los botones del panel de administración */
+.admin-actions-panel button[mat-stroked-button] {
+  font-size: 0.85rem;
+  padding: 0 14px;
+  height: 36px;
+  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-width: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-actions-panel button[mat-stroked-button] mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+/* Botón Gestionar Precio */
+.admin-actions-panel button[mat-stroked-button][color="primary"] {
+  border-color: #2196f3;
+  color: #1976d2;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05), rgba(33, 150, 243, 0.01));
+}
+
+.admin-actions-panel button[mat-stroked-button][color="primary"]:hover {
+  background: #2196f3;
+  color: white;
+  border-color: #2196f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+/* Botón Editar */
+.admin-actions-panel button[mat-stroked-button][color="accent"] {
+  border-color: #ff9800;
+  color: #f57c00;
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.05), rgba(255, 152, 0, 0.01));
+}
+
+.admin-actions-panel button[mat-stroked-button][color="accent"]:hover {
+  background: #ff9800;
+  color: white;
+  border-color: #ff9800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+/* Botón Eliminar */
+.admin-actions-panel button[mat-stroked-button][color="warn"] {
+  border-color: #f44336;
+  color: #d32f2f;
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.05), rgba(244, 67, 54, 0.01));
+}
+
+.admin-actions-panel button[mat-stroked-button][color="warn"]:hover {
+  background: #f44336;
+  color: white;
+  border-color: #f44336;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* Animación de entrada del panel */
+@keyframes slideInPanel {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-actions-panel {
+  animation: slideInPanel 0.4s ease-out;
+}
+
 /* Botón de editar precio (más discreto ahora) */
 .edit-price-btn {
   color: white;
@@ -905,6 +1069,22 @@ mat-card-actions {
     padding: 15px;
   }
 
+  /* Panel de administración en tablet */
+  .admin-actions-panel {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .admin-actions-panel > div:last-child {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-actions-panel button[mat-stroked-button] {
+    flex: 1;
+    min-width: 120px;
+  }
+
   /* Header responsive */
   .section-header-wrapper {
     flex-direction: column;
@@ -981,6 +1161,33 @@ mat-card-actions {
 @media (max-width: 576px) {
   .container {
     padding: 10px;
+  }
+
+  /* Panel de administración en móvil */
+  .admin-actions-panel {
+    padding: 10px 12px;
+    margin: 0 12px 12px 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .admin-actions-panel > div:first-child {
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+
+  .admin-actions-panel > div:last-child {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .admin-actions-panel button[mat-stroked-button] {
+    width: 100%;
+    height: 40px;
+    justify-content: center;
+    font-size: 0.9rem;
   }
 
   /* Header mobile */

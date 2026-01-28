@@ -56,7 +56,7 @@
             <div class="header-top">
               <h3>{{ act.nombreActividad }}</h3>
 
-              <div class="header-actions" style="display: flex; align-items: center; gap: 8px">
+              <div class="header-actions" style="display: flex; align-items: center; gap: 10px">
                 <div
                   class="price-badge"
                   *ngIf="
@@ -77,43 +77,63 @@
                   Gratis
                 </div>
 
-                <button
-                  mat-icon-button
-                  class="edit-price-btn"
-                  *ngIf="usuarioPerfil?.idRole == 4"
-                  (click)="$event.stopPropagation(); gestionarPrecio(act)"
-                  matTooltip="Editar Precio"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-
                 <span class="icon">🏆</span>
-
-                <button
-                  *ngIf="usuarioPerfil?.idRole == 4"
-                  mat-icon-button
-                  class="edit-icon"
-                  (click)="editarActividad(act)"
-                  aria-label="Editar actividad"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-
-                <button
-                  *ngIf="usuarioPerfil?.idRole == 4"
-                  mat-icon-button
-                  class="delete-icon"
-                  (click)="eliminarEventoActividad(act.idEventoActividad, act.nombreActividad)"
-                  matTooltip="Eliminar actividad del evento"
-                  aria-label="Eliminar actividad"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
               </div>
             </div>
           </mat-card-title>
           <mat-card-subtitle>Competición deportiva escolar</mat-card-subtitle>
         </mat-card-header>
+
+        <!-- Panel de Administrador -->
+        <div class="admin-actions-panel" *ngIf="usuarioPerfil?.idRole == 4" style="
+          background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 193, 7, 0.05));
+          border-left: 4px solid #ff9800;
+          padding: 12px 16px;
+          margin: 0 16px 16px 16px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 10px;
+        ">
+          <div style="display: flex; align-items: center; gap: 8px; color: #f57c00; font-weight: 500;">
+            <mat-icon style="font-size: 20px; width: 20px; height: 20px;">admin_panel_settings</mat-icon>
+            <span style="font-size: 0.9rem;">Panel de Gestión</span>
+          </div>
+          
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="$event.stopPropagation(); gestionarPrecio(act)"
+              style="font-size: 0.85rem; padding: 0 12px; height: 32px;"
+            >
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px; margin-right: 4px;">euro</mat-icon>
+              Gestionar Precio
+            </button>
+
+            <button
+              mat-stroked-button
+              color="accent"
+              (click)="editarActividad(act)"
+              style="font-size: 0.85rem; padding: 0 12px; height: 32px;"
+            >
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px; margin-right: 4px;">edit</mat-icon>
+              Editar
+            </button>
+
+            <button
+              mat-stroked-button
+              color="warn"
+              (click)="eliminarEventoActividad(act.idEventoActividad, act.nombreActividad)"
+              style="font-size: 0.85rem; padding: 0 12px; height: 32px;"
+            >
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px; margin-right: 4px;">delete</mat-icon>
+              Eliminar
+            </button>
+          </div>
+        </div>
 
         <mat-card-content>
           <div class="stats clickable" (click)="toggleParticipantes(idEvento, act.idActividad)">
