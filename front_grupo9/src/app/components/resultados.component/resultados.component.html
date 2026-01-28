@@ -53,8 +53,8 @@
             <tbody>
               <tr *ngFor="let partido of partidos" class="result-row">
                 <td class="team-local">
-                  <div class="team-name">
-                    {{ getNombreEquipo(partido.idEquipoLocal) }}
+                  <div class="team-name w-100 d-flex justify-content-center">
+                    <h3 class="text-primary">{{ getNombreEquipo(partido.idEquipoLocal).toUpperCase() }}</h3>
                   </div>
                 </td>
                 <td class="result-score">
@@ -65,8 +65,8 @@
                   </div>
                 </td>
                 <td class="team-visitante text-center">
-                  <div class="team-name">
-                    {{ getNombreEquipo(partido.idEquipoVisitante) }}
+                  <div class="team-name w-100 d-flex justify-content-center">
+                    <h3 class="text-primary">{{ getNombreEquipo(partido.idEquipoVisitante).toUpperCase() }}</h3>
                   </div>
                 </td>
                 <td *ngIf="esCapitan" class="text-center">
@@ -127,6 +127,33 @@
     <mat-icon class="empty-icon">sports_score</mat-icon>
     <h3>No hay resultados disponibles</h3>
     <p>Aún no se han registrado partidos para esta actividad</p>
+  </div>
+
+  <!-- Gráficos de Estadísticas -->
+  <div *ngIf="!loading && partidos.length > 0" class="mx-3 mb-5">
+    <div class="row g-3">
+      <!-- Gráfico de Goles -->
+      <div class="col-12 col-md-6">
+        <mat-card class="chart-card h-100">
+          <mat-card-content>
+            <div class="chart-container" style="position: relative; height: 330px;" class="d-flex justify-content-center">
+              <canvas #chartCanvas></canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      
+      <!-- Gráfico de Victorias -->
+      <div class="col-12 col-md-6">
+        <mat-card class="chart-card h-100">
+          <mat-card-content>
+            <div class="chart-container" style="position: relative; height: 350px;">
+              <canvas #chartVictoriasCanvas></canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
   </div>
 </div>
 

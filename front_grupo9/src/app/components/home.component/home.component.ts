@@ -195,7 +195,7 @@ export class HomeComponent {
   borrarEvento(idEvento: number): void {
     Swal.fire({
       title: '¡Un momento!',
-      text: 'Estas a punto de eliminar un registro, ¿Seguro que quieres continuar?',
+      text: 'Estas a punto de eliminar un evento, este puede contener muchos datos en su interior que también se eliminarán recursivamente, ¿Seguro que quieres continuar?',
       icon: 'warning',
       confirmButtonText: 'Sí',
       confirmButtonColor: 'red',

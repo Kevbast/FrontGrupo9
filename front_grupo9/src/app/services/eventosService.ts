@@ -60,7 +60,7 @@ export class EventosService {
     }
 
     deleteEvento(idEvento: number): Observable<any> {
-        let request = "api/Eventos/" + idEvento;
+        let request = "api/Eventos/DeleteEventoPanic/" + idEvento;
         let url = environment.urlApiEventos + request;
         let headers = new HttpHeaders();
         let token = this._serviceTorneo.getToken();
