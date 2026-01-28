@@ -585,7 +585,7 @@ export class ActivitiesComponent implements OnInit {
     const inscritos = this.participantesCache[this.idActividadParaMateriales] || [];
     const estaInscrito = inscritos.some((u) => u.idUsuario === this.idUsuarioActual);
 
-    if (!this.esAdminOOrganizador() && !estaInscrito) {
+    if (this.esAdminOOrganizador() && !estaInscrito) {
       Swal.fire({
         icon: 'error',
         title: 'Acceso denegado',
@@ -771,7 +771,7 @@ export class ActivitiesComponent implements OnInit {
 
   // Verifica si el usuario actual es organizador
   public esAdminOOrganizador(): boolean {
-    return this.usuarioPerfil?.idRole === 4;
+    return this.idUsuarioActual === 3||this.idUsuarioActual === 4;
   }
 
   // Elimina una actividad del evento (solo organizadores)
