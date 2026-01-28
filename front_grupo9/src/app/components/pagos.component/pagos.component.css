@@ -17,7 +17,7 @@
 .back-btn {
   background-color: white;
   color: #546e7a;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
 }
 
@@ -49,7 +49,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease;
@@ -89,16 +89,22 @@ h1 {
 }
 
 /* Colores de las tarjetas con degradados modernos */
-.blue { background: linear-gradient(135deg, #42a5f5, #1565c0); }
-.green { background: linear-gradient(135deg, #66bb6a, #2e7d32); }
-.orange { background: linear-gradient(135deg, #ffa726, #ef6c00); }
+.blue {
+  background: linear-gradient(135deg, #42a5f5, #1565c0);
+}
+.green {
+  background: linear-gradient(135deg, #66bb6a, #2e7d32);
+}
+.orange {
+  background: linear-gradient(135deg, #ffa726, #ef6c00);
+}
 
 /* --- TABLA --- */
 .table-wrapper {
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   padding-bottom: 20px; /* Espacio abajo */
 }
 
@@ -183,7 +189,8 @@ td strong {
 }
 
 /* Loading y No Data */
-.loading, .no-data {
+.loading,
+.no-data {
   padding: 50px;
   text-align: center;
   color: #90a4ae;
@@ -192,4 +199,380 @@ td strong {
   flex-direction: column;
   align-items: center;
   gap: 15px;
+}
+
+/* --- VISTA MÓVIL - TARJETAS --- */
+.mobile-cards {
+  display: none; /* Oculta por defecto, se muestra en móviles */
+}
+
+.mobile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #42a5f5;
+}
+
+/* Primera fila: Curso y Actividad */
+.card-row-1 {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.card-course,
+.card-activity {
+  flex: 1;
+}
+
+.card-course {
+  margin-right: 16px;
+}
+
+.course-label,
+.activity-label {
+  font-size: 0.75rem;
+  color: #78909c;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.course-name,
+.activity-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #263238;
+  margin-bottom: 2px;
+}
+
+.course-id {
+  font-size: 0.7rem;
+  color: #90a4ae;
+}
+
+/* Segunda fila: Precios y Estado */
+.card-row-2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-prices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  margin-right: 16px;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-label {
+  font-size: 0.8rem;
+  color: #78909c;
+  font-weight: 500;
+}
+
+.price-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #263238;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mobile-select {
+  width: 140px;
+  font-size: 0.8rem;
+}
+
+.mobile-badge {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+}
+
+.mobile-delete-btn {
+  min-width: 36px;
+  width: 36px;
+  height: 36px;
+}
+
+/* ======================== RESPONSIVE DESIGN ======================== */
+
+/* --- TABLETS (pantallas medianas) --- */
+@media (max-width: 1024px) {
+  .pagos-container {
+    padding: 20px;
+  }
+
+  .dashboard {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .dash-card {
+    padding: 20px;
+  }
+
+  .dash-card span {
+    font-size: 1.7rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  /* Ajustar tabla para tablets */
+  th.mat-header-cell,
+  td.mat-cell {
+    padding: 14px 18px;
+    font-size: 0.9rem;
+  }
+
+  .status-select {
+    width: 160px;
+  }
+}
+
+/* --- MÓVILES GRANDES (pantallas pequeñas) --- */
+@media (max-width: 768px) {
+  .pagos-container {
+    padding: 15px;
+  }
+
+  .header {
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .dash-card {
+    padding: 18px;
+    flex-direction: row;
+  }
+
+  .dash-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .dash-icon mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .dash-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .dash-card span {
+    font-size: 1.5rem;
+  }
+
+  /* Ocultar tabla desktop y mostrar tarjetas móviles */
+  .desktop-table {
+    display: none;
+  }
+
+  .mobile-cards {
+    display: block;
+  }
+
+  /* Ajustes para las tarjetas móviles en este breakpoint */
+  .mobile-card {
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .card-row-1 {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+
+  .course-name,
+  .activity-name {
+    font-size: 0.9rem;
+  }
+
+  .mobile-select {
+    width: 130px;
+  }
+}
+
+/* --- MÓVILES PEQUEÑOS (pantallas muy pequeñas) --- */
+@media (max-width: 480px) {
+  .pagos-container {
+    padding: 10px;
+  }
+
+  .header {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  .back-btn {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .dashboard {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dash-card {
+    padding: 15px;
+  }
+
+  .dash-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .dash-icon mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .dash-card h3 {
+    font-size: 0.8rem;
+    margin-bottom: 3px;
+  }
+
+  .dash-card span {
+    font-size: 1.3rem;
+  }
+
+  /* Tarjetas móviles para pantallas muy pequeñas */
+  .mobile-card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .card-row-1 {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+
+  .card-course {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .card-row-2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .card-prices {
+    margin-right: 0;
+  }
+
+  .card-actions {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .mobile-select {
+    width: 120px;
+    font-size: 0.75rem;
+  }
+
+  .mobile-delete-btn {
+    min-width: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .course-name,
+  .activity-name {
+    font-size: 0.85rem;
+  }
+
+  .price-value {
+    font-size: 0.8rem;
+  }
+
+  .loading,
+  .no-data {
+    padding: 30px 15px;
+    font-size: 0.9rem;
+  }
+}
+
+/* --- AJUSTES ADICIONALES PARA UX MÓVIL --- */
+@media (max-width: 768px) {
+  /* Mejorar taps en móvil */
+  .back-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  button[mat-icon-button] {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Hacer el select más fácil de tocar en las tarjetas móviles */
+  ::ng-deep .mobile-select .mat-mdc-select-trigger {
+    min-height: 44px;
+  }
+
+  /* Mejorar el espaciado de las tarjetas */
+  .mobile-card:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* --- MODO LANDSCAPE EN MÓVILES --- */
+@media (max-width: 768px) and (orientation: landscape) {
+  .dashboard {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dash-card {
+    padding: 12px;
+  }
+
+  .dash-card span {
+    font-size: 1.2rem;
+  }
 }

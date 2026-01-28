@@ -44,6 +44,13 @@ export class PagosComponent implements OnInit {
     this._service.getPagosEvento(this.idEvento).subscribe({
       next: (data) => {
         this.listaPagos = data;
+        console.log('📊 Pagos cargados:', data);
+        
+        // Log para depurar estados
+        data.forEach((p, i) => {
+          console.log(`Pago ${i}: estado="${p.estado}" (longitud: ${p.estado?.length})`);
+        });
+        
         this.calcularTotales();
         this.loading = false;
       },

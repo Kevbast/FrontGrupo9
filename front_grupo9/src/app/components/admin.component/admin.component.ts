@@ -7,6 +7,7 @@ import { ServiceTorneo } from '../../services/service.torneo';
 import { ActividadesService } from '../../services/service.actividad'; 
 import { Router } from '@angular/router';
 import { Actividades } from '../../models/Actividades';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-admin',
@@ -75,20 +76,49 @@ export class AdminComponent implements OnInit {
   ascenderAOrganizador(usuario: UsuariosCurso) {
     // Doble seguridad: Si no es Admin (3), no hace nada.
     if (this.adminUser?.idRole !== 3) {
-        alert("No tienes permisos para realizar esta acción.");
-        return;
+      Swal.fire({
+        icon: 'error',
+        title: 'Acceso Denegado',
+        text: 'No tienes permisos para realizar esta acción.',
+        confirmButtonColor: '#d33'
+      });
+      return;
     }
 
-    if (confirm(`¿Hacer ORGANIZADOR a ${usuario.usuario}?`)) {
-      this._service.asignarRolOrganizador(usuario.idUsuario).subscribe({
-        next: () => {
-          usuario.idRole = 4;
-          usuario.role = 'ORGANIZADOR';
-          alert(`✅ ${usuario.usuario} ahora es Organizador.`);
-        },
-        error: () => alert("❌ Error al asignar rol.")
-      });
-    }
+    Swal.fire({
+      title: '¿Ascender a Organizador?',
+      text: `¿Deseas hacer ORGANIZADOR a ${usuario.usuario}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, ascender',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._service.asignarRolOrganizador(usuario.idUsuario).subscribe({
+          next: () => {
+            usuario.idRole = 4;
+            usuario.role = 'ORGANIZADOR';
+            Swal.fire({
+              icon: 'success',
+              title: '¡Ascendido!',
+              text: `${usuario.usuario} ahora es Organizador.`,
+              timer: 2500,
+              showConfirmButton: false
+            });
+          },
+          error: () => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo asignar el rol. Inténtalo de nuevo.',
+              confirmButtonColor: '#d33'
+            });
+          }
+        });
+      }
+    });
   }
 
   // ... (cargarActividades igual) ...
@@ -101,6 +131,12 @@ export class AdminComponent implements OnInit {
       },
       error: (e) => {
         this.loadingActividades = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al cargar actividades',
+          text: 'No se pudieron obtener las actividades. Por favor, recarga la página.',
+          confirmButtonColor: '#d33'
+        });
       }
     });
   }
@@ -138,39 +174,95 @@ export class AdminComponent implements OnInit {
 
   guardarActividad() {
     if (!this.actividadForm.nombre) {
-      alert("El nombre es obligatorio");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'El nombre de la actividad es obligatorio',
+        confirmButtonColor: '#f39c12'
+      });
       return;
     }
 
     if (this.esEdicion) {
       this._service.actualizarActividad(this.actividadForm).subscribe({
         next: () => {
-          alert('✅ Actividad actualizada');
+          Swal.fire({
+            icon: 'success',
+            title: '¡Actualizado!',
+            text: 'Actividad actualizada correctamente',
+            timer: 2000,
+            showConfirmButton: false
+          });
           this.mostrandoFormulario = false;
           this.cargarActividades();
         },
-        error: () => alert('❌ Error al actualizar')
+        error: () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar la actividad',
+            confirmButtonColor: '#d33'
+          });
+        }
       });
     } else {
       this._service.crearActividad(this.actividadForm).subscribe({
         next: () => {
-          alert('✅ Actividad creada');
+          Swal.fire({
+            icon: 'success',
+            title: '¡Creado!',
+            text: 'Actividad creada correctamente',
+            timer: 2000,
+            showConfirmButton: false
+          });
           this.mostrandoFormulario = false;
           this.cargarActividades();
         },
-        error: () => alert('❌ Error al crear')
+        error: () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo crear la actividad',
+            confirmButtonColor: '#d33'
+          });
+        }
       });
     }
   }
 
   borrarActividad(id: number) {
-    if (confirm('¿Eliminar esta actividad permanentemente?')) {
-      this._service.deleteActividad(id).subscribe({
-        next: () => {
-          this.cargarActividades();
-        },
-        error: () => alert('❌ Error al eliminar')
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar actividad?',
+      text: 'Esta acción eliminará la actividad permanentemente',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._service.deleteActividad(id).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: 'La actividad ha sido eliminada',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            this.cargarActividades();
+          },
+          error: () => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar la actividad',
+              confirmButtonColor: '#d33'
+            });
+          }
+        });
+      }
+    });
   }
 }

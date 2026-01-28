@@ -1,5 +1,4 @@
 <div class="pagos-container">
-  
   <div class="header">
     <button mat-icon-button (click)="volver()" class="back-btn">
       <mat-icon>arrow_back</mat-icon>
@@ -39,75 +38,148 @@
     </mat-card>
   </div>
 
-  <div class="table-wrapper mat-elevation-z8">
-    
+  <!-- Vista Desktop/Tablet - Tabla tradicional -->
+  <div class="table-wrapper mat-elevation-z8 desktop-table">
     <div *ngIf="loading" class="loading">
-      <mat-spinner diameter="40"></mat-spinner> 
+      <mat-spinner diameter="40"></mat-spinner>
       <span>Cargando libro de cuentas...</span>
     </div>
 
     <table mat-table [dataSource]="listaPagos" *ngIf="!loading">
-
       <ng-container matColumnDef="curso">
-        <th mat-header-cell *matHeaderCellDef> Clase / Curso </th>
-        <td mat-cell *matCellDef="let element"> 
+        <th mat-header-cell *matHeaderCellDef>Clase / Curso</th>
+        <td mat-cell *matCellDef="let element">
           <strong>{{ element.curso }}</strong>
-          <div style="font-size: 0.8rem; color: #888;">ID: {{ element.idCurso }}</div>
+          <div style="font-size: 0.8rem; color: #888">ID: {{ element.idCurso }}</div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actividad">
-        <th mat-header-cell *matHeaderCellDef> Actividad </th>
-        <td mat-cell *matCellDef="let element"> {{ element.actividad }} </td>
+        <th mat-header-cell *matHeaderCellDef>Actividad</th>
+        <td mat-cell *matCellDef="let element">{{ element.actividad }}</td>
       </ng-container>
 
       <ng-container matColumnDef="precio">
-        <th mat-header-cell *matHeaderCellDef> Total a Pagar </th>
-        <td mat-cell *matCellDef="let element"> {{ element.precioTotal }} € </td>
+        <th mat-header-cell *matHeaderCellDef>Total a Pagar</th>
+        <td mat-cell *matCellDef="let element">{{ element.precioTotal }} €</td>
       </ng-container>
 
       <ng-container matColumnDef="pagado">
-        <th mat-header-cell *matHeaderCellDef> Entregado </th>
-        <td mat-cell *matCellDef="let element" class="text-success"> 
-          {{ element.cantidadPagada }} € 
+        <th mat-header-cell *matHeaderCellDef>Entregado</th>
+        <td mat-cell *matCellDef="let element" class="text-success">
+          {{ element.cantidadPagada }} €
         </td>
       </ng-container>
 
-    <ng-container matColumnDef="estado">
-        <th mat-header-cell *matHeaderCellDef> Estado y Acciones </th>
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado y Acciones</th>
         <td mat-cell *matCellDef="let element">
-          
-          <div class="state-action-wrapper"> <span *ngIf="element.precioTotal === 0" class="badge bg-free">
-              NO PAGA
-            </span>
+          <div class="state-action-wrapper">
+            <span *ngIf="element.precioTotal === 0" class="badge bg-free"> NO PAGA </span>
 
-            <mat-form-field appearance="outline" 
-                            class="status-select" 
-                            *ngIf="element.precioTotal > 0"
-                            subscriptSizing="dynamic">
-              
-              <mat-select [value]="element.estado" 
-                          (selectionChange)="cambiarEstado(element, $event.value)"
-                          [ngClass]="element.estado === 'PAGADO' ? 'select-pagado' : 'select-pendiente'">
-                
-                <mat-option value="Sin pagar">🔴 Sin pagar</mat-option>
-                <mat-option value="No tiene que pagar">✖️ Exento</mat-option>            
+            <mat-form-field
+              appearance="outline"
+              class="status-select"
+              *ngIf="element.precioTotal > 0"
+              subscriptSizing="dynamic"
+            >
+              <mat-select
+                [value]="element.estado"
+                (selectionChange)="cambiarEstado(element, $event.value)"
+                [ngClass]="element.estado === 'PAGADO' ? 'select-pagado' : 'select-pendiente'"
+              >
+                <mat-option value="SIN PAGAR">🔴 Sin pagar</mat-option>
+                <mat-option value="PENDIENTE">✖️ Exento</mat-option>
                 <mat-option value="PAGADO">🟢 PAGADO</mat-option>
-              
               </mat-select>
             </mat-form-field>
-            
-            <button mat-icon-button color="warn" (click)="eliminarPago(element.idPago)" matTooltip="Borrar registro">
-              <mat-icon>delete_outline</mat-icon> </button>
 
-          </div> </td>
-    </ng-container>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="eliminarPago(element.idPago)"
+              matTooltip="Borrar registro"
+            >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
     <div *ngIf="!loading && listaPagos.length === 0" class="no-data">
+      No hay pagos registrados para este evento.
+    </div>
+  </div>
+
+  <!-- Vista Móvil - Tarjetas -->
+  <div class="mobile-cards" *ngIf="!loading">
+    <div class="mobile-card mat-elevation-z2" *ngFor="let element of listaPagos">
+      <!-- Primera fila: Curso y Actividad -->
+      <div class="card-row-1">
+        <div class="card-course">
+          <div class="course-label">Curso</div>
+          <div class="course-name">{{ element.curso }}</div>
+          <div class="course-id">ID: {{ element.idCurso }}</div>
+        </div>
+        <div class="card-activity">
+          <div class="activity-label">Actividad</div>
+          <div class="activity-name">{{ element.actividad }}</div>
+        </div>
+      </div>
+
+      <!-- Segunda fila: Precios y Estado -->
+      <div class="card-row-2">
+        <div class="card-prices">
+          <div class="price-item">
+            <span class="price-label">Total:</span>
+            <span class="price-value">{{ element.precioTotal }}€</span>
+          </div>
+          <div class="price-item">
+            <span class="price-label">Pagado:</span>
+            <span class="price-value text-success">{{ element.cantidadPagada }}€</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <span *ngIf="element.precioTotal === 0" class="badge bg-free mobile-badge">
+            NO PAGA
+          </span>
+
+          <mat-form-field
+            appearance="outline"
+            class="status-select mobile-select"
+            *ngIf="element.precioTotal > 0"
+            subscriptSizing="dynamic"
+          >
+            <mat-select
+              [value]="element.estado"
+              (selectionChange)="cambiarEstado(element, $event.value)"
+              [ngClass]="element.estado === 'PAGADO' ? 'select-pagado' : 'select-pendiente'"
+            >
+              <mat-option value="SIN PAGAR">🔴 Sin pagar</mat-option>
+              <mat-option value="PENDIENTE">✖️ Exento</mat-option>
+              <mat-option value="PAGADO">🟢 PAGADO</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="eliminarPago(element.idPago)"
+            matTooltip="Borrar registro"
+            class="mobile-delete-btn"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="listaPagos.length === 0" class="no-data">
       No hay pagos registrados para este evento.
     </div>
   </div>
