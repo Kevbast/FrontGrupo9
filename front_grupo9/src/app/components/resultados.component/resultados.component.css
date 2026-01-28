@@ -136,44 +136,467 @@
   width: 100px;
   height: 100px;
   color: #ccc;
-  margin-bottom: 20px;
+  margin: 0 auto 20px;
+  display: block;
 }
 
 .empty-state h3 {
   color: #666;
   margin-bottom: 10px;
+  font-size: 1.3rem;
 }
 
 .empty-state p {
   color: #999;
+  font-size: 1rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .results-table {
-    font-size: 0.9rem;
+/* Loading spinner */
+.text-center.py-5 {
+  padding: 60px 20px !important;
+}
+
+.text-center.py-5 mat-spinner {
+  margin: 0 auto 20px !important;
+}
+
+.text-center.py-5 .mt-3 {
+  margin-top: 15px !important;
+  color: #666;
+  font-size: 1rem;
+}
+
+/* ============================ */
+/* RESPONSIVE DESIGN */
+/* ============================ */
+
+/* Mostrar vista de tabla en pantallas grandes */
+.table-view {
+  display: block;
+}
+
+.mobile-view {
+  display: none;
+}
+
+/* Tablets grandes y pantallas medianas */
+@media (max-width: 1024px) {
+  .results-table thead th,
+  .result-row td {
+    padding: 15px 12px;
+    font-size: 0.95rem;
   }
 
-  .results-table thead th,
+  .score-box {
+    padding: 8px 20px;
+    font-size: 1.3rem;
+  }
+
+  .d-flex.align-items-center h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Tablets medianas */
+@media (min-width: 577px) and (max-width: 768px) {
+  /* Vista de tabla optimizada para tablets */
+  .results-table thead th {
+    font-size: 0.9rem;
+    padding: 15px 10px;
+  }
+
   .result-row td {
     padding: 15px 10px;
   }
 
   .team-name {
-    flex-direction: column;
-    gap: 5px;
+    font-size: 0.95rem;
   }
 
   .score-box {
-    padding: 8px 15px;
+    padding: 8px 18px;
     font-size: 1.2rem;
-    gap: 10px;
+  }
+
+  /* Mantener tabla visible en tablets */
+  .table-view {
+    display: block;
+  }
+
+  .mobile-view {
+    display: none;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 15px;
+  }
+
+  /* Header responsive */
+  .d-flex.align-items-center.justify-content-between {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px !important;
+    margin: 15px !important;
+  }
+
+  .d-flex.align-items-center h1 {
+    font-size: 1.5rem;
+  }
+
+  .d-flex.align-items-center div[style*="width: 6px"] {
+    width: 5px !important;
+    height: 38px !important;
+  }
+
+  /* Botón volver */
+  .mb-4.mt-3.mx-3 {
+    margin: 15px !important;
+  }
+
+  .mb-4.mt-3.mx-3 button {
+    font-size: 0.95rem;
+  }
+
+  /* Tabla más compacta */
+  .results-table {
+    font-size: 0.85rem;
+  }
+
+  .results-table thead th,
+  .result-row td {
+    padding: 12px 8px;
+  }
+
+  .team-name {
+    font-size: 0.9rem;
+  }
+
+  .score-box {
+    padding: 6px 12px;
+    font-size: 1.1rem;
+    gap: 8px;
   }
 
   .team-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Modal responsive */
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+
+  /* Loading */
+  .text-center.py-5 {
+    padding: 30px 15px !important;
+  }
+}
+
+
+/* Móviles - Cambiar a vista de cards */
+@media (max-width: 576px) {
+  /* Ocultar tabla y mostrar cards */
+  .table-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .container-fluid {
+    padding: 10px;
+  }
+
+  /* Header mobile */
+  .d-flex.align-items-center.justify-content-between {
+    padding: 15px !important;
+    margin: 10px !important;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .d-flex.align-items-center {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .d-flex.align-items-center h1 {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .d-flex.align-items-center div[style*="width: 6px"] {
+    width: 4px !important;
+    height: 30px !important;
+  }
+
+  .add-result-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+  }
+
+  /* Botón volver más compacto */
+  .mb-4.mt-3.mx-3 {
+    margin: 10px !important;
+  }
+
+  .mb-4.mt-3.mx-3 button {
+    font-size: 0.9rem;
+    padding: 8px 12px !important;
+  }
+
+  .mb-4.mt-3.mx-3 button mat-icon {
+    font-size: 1rem !important;
+    height: 1rem !important;
+    width: 1rem !important;
+  }
+
+  /* Loading mobile */
+  .text-center.py-5 {
+    padding: 20px 10px !important;
+  }
+
+  .text-center.py-5 .mt-3 {
+    font-size: 0.9rem;
+  }
+
+  /* Cards container */
+  .mx-3.mb-5 {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Cards de partidos para móvil */
+  .match-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+  }
+
+  .match-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .match-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .match-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .team-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .team-item:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  }
+
+  .team-item.local {
+    border-left: 4px solid #09a4ec;
+  }
+
+  .team-item.visitante {
+    border-left: 4px solid #2980b9;
+  }
+
+  .team-name-mobile {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+    flex: 1;
+    padding-right: 10px;
+    word-break: break-word;
+  }
+
+  .team-score {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #09a4ec;
+    min-width: 45px;
+    text-align: right;
+  }
+
+  .score-separator-mobile {
+    text-align: center;
+    font-weight: bold;
+    color: #999;
+    font-size: 0.9rem;
+    padding: 4px 0;
+  }
+
+  .match-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 8px;
+  }
+
+  .match-actions button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  /* Empty state mobile */
+  .empty-state {
+    padding: 40px 15px;
+    margin: 10px !important;
+  }
+
+  .empty-icon {
+    font-size: 70px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .empty-state h3 {
+    font-size: 1.2rem;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+  }
+
+  /* Modal mobile - Pantalla completa */
+  .modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-header {
+    border-radius: 0;
+    padding: 15px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 15px;
+  }
+
+  .modal-body form {
+    gap: 12px;
+  }
+
+  .modal-footer {
+    padding: 15px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-footer button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Ajuste de mat-form-field para móvil */
+  ::ng-deep .modal-body mat-form-field {
+    font-size: 0.9rem;
+  }
+
+  ::ng-deep .modal-body .mat-mdc-form-field-infix {
+    min-height: 48px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 380px) {
+  .d-flex.align-items-center h1 {
+    font-size: 1rem;
+  }
+
+  .team-name-mobile {
+    font-size: 0.85rem;
+  }
+
+  .team-score {
+    font-size: 1.4rem;
+    min-width: 40px;
+  }
+
+  .match-card {
+    padding: 12px;
+  }
+
+  .team-item {
+    padding: 10px 12px;
+  }
+
+  .match-actions {
+    gap: 5px;
+  }
+
+  .mb-4.mt-3.mx-3 button {
+    font-size: 0.85rem;
+    padding: 6px 10px !important;
+  }
+
+  .mb-4.mt-3.mx-3 button span {
+    display: none;
+  }
+
+  .mb-4.mt-3.mx-3 button mat-icon {
+    margin: 0 !important;
+  }
+}
+
+/* Ajustes para táctil en móviles */
+@media (max-width: 576px) {
+  button[mat-icon-button],
+  button[mat-mini-fab],
+  button[mat-raised-button] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Asegurar que los tooltips no interfieran en móvil */
+  ::ng-deep .mat-mdc-tooltip {
+    font-size: 0.85rem;
   }
 }
 
@@ -300,4 +723,74 @@
 
 .result-row td {
   vertical-align: middle;
+}
+
+/* ============================ */
+/* LANDSCAPE MOBILE OPTIMIZATION */
+/* ============================ */
+
+/* Móviles en landscape */
+@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
+  .container-fluid {
+    padding: 10px;
+  }
+
+  .d-flex.align-items-center.justify-content-between {
+    padding: 10px !important;
+    margin: 8px !important;
+  }
+
+  .d-flex.align-items-center h1 {
+    font-size: 1rem;
+  }
+
+  .mb-4.mt-3.mx-3 {
+    margin: 8px !important;
+  }
+
+  .match-card {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .team-item {
+    padding: 8px 10px;
+  }
+
+  .team-score {
+    font-size: 1.4rem;
+  }
+
+  .modal-content {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+}
+
+/* ============================ */
+/* ACCESIBILIDAD Y UX */
+/* ============================ */
+
+/* Mejoras de contraste y focus para accesibilidad */
+@media (max-width: 576px) {
+  button:focus-visible,
+  .btn:focus-visible {
+    outline: 2px solid #09a4ec;
+    outline-offset: 2px;
+  }
+
+  .match-card:focus-within {
+    box-shadow: 0 0 0 3px rgba(9, 164, 236, 0.3);
+  }
+
+  /* Mejorar área táctil de los botones */
+  button[mat-icon-button]::before,
+  button[mat-mini-fab]::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+  }
 }

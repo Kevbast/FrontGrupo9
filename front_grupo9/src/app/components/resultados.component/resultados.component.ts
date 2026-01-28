@@ -6,6 +6,8 @@ import { PartidoResultado } from '../../models/PartidoResultado';
 import { Equipo } from '../../models/Equipo';
 import { Usuario } from '../../models/Usuario';
 import { ServiceTorneo } from '../../services/service.torneo';
+import { forkJoin } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-resultados',
@@ -36,19 +38,13 @@ export class ResultadosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Cargar perfil del usuario desde la API
-    this.serviceTorneo.getPerfil().subscribe({
-      next: (usuario) => {
-        this.usuarioPerfil = usuario;
-      },
-      error: (err) => {}
-    });
+    this.loading = true;
     
     this.route.params.subscribe(params => {
       this.idActividad = +params['idActividad'];
       this.idEvento = +params['idEvento'];
       
-      // Primero necesitamos obtener el idEventoActividad
+      // Cargar todos los datos en paralelo con forkJoin
       this.cargarDatos();
     });
   }
@@ -56,26 +52,48 @@ export class ResultadosComponent implements OnInit {
   cargarDatos(): void {
     this.loading = true;
     
-    // Cargar equipos de la actividad específica
     if (this.idActividad > 0 && this.idEvento > 0) {
-      this.equiposService.getEquiposActividadEvento(this.idActividad, this.idEvento).subscribe({
-        next: (equiposActividad) => {
-          // Asignar los equipos de esta actividad
-          this.equipos = equiposActividad;
+      // Primero cargar perfil y equipos en paralelo
+      forkJoin({
+        perfil: this.serviceTorneo.getPerfil(),
+        equipos: this.equiposService.getEquiposActividadEvento(this.idActividad, this.idEvento)
+      }).pipe(
+        switchMap((resultado) => {
+          // Guardar usuario y equipos
+          this.usuarioPerfil = resultado.perfil;
+          this.equipos = resultado.equipos;
           
-          // Crear mapa de equipos para acceso rápido
+          // Crear mapa de equipos
           this.equipos.forEach(equipo => {
             this.equiposMap[equipo.idEquipo] = equipo.nombreEquipo;
           });
           
           // Obtener idEventoActividad del primer equipo
-          if (equiposActividad.length > 0 && equiposActividad[0].idEventoActividad) {
-            this.idEventoActividad = equiposActividad[0].idEventoActividad;
-            this.verificarCapitan();
-            this.cargarPartidos();
+          if (resultado.equipos.length > 0 && resultado.equipos[0].idEventoActividad) {
+            this.idEventoActividad = resultado.equipos[0].idEventoActividad;
+            
+            // Ahora cargar partidos y capitán en paralelo
+            return forkJoin({
+              partidos: this.partidoService.getPartidosPorActividad(this.idEventoActividad),
+              capitan: this.equiposService.getCapitanByIdEventoActividad(this.idEventoActividad)
+            });
           } else {
-            this.loading = false;
+            throw new Error('No hay equipos para esta actividad');
           }
+        })
+      ).subscribe({
+        next: (resultado) => {
+          // Guardar partidos
+          this.partidos = resultado.partidos;
+          
+          // Verificar si es capitán
+          if (resultado.capitan && resultado.capitan.idUsuario === this.usuarioPerfil?.idUsuario) {
+            this.esCapitan = true;
+          } else {
+            this.esCapitan = false;
+          }
+          
+          this.loading = false;
         },
         error: (err) => {
           this.loading = false;
@@ -90,10 +108,8 @@ export class ResultadosComponent implements OnInit {
     this.partidoService.getPartidosPorActividad(this.idEventoActividad).subscribe({
       next: (partidos) => {
         this.partidos = partidos;
-        this.loading = false;
       },
       error: (err) => {
-        this.loading = false;
       }
     });
   }
