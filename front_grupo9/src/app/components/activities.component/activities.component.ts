@@ -103,7 +103,9 @@ export class ActivitiesComponent implements OnInit {
         this.inscripciones = data;
         this.agruparInscripcionesPorActividad();
       },
-      error: (err) => {},
+      error: (err) => {
+        console.error('Error al cargar inscripciones:', err);
+      },
     });
 
     this.actividadesService.getActividadesEvento(this.idEvento).subscribe({
@@ -143,11 +145,19 @@ export class ActivitiesComponent implements OnInit {
         this.rolUsuario = usuario.role;
         this.idUsuarioActual = usuario.idUsuario;
         this.idCursoActual = usuario.idCurso;
+      },
+      error: (err) => {
+        console.error('Error al cargar perfil:', err);
       }
     });
 
-    this.eventosService.getEventoById(this.idEvento).subscribe((result) => {
-      this.eventoActual = result;
+    this.eventosService.getEventoById(this.idEvento).subscribe({
+      next: (result) => {
+        this.eventoActual = result;
+      },
+      error: (err) => {
+        console.error('Error al cargar evento:', err);
+      }
     });
   }
 
@@ -664,30 +674,55 @@ export class ActivitiesComponent implements OnInit {
   // Envía la petición para añadir la actividad seleccionada al evento
   crearActividadEnviar(): void {
     if (!this.idActividadSeleccionada) {
-      alert('❌ Por favor selecciona una actividad');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Selección requerida',
+        text: 'Por favor selecciona una actividad antes de continuar.',
+        confirmButtonColor: '#f39c12'
+      });
       return;
     }
+
+    // Mostrar loading mientras se añade
+    Swal.fire({
+      title: 'Añadiendo actividad...',
+      text: 'Por favor espera',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
     this.actividadesService.crearEventoActividad(this.idEvento, this.idActividadSeleccionada).subscribe({
       next: (respuesta) => {
         this.cerrarModalCrearActividad();
-        alert('✅ Actividad añadida al evento correctamente');
+        Swal.fire({
+          icon: 'success',
+          title: '¡Actividad añadida!',
+          text: 'La actividad se añadió correctamente al evento.',
+          timer: 2500,
+          showConfirmButton: false
+        });
         setTimeout(() => {
           this.cargarDatos();
           this.cargarPrecios();
         }, 500);
       },
       error: (err) => {
-        alert('❌ Error al añadir la actividad al evento');
+        console.error('Error al añadir actividad:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo añadir la actividad al evento. Intenta nuevamente.',
+          confirmButtonColor: '#d33'
+        });
       }
     });
   }
 
   // Carga todas las actividades disponibles y abre el modal de selección
   crearActividad(): void {
-    if (!this.esAdminOOrganizador()) {
-      return;
-    }
     // Cargar todas las actividades disponibles
     this.actividadesService.getActividades().subscribe({
       next: (actividades: any[]) => {
@@ -714,7 +749,12 @@ export class ActivitiesComponent implements OnInit {
         
         // Validar si hay actividades disponibles para añadir
         if (this.actividadesDisponibles.length === 0) {
-          alert('ℹ️ No hay actividades disponibles. Todas las actividades ya están añadidas a este evento.');
+          Swal.fire({
+            icon: 'info',
+            title: 'No hay actividades disponibles',
+            text: 'Todas las actividades ya están añadidas a este evento.',
+            confirmButtonColor: '#3085d6'
+          });
           return;
         }
         
@@ -722,7 +762,13 @@ export class ActivitiesComponent implements OnInit {
         this.mostrarModalCrearActividad = true;
       },
       error: (err) => {
-        alert('❌ Error al cargar las actividades disponibles');
+        console.error('Error al cargar actividades:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar las actividades disponibles. Intenta nuevamente.',
+          confirmButtonColor: '#d33'
+        });
       },
     });
   }
@@ -751,14 +797,40 @@ export class ActivitiesComponent implements OnInit {
 
   // Guarda los cambios realizados en una actividad
   guardarCambiosActividad(): void {
+    // Mostrar loading mientras se actualiza
+    Swal.fire({
+      title: 'Guardando cambios...',
+      text: 'Por favor espera',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     this.actividadesService.actualizarActividad(this.actividadEditar).subscribe({
       next: (respuesta) => {
         this.cerrarModalEditarActividad();
+        Swal.fire({
+          icon: 'success',
+          title: '¡Cambios guardados!',
+          text: 'La actividad se actualizó correctamente.',
+          timer: 2500,
+          showConfirmButton: false
+        });
         setTimeout(() => {
           this.cargarDatos();
         }, 500);
       },
-      error: (err) => {},
+      error: (err) => {
+        console.error('Error al actualizar actividad:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron guardar los cambios. Intenta nuevamente.',
+          confirmButtonColor: '#d33'
+        });
+      },
     });
   }
 
@@ -857,11 +929,26 @@ export class ActivitiesComponent implements OnInit {
     );
 
     if (yaInscrito) {
-      this.mensajeError = 'Solo se puede inscribir en una actividad por evento';
-      this.mostrarModalError = true;
       this.cerrarModalInscripcion();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Ya estás inscrito',
+        text: 'Solo puedes inscribirte en una actividad por evento.',
+        confirmButtonColor: '#f39c12'
+      });
       return;
     }
+
+    // Mostrar loading mientras se procesa
+    Swal.fire({
+      title: 'Procesando inscripción...',
+      text: 'Por favor espera',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
     this.inscripcionesService.crearInscripcion(this.inscripcion).subscribe({
       next: (respuesta) => {
@@ -869,12 +956,26 @@ export class ActivitiesComponent implements OnInit {
         if (this.participantesCache[this.idEventoActividadSeleccionada]) {
           delete this.participantesCache[this.idEventoActividadSeleccionada];
         }
+        Swal.fire({
+          icon: 'success',
+          title: '¡Inscripción exitosa!',
+          text: 'Te has inscrito correctamente en la actividad.',
+          timer: 3000,
+          showConfirmButton: false
+        });
         setTimeout(() => {
           this.cargarDatos();
         }, 500);
       },
       error: (err) => {
+        console.error('Error en inscripción:', err);
         this.cerrarModalInscripcion();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo completar la inscripción. Intenta nuevamente.',
+          confirmButtonColor: '#d33'
+        });
       },
     });
   }
