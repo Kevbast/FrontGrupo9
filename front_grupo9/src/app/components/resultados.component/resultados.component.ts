@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PartidoResultadoService } from '../../services/partidoResultadoService';
 import { EquiposService } from '../../services/equiposService';
@@ -8,6 +8,10 @@ import { Usuario } from '../../models/Usuario';
 import { ServiceTorneo } from '../../services/service.torneo';
 import { forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-resultados',
@@ -15,7 +19,12 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './resultados.component.html',
   styleUrls: ['./resultados.component.css'],
 })
-export class ResultadosComponent implements OnInit {
+export class ResultadosComponent implements OnInit, AfterViewInit {
+  @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('chartVictoriasCanvas') chartVictoriasCanvas!: ElementRef<HTMLCanvasElement>;
+  private chart: Chart | null = null;
+  private chartVictorias: Chart | null = null;
+  
   public partidos: PartidoResultado[] = [];
   public equipos: Equipo[] = [];
   public equiposMap: { [id: number]: string } = {};
@@ -47,6 +56,10 @@ export class ResultadosComponent implements OnInit {
       // Cargar todos los datos en paralelo con forkJoin
       this.cargarDatos();
     });
+  }
+
+  ngAfterViewInit(): void {
+    // El gráfico se creará después de cargar los datos
   }
 
   cargarDatos(): void {
@@ -94,6 +107,11 @@ export class ResultadosComponent implements OnInit {
           }
           
           this.loading = false;
+          // Crear los gráficos después de cargar los datos
+          setTimeout(() => {
+            this.crearGrafico();
+            this.crearGraficoVictorias();
+          }, 100);
         },
         error: (err) => {
           this.loading = false;
@@ -173,9 +191,15 @@ export class ResultadosComponent implements OnInit {
 
     this.partidoService.crearPartido(this.nuevoPartido).subscribe({
       next: (response) => {
-        alert('Partido creado correctamente');
-        this.cerrarModalCrear();
-        this.cargarPartidos();
+        Swal.fire({
+          title: "¡Listo!",
+          text: "El resultado del partido se ha registrado",
+          confirmButtonText: "Volver",
+          icon: 'success'
+        }).then(() => {
+          this.cerrarModalCrear();
+          this.cargarPartidos();
+        })
       },
       error: (err) => {
         alert('Error al crear el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
@@ -216,9 +240,15 @@ export class ResultadosComponent implements OnInit {
 
     this.partidoService.actualizarPartido(this.partidoEditar).subscribe({
       next: (response) => {
-        alert('Partido actualizado correctamente');
-        this.cerrarModalEditar();
-        this.cargarPartidos();
+        Swal.fire({
+          title: "¡Listo!",
+          text: "El resultado del partido se ha actualizado correctamente",
+          confirmButtonText: "Volver",
+          icon: 'success'
+        }).then(() => {
+          this.cerrarModalCrear();
+          this.cargarPartidos();
+        })
       },
       error: (err) => {
         alert('Error al actualizar el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
@@ -238,12 +268,115 @@ export class ResultadosComponent implements OnInit {
 
     this.partidoService.eliminarPartido(idPartidoResultado).subscribe({
       next: (response) => {
-        alert('Partido eliminado correctamente');
-        this.cargarPartidos();
+        Swal.fire({
+          title: "¡Listo!",
+          text: "El resultado ha sido eliminado del registro",
+          confirmButtonText: "Volver",
+          icon: 'success'
+        }).then(() => {
+          this.cargarPartidos();
+        })
       },
       error: (err) => {
         alert('Error al eliminar el partido: ' + (err.error?.message || err.message || 'Error desconocido'));
       }
     });
+  }
+  crearGrafico(): void {
+    if (!this.chartCanvas || this.partidos.length === 0) return;
+
+    if (this.chart) this.chart.destroy();
+
+    const golesMap: { [idEquipo: number]: number } = {};
+    
+    this.partidos.forEach(partido => {
+      golesMap[partido.idEquipoLocal] = (golesMap[partido.idEquipoLocal] || 0) + partido.puntosLocal;
+      golesMap[partido.idEquipoVisitante] = (golesMap[partido.idEquipoVisitante] || 0) + partido.puntosVisitante;
+    });
+
+    const equiposNombres = Object.keys(golesMap).map(id => this.getNombreEquipo(+id));
+    const golesDatos = Object.values(golesMap);
+
+    const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (ctx) {
+      this.chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: equiposNombres,
+          datasets: [{
+            data: golesDatos,
+            backgroundColor: [
+              '#097AEC', '#FF6384', '#36A2EB', '#FFCE56', 
+              '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Distribución de Goles por Equipo'
+            }
+          }
+        }
+      });
+    }
+  }
+
+  crearGraficoVictorias(): void {
+    if (!this.chartVictoriasCanvas || this.partidos.length === 0) return;
+
+    if (this.chartVictorias) this.chartVictorias.destroy();
+
+    const victoriasMap: { [idEquipo: number]: number } = {};
+    
+    this.partidos.forEach(partido => {
+      victoriasMap[partido.idEquipoLocal] = victoriasMap[partido.idEquipoLocal] || 0;
+      victoriasMap[partido.idEquipoVisitante] = victoriasMap[partido.idEquipoVisitante] || 0;
+      
+      if (partido.puntosLocal > partido.puntosVisitante) {
+        victoriasMap[partido.idEquipoLocal]++;
+      } else if (partido.puntosVisitante > partido.puntosLocal) {
+        victoriasMap[partido.idEquipoVisitante]++;
+      }
+    });
+
+    const equiposNombres = Object.keys(victoriasMap).map(id => this.getNombreEquipo(+id));
+    const victoriasDatos = Object.values(victoriasMap);
+
+    const ctx = this.chartVictoriasCanvas.nativeElement.getContext('2d');
+    if (ctx) {
+      this.chartVictorias = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: equiposNombres,
+          datasets: [{
+            label: 'Victorias',
+            data: victoriasDatos,
+            backgroundColor: '#28a745',
+            borderColor: '#1e7e34',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Partidos Ganados por Equipo'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
   }
 }
