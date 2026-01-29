@@ -16,7 +16,7 @@
     </div>
 
     <!-- Botón Colores SOLO CAPITAN -->
-    <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="d-flex justify-content-start justify-content-md-end mb-3 ms-md-auto">
+    <div *ngIf="esCapitan" class="d-flex justify-content-start justify-content-md-end mb-3 ms-md-auto">
       <button  class="btn btn-sm px-3 px-md-4 py-2 fw-semibold text-white" 
               style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border: none; border-radius: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); transition: box-shadow 0.3s ease; font-size: 0.9rem;"
               onmouseover="this.style.boxShadow='0 5px 15px rgba(0,0,0,0.35)'"
@@ -48,7 +48,7 @@
               <div class="d-flex flex-wrap gap-2 align-items-center w-100 w-md-auto">
                 <span class="badge bg-white text-primary px-2 px-md-3 py-1 py-md-2" style="font-size: 0.75rem;">Curso: {{ getNombreCursoPorId(equipo.idCurso) }}</span>
                 <span class="badge bg-white text-primary px-2 px-md-3 py-1 py-md-2" style="font-size: 0.75rem;">Equipacion: {{getNombreColorPorId(equipo.idColor)}}</span>
-                <div *ngIf="esCapitan || usuarioLogado?.idRole == 3" class="d-flex gap-2 ms-auto">
+                <div *ngIf="esCapitan" class="d-flex gap-2 ms-auto">
                   <span class="text-white" (click)="abrirModalEditarEquipo(equipo)" style="cursor: pointer;">
                     <mat-icon style="font-size: 1.3rem;">edit</mat-icon>
                   </span>
