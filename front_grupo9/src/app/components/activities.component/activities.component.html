@@ -147,7 +147,7 @@
           <div class="stats clickable" (click)="toggleParticipantes(idEvento, act.idActividad)">
             <span>👥 Participantes</span>
             <span>
-              <strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / 50
+              <strong>{{ getNumeroParticipantes(act.idEventoActividad) }}</strong> / {{ act.minimoJugadores }}
               <span class="arrow-indicator" [class.rotated]="actividadAbierta === act.idActividad"
                 >▼</span
               >
@@ -178,7 +178,7 @@
           <div class="progress-bar">
             <div
               class="fill blue"
-              [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / 50) * 100"
+              [style.width.%]="(getNumeroParticipantes(act.idEventoActividad) / act.minimoJugadores) * 100"
             ></div>
           </div>
 
