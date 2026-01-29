@@ -175,7 +175,7 @@ export class ActivitiesComponent implements OnInit {
               precio: item.precioTotal,
             };
           });
-          console.log('💰 Precios cargados (con IDs):', this.preciosCache);
+          
         }
       },
       error: (err) => console.error('Error al cargar precios:', err),

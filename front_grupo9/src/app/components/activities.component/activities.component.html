@@ -3,7 +3,7 @@
     <div class="section-header-wrapper">
       <h2 class="section-title sports-border">Actividades</h2>
 
-      <div class="admin-panel" *ngIf="usuarioPerfil?.idRole == 4">
+      <div class="admin-panel" *ngIf="usuarioPerfil?.idRole == 4||usuarioPerfil?.idRole == 6">
         <div class="admin-info">
           <!-- {{ rolUsuario }} -->
           <span class="badge-role">Organizador</span>
@@ -93,7 +93,7 @@
         </mat-card-header>
 
         <!-- Panel de Administrador -->
-        <div class="admin-actions-panel" *ngIf="usuarioPerfil?.idRole == 4" style="
+        <div class="admin-actions-panel" *ngIf="usuarioPerfil?.idRole == 4 || usuarioPerfil?.idRole == 6" style="
           background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 193, 7, 0.05));
           border-left: 4px solid #ff9800;
           padding: 12px 16px;
@@ -229,7 +229,7 @@
 
       <!-- Tarjeta crear actividad - Siempre visible -->
       <mat-card
-        *ngIf="usuarioPerfil?.idRole == 4"
+        *ngIf="usuarioPerfil?.idRole == 4 ||usuarioPerfil?.idRole == 6"
         class="activity-card create-activity-card"
         (click)="crearActividad()"
         style="
@@ -387,7 +387,7 @@
                 <button
                   mat-icon-button
                   color="warn"
-                  *ngIf="usuarioPerfil?.idRole == 4 || material.idUsuario === idUsuarioActual"
+                  *ngIf=" material.idUsuario === idUsuarioActual"
                   (click)="borrarMaterial(material.idMaterial)"
                   matTooltip="Eliminar solicitud"
                 >

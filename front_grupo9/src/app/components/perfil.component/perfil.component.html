@@ -8,7 +8,7 @@
     <button mat-raised-button 
             color="warn" 
             class="shadow-sm"
-            *ngIf="user.idRole === 3 || user.idRole === 4"
+            *ngIf="user.idRole === 3 || user.idRole === 4 ||user.idRole === 6"
             [routerLink]="['/admin']">
       <mat-icon>admin_panel_settings</mat-icon> IR AL PANEL DE GESTIÓN 
     </button>
@@ -35,15 +35,15 @@
                     [ngClass]="{
                       'badge-default': user.idRole !== 3 && user.idRole !== 4,
                       'badge-admin': user.idRole === 3,
-                      'badge-org': user.idRole === 4
+                      'badge-org': user.idRole === 4||user.idRole === 6
                     }">
                 
                 <mat-icon *ngIf="user.idRole === 3" class="icon-tiny me-1">shield</mat-icon>
-                <mat-icon *ngIf="user.idRole === 4" class="icon-tiny me-1">verified</mat-icon>
+                <mat-icon *ngIf="user.idRole === 4||user.idRole === 6" class="icon-tiny me-1">verified</mat-icon>
                 
                 <span *ngIf="user.idRole === 3">ADMINISTRADOR</span>
-                <span *ngIf="user.idRole === 4">ORGANIZADOR</span>
-                <span *ngIf="user.idRole !== 3 && user.idRole !== 4">{{ user.role | uppercase }}</span>
+                <span *ngIf="user.idRole === 4||user.idRole === 6">ORGANIZADOR</span>
+                <span *ngIf="user.idRole !== 3 && user.idRole !== 4 && user.idRole !== 6">{{ user.role | uppercase }}</span>
               </span>
 
               <span class="id-badge">ID: #{{ user.idUsuario }}</span>

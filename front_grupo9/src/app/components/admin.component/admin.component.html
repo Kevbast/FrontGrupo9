@@ -7,7 +7,7 @@
       <h2 class="fw-bold m-0 text-dark">Panel de Administración</h2>
       <small class="text-muted">
         <span *ngIf="adminUser.idRole === 3">Control total de la plataforma</span>
-        <span *ngIf="adminUser.idRole === 4">Gestión de actividades</span>
+        <span *ngIf="adminUser.idRole === 4 ||adminUser.idRole === 6">Gestión de actividades</span>
       </small>
     </div>
   </div>
