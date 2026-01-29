@@ -20,12 +20,12 @@
   <!-- Botón volver -->
   <div class="mb-4 mt-3 mx-3">
     <button class="btn d-flex align-items-center gap-2 px-3 py-2" 
-            [routerLink]="['/']"
+            [routerLink]="['/activities', idEvento]"
             style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
             onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
             onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
       <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
-      <span class="fw-semibold">Volver a eventos</span>
+      <span class="fw-semibold">Volver a la actividad</span>
     </button>
   </div>
 
