@@ -1,15 +1,32 @@
 <div class="container-fluid px-4 py-4">
 
-  <!-- Botón Colores SOLO CAPITAN -->
-  <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="d-flex justify-content-end mb-3">
-    <button  class="btn btn-sm px-4 py-2 fw-semibold text-white" 
-            style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border: none; border-radius: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); transition: box-shadow 0.3s ease;"
-            onmouseover="this.style.boxShadow='0 5px 15px rgba(0,0,0,0.35)'"
-            onmouseout="this.style.boxShadow='0 3px 8px rgba(0,0,0,0.2)'"
-            [routerLink]="['/colores', idActividad, idEvento]">
-      <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.1rem; height: 1.1rem; width: 1.1rem;">palette</mat-icon>
-      Colores equipación
-    </button>
+  <div class="d-flex flex-column flex-md-row p-1 mb-4 gap-3">
+
+    <!-- Volver a Actividades -->
+    <div class="mt-3">
+      <button class="btn d-flex align-items-center gap-2 px-3 px-md-4 py-2 py-md-3 rounded-3" 
+              [routerLink]="['/activities', idEvento]"
+              style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3); font-size: 0.9rem;"
+              onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
+              onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
+        <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
+        <span class="fw-semibold d-none d-sm-inline">Volver a Actividades del evento</span>
+        <span class="fw-semibold d-inline d-sm-none">Actividades</span>
+      </button>
+    </div>
+
+    <!-- Botón Colores SOLO CAPITAN -->
+    <div *ngIf="esCapitan || usuarioLogado?.role == 'ADMINISTRADOR'" class="d-flex justify-content-start justify-content-md-end mb-3 ms-md-auto">
+      <button  class="btn btn-sm px-3 px-md-4 py-2 fw-semibold text-white" 
+              style="background: linear-gradient(135deg, #FF6B6B, #FFD93D, #6BCF7F); border: none; border-radius: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); transition: box-shadow 0.3s ease; font-size: 0.9rem;"
+              onmouseover="this.style.boxShadow='0 5px 15px rgba(0,0,0,0.35)'"
+              onmouseout="this.style.boxShadow='0 3px 8px rgba(0,0,0,0.2)'"
+              [routerLink]="['/colores', idActividad, idEvento]">
+        <mat-icon class="me-1" style="vertical-align: middle; font-size: 1.1rem; height: 1.1rem; width: 1.1rem;">palette</mat-icon>
+        Colores equipación
+      </button>
+    </div>
+
   </div>
 
   <!-- Header Section -->
@@ -26,17 +43,17 @@
           
           <!-- Equipo Header -->
           <div class="p-3" style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%);">
-            <div class="d-flex justify-content-between align-items-center">
-              <h4 class="mb-0 text-white fw-semibold">{{ equipo.nombreEquipo }}</h4>
-              <div class="d-flex gap-2 align-items-center">
-                <span class="badge bg-white text-primary px-3 py-2">Curso: {{ getNombreCursoPorId(equipo.idCurso) }}</span>
-                <span class="badge bg-white text-primary px-3 py-2">Equipacion: {{getNombreColorPorId(equipo.idColor)}}</span>
-                <div *ngIf="esCapitan || usuarioLogado?.idRole == 3" class="d-flex gap-2">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+              <h4 class="mb-0 text-white fw-semibold" style="font-size: 1.1rem;">{{ equipo.nombreEquipo }}</h4>
+              <div class="d-flex flex-wrap gap-2 align-items-center w-100 w-md-auto">
+                <span class="badge bg-white text-primary px-2 px-md-3 py-1 py-md-2" style="font-size: 0.75rem;">Curso: {{ getNombreCursoPorId(equipo.idCurso) }}</span>
+                <span class="badge bg-white text-primary px-2 px-md-3 py-1 py-md-2" style="font-size: 0.75rem;">Equipacion: {{getNombreColorPorId(equipo.idColor)}}</span>
+                <div *ngIf="esCapitan || usuarioLogado?.idRole == 3" class="d-flex gap-2 ms-auto">
                   <span class="text-white" (click)="abrirModalEditarEquipo(equipo)" style="cursor: pointer;">
-                    <mat-icon>edit</mat-icon>
+                    <mat-icon style="font-size: 1.3rem;">edit</mat-icon>
                   </span>
                   <span class="text-white" (click)="eliminarEquipo(equipo.idEquipo)" style="cursor: pointer;">
-                    <mat-icon>delete_outline</mat-icon>
+                    <mat-icon style="font-size: 1.3rem;">delete_outline</mat-icon>
                   </span>
                 </div>
               </div>
@@ -81,20 +98,20 @@
                      style="background-color: transparent;">
                   <img [src]="jugador.imagen" 
                        [alt]="jugador.usuario"
-                       class="rounded-circle me-3" 
-                       style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #097AEC;"
-                       onerror="this.src='https://via.placeholder.com/45'">
-                  <span class="fw-medium" style="color: #0056b3;">{{ jugador.usuario}}</span>
+                       class="rounded-circle me-2 me-md-3" 
+                       style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #097AEC;"
+                       onerror="this.src='https://via.placeholder.com/40'">
+                  <span class="fw-medium" style="color: #0056b3; font-size: 0.9rem;">{{ jugador.usuario}}</span>
                   <!-- BOTON DELETE SOLO VISIBLE POR CAPITAN   -->
-                  <div *ngIf="esCapitan" class="ms-auto" (click)="eliminarJugadorEquipo(jugador.idUsuario, equipo.idEquipo)">
-                    <mat-icon class="text-primary">delete_outline</mat-icon>
+                  <div *ngIf="esCapitan" class="ms-auto" (click)="eliminarJugadorEquipo(jugador.idUsuario, equipo.idEquipo)" style="cursor: pointer;">
+                    <mat-icon class="text-primary" style="font-size: 1.3rem;">delete_outline</mat-icon>
                   </div>
                 </div>
               </div>
               <!-- BOTON DE UNIRSE A EQUIPO POR CUENTA PROPIA, SOLO VISIBLE SI NO ESTÁ EN NINGÚN EQUIPO 
               Y SI ESTÁ INSCRITO EN EL EVENTO ACTIVIDAD -->
-              <div *ngIf="estaEnEquipo() == false && estaInscrito()" class="list-group-item border-0 py-2 px-0 d-flex align-items-center justify-content-center border-top" style="background-color: transparent;">
-                  <span class="fw-medium" style="color: #328ef1;" (click)="unirseEquipo(equipoAbierto)">Unirse al equipo</span> 
+              <div *ngIf="estaEnEquipo() == false && estaInscrito()" class="list-group-item border-0 py-3 px-0 d-flex align-items-center justify-content-center border-top" style="background-color: transparent;">
+                  <span class="fw-medium" style="color: #328ef1; cursor: pointer; font-size: 0.95rem;" (click)="unirseEquipo(equipoAbierto)">Unirse al equipo</span> 
               </div>
             </div>
           </div>
@@ -114,14 +131,15 @@
     </div>
   </div>
 
-   <div *ngIf="esCapitan" class="mt-5 w-100 d-flex justify-content-center">
-      <button class="btn w-75 fw-bold text-white d-flex align-items-center justify-content-center gap-2" 
-              style="height: 80px; background: linear-gradient(135deg, #097AEC 0%, #64c0fe 100%); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(9, 122, 236, 0.4); transition: all 0.3s ease; font-size: 1.1rem;"
-              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 16px rgba(9, 122, 236, 0.6)'; this.style.fontSize='1.2rem'"
-              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(9, 122, 236, 0.4)'; this.style.fontSize='1.1rem'"
+   <div *ngIf="esCapitan" class="mt-5 w-100 d-flex justify-content-center px-3">
+      <button class="btn w-100 w-md-75 fw-bold text-white d-flex align-items-center justify-content-center gap-2" 
+              style="min-height: 60px; height: auto; background: linear-gradient(135deg, #097AEC 0%, #64c0fe 100%); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(9, 122, 236, 0.4); transition: all 0.3s ease; font-size: 1rem; padding: 15px;"
+              onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 6px 16px rgba(9, 122, 236, 0.6)'"
+              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(9, 122, 236, 0.4)'"
               (click)="abrirModalCrearEquipo()">
         <mat-icon style="font-size: 1.5rem; height: 1.5rem; width: 1.5rem;">add_circle</mat-icon>
-        Crear nuevo equipo
+        <span class="d-none d-sm-inline">Crear nuevo equipo</span>
+        <span class="d-inline d-sm-none">Nuevo equipo</span>
       </button>
     </div>
 
@@ -133,22 +151,22 @@
     </div>
 
     <div class="row g-3">
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let participante of participantesInscritos">
-        <div class="p-3 rounded-3 text-center h-100" 
+      <div class="col-6 col-sm-6 col-md-4 col-lg-3" *ngFor="let participante of participantesInscritos">
+        <div class="p-2 p-md-3 rounded-3 text-center h-100" 
              style="background: white; border: 2px solid #C5E0FF; box-shadow: 0 2px 6px rgba(9, 122, 236, 0.2); position: relative;">
               <!--BOTON DE FICHAR SOLO VISIBLE PARA EL CAPITAN DE LA ACTIVIDAD-->          
              <button *ngIf="esCapitan"  class="btn btn-primary btn-sm px-2 py-1" 
-                  style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border: none; font-size: 0.75rem; border-radius: 15px; position: absolute; top: 10px; right: 10px; box-shadow: 0 2px 4px rgba(9, 122, 236, 0.4);"
+                  style="background: linear-gradient(135deg, #097AEC 0%, #3B9EFF 100%); border: none; font-size: 0.7rem; border-radius: 15px; position: absolute; top: 5px; right: 5px; box-shadow: 0 2px 4px rgba(9, 122, 236, 0.4); z-index: 10;"
                   (click)="abrirModalFichar(participante)">
             Fichar
           </button>
           <img [src]="participante.imagen" 
                [alt]="participante.usuario"
-               class="rounded-circle mb-3" 
-               style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #097AEC;"
-               onerror="this.src='https://via.placeholder.com/80'">
-          <p class="mb-0 fw-semibold" style="color: #0056b3;">{{ participante.usuario }}</p>
-          <p class="text-secondary mt-3">{{participante.curso}} - {{participante.idCurso}}</p>
+               class="rounded-circle mb-2 mb-md-3" 
+               style="width: 60px; height: 60px; object-fit: cover; border: 3px solid #097AEC;"
+               onerror="this.src='https://via.placeholder.com/60'">
+          <p class="mb-0 fw-semibold" style="color: #0056b3; font-size: 0.85rem;">{{ participante.usuario }}</p>
+          <p class="text-secondary mt-2 mt-md-3" style="font-size: 0.75rem;">{{participante.curso}}</p>
         </div>
       </div>
     </div>
@@ -161,17 +179,6 @@
     </div>
   </div>
 
-  <!-- Volver a Actividades -->
-  <div class="mt-3">
-    <button class="btn d-flex align-items-center gap-2 px-4 py-3 rounded-3" 
-            [routerLink]="['/activities', idEvento]"
-            style="background: transparent; color: #097AEC; border: none; transition: all 0.3s; text-shadow: 0 2px 4px rgba(9, 122, 236, 0.3);"
-            onmouseover="this.style.textShadow='0 3px 6px rgba(9, 122, 236, 0.5)'; this.style.transform='translateX(-5px)'"
-            onmouseout="this.style.textShadow='0 2px 4px rgba(9, 122, 236, 0.3)'; this.style.transform='translateX(0)'">
-      <mat-icon style="font-size: 1.2rem; height: 1.2rem; width: 1.2rem; line-height: 1.2rem;">arrow_back</mat-icon>
-      <span class="fw-semibold">Volver a Actividades del evento</span>
-    </button>
-  </div>
 </div>
 
 <!-- MODAL FICHAR --> 

@@ -49,7 +49,15 @@
       </button>
     </div>
 
-    <div class="grid" *ngIf="actividadesEvento.length > 0">
+    <!-- Mensaje de estado vacío -->
+    <div *ngIf="!actividadesEvento || actividadesEvento.length === 0" class="empty-state">
+      <img src="Empty Box.gif" alt="notfound" />
+      <p style="font-size: 1.2rem; color: #666666bd; margin-top: 20px; font-weight: 500; margin-bottom: 100px;">
+        No se han asignado actividades a este evento
+      </p>
+    </div>
+
+    <div class="grid">
       <mat-card *ngFor="let act of actividadesEvento" class="activity-card">
         <mat-card-header class="sports-bg">
           <mat-card-title>
@@ -199,9 +207,9 @@
         </mat-card-actions>
       </mat-card>
 
-      <!-- Tarjeta crear actividad -->
+      <!-- Tarjeta crear actividad - Siempre visible -->
       <mat-card
-        *ngIf="usuarioPerfil?.idRole == 3 || usuarioPerfil?.idRole == 4"
+        *ngIf="usuarioPerfil?.idRole == 4"
         class="activity-card create-activity-card"
         (click)="crearActividad()"
         style="
@@ -246,16 +254,9 @@
           <h3 class="text-white fw-bold text-center mb-0">AÑADIR ACTIVIDAD AL EVENTO</h3>
         </div>
       </mat-card>
+      
     </div>
-  </div>
 
-  <div *ngIf="!actividadesEvento || actividadesEvento.length === 0" class="empty-state">
-    <img src="Empty Box.gif" alt="notfound" />
-    <div style="text-align: center; margin-top: 20px" *ngIf="usuarioPerfil?.idRole == 4">
-      <button mat-raised-button color="primary" (click)="crearActividad()">
-        <mat-icon>add</mat-icon> Crear primera actividad
-      </button>
-    </div>
   </div>
 </div>
 
