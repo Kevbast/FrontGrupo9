@@ -161,8 +161,8 @@ td strong {
 /* Ajuste del selector Material */
 .status-select {
   width: 180px; /* Ancho fijo para uniformidad */
-  font-size: 0.9rem;
-  margin-bottom: -1.25em; /* Hack para centrar verticalmente mat-form-field */
+  font-size: 0.6rem;
+   padding: 5px;
 }
 
 /* Badge NO PAGA */
@@ -209,107 +209,158 @@ td strong {
 .mobile-card {
   background: white;
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px;
   margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-left: 4px solid #42a5f5;
-}
-
-/* Primera fila: Curso y Actividad */
-.card-row-1 {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s ease;
 }
 
-.card-course,
-.card-activity {
-  flex: 1;
+.mobile-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.card-course {
-  margin-right: 16px;
+/* Header Section: Curso */
+.card-header-section {
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e3f2fd;
 }
 
 .course-label,
 .activity-label {
-  font-size: 0.75rem;
-  color: #78909c;
+  font-size: 0.65rem;
+  color: #90a4ae;
   text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
   margin-bottom: 4px;
 }
 
-.course-name,
+.course-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1565c0;
+  margin-bottom: 3px;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.course-id {
+  font-size: 0.65rem;
+  color: #b0bec5;
+}
+
+.activity-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #37474f, 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
 .activity-name {
   font-size: 0.95rem;
   font-weight: 600;
   color: #263238;
-  margin-bottom: 2px;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
-.course-id {
-  font-size: 0.7rem;
-  color: #90a4ae;
-}
-
-/* Segunda fila: Precios y Estado */
-.card-row-2 {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.card-prices {
+/* Prices Section */
+.card-prices-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  margin-right: 16px;
+  gap: 8px;
+  background: #f5f8fa;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e3f2fd;
 }
 
-.price-item {
+.price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.price-label {
-  font-size: 0.8rem;
-  color: #78909c;
-  font-weight: 500;
-}
-
-.price-value {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #263238;
-}
-
-.card-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
   gap: 8px;
 }
 
+.price-label {
+  font-size: 0.75rem;
+  color: #546e7a;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.price-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #263238;
+  text-align: right;
+}
+
+.price-value.primary {
+  color: #1565c0;
+}
+
+.price-value.success {
+  color: #2e7d32;
+}
+
+/* Actions Section */
+.card-actions-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.status-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
 .mobile-select {
-  width: 140px;
+  width: 100%;
   font-size: 0.8rem;
 }
 
+::ng-deep .mobile-select .mat-mdc-form-field-infix {
+  padding: 1px 0 !important;
+  min-height: 26px !important;
+}
+
+::ng-deep .mobile-select .mat-mdc-text-field-wrapper {
+  padding: 0 !important;
+}
+
+::ng-deep .mobile-select .mat-mdc-select-value {
+  font-size: 0.8rem !important;
+  line-height: 1.2 !important;
+}
+
+::ng-deep .mobile-select .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
 .mobile-badge {
-  font-size: 0.7rem;
-  padding: 4px 8px;
+  font-size: 0.75rem;
+  padding: 8px 12px;
+  display: inline-block;
+  width: auto;
+  text-align: center;
+  border-radius: 6px;
 }
 
 .mobile-delete-btn {
-  min-width: 36px;
-  width: 36px;
-  height: 36px;
+  flex-shrink: 0;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
 }
 
 /* ======================== RESPONSIVE DESIGN ======================== */
@@ -409,7 +460,7 @@ td strong {
   /* Ajustes para las tarjetas móviles en este breakpoint */
   .mobile-card {
     padding: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   .card-row-1 {
@@ -430,16 +481,17 @@ td strong {
 /* --- MÓVILES PEQUEÑOS (pantallas muy pequeñas) --- */
 @media (max-width: 480px) {
   .pagos-container {
-    padding: 10px;
+    padding: 8px;
   }
 
   .header {
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
   h1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    line-height: 1.3;
   }
 
   .back-btn {
@@ -449,86 +501,91 @@ td strong {
   }
 
   .dashboard {
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
   .dash-card {
-    padding: 15px;
+    padding: 12px;
+    gap: 12px;
   }
 
   .dash-icon {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
   }
 
   .dash-icon mat-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
   }
 
   .dash-card h3 {
-    font-size: 0.8rem;
-    margin-bottom: 3px;
+    font-size: 0.75rem;
+    margin-bottom: 2px;
   }
 
   .dash-card span {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   /* Tarjetas móviles para pantallas muy pequeñas */
   .mobile-card {
-    padding: 12px;
-    margin-bottom: 8px;
+    padding: 22px;
+    margin-bottom: 10px;
+    gap: 10px;
   }
 
-  .card-row-1 {
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 8px;
+  .card-header-section,
+  .card-activity-section {
     padding-bottom: 8px;
   }
 
-  .card-course {
-    margin-right: 0;
-    margin-bottom: 8px;
-  }
-
-  .card-row-2 {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .card-prices {
-    margin-right: 0;
-  }
-
-  .card-actions {
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .mobile-select {
-    width: 120px;
-    font-size: 0.75rem;
-  }
-
-  .mobile-delete-btn {
-    min-width: 32px;
-    width: 32px;
-    height: 32px;
-  }
-
-  .course-name,
-  .activity-name {
+  .course-name {
     font-size: 0.85rem;
   }
 
-  .price-value {
+  .activity-name {
     font-size: 0.8rem;
+  }
+
+  .card-prices-section {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .price-label {
+    font-size: 0.7rem;
+  }
+
+  .price-value {
+    font-size: 0.85rem;
+  }
+
+  .card-actions-section {
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .status-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mobile-select {
+    font-size: 0.75rem;
+  }
+
+  ::ng-deep .mobile-select .mat-mdc-select-value {
+    font-size: 0.85rem !important;
+  }
+
+  .mobile-delete-btn {
+    width: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0;
   }
 
   .loading,

@@ -3,7 +3,7 @@
     <button mat-icon-button (click)="volver()" class="back-btn">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h1>Gestión de Caja (Evento #{{ idEvento }})</h1>
+    <h1>Gestión de Pagos (Evento #{{ idEvento }})</h1>
   </div>
 
   <div class="dashboard">
@@ -97,7 +97,7 @@
             <button
               mat-icon-button
               color="warn"
-              (click)="eliminarPago(element.idPago)"
+              (click)="eliminarPago(element.idPago, element.actividad, element.curso)"
               matTooltip="Borrar registro"
             >
               <mat-icon>delete_outline</mat-icon>
@@ -118,41 +118,41 @@
   <!-- Vista Móvil - Tarjetas -->
   <div class="mobile-cards" *ngIf="!loading">
     <div class="mobile-card mat-elevation-z2" *ngFor="let element of listaPagos">
-      <!-- Primera fila: Curso y Actividad -->
-      <div class="card-row-1">
-        <div class="card-course">
-          <div class="course-label">Curso</div>
-          <div class="course-name">{{ element.curso }}</div>
-          <div class="course-id">ID: {{ element.idCurso }}</div>
+      <!-- Header: Curso -->
+      <div class="card-header-section">
+        <div class="course-label">Curso</div>
+        <div class="course-name">{{ element.curso }}</div>
+        <div class="course-id">ID: {{ element.idCurso }}</div>
+      </div>
+
+      <!-- Actividad -->
+      <div class="card-activity-section">
+        <div class="activity-label">Actividad</div>
+        <div class="activity-name">{{ element.actividad }}</div>
+      </div>
+
+      <!-- Precios -->
+      <div class="card-prices-section">
+        <div class="price-row">
+          <span class="price-label">Total a pagar:</span>
+          <span class="price-value primary">{{ element.precioTotal }}€</span>
         </div>
-        <div class="card-activity">
-          <div class="activity-label">Actividad</div>
-          <div class="activity-name">{{ element.actividad }}</div>
+        <div class="price-row">
+          <span class="price-label">Ya entregado:</span>
+          <span class="price-value success">{{ element.cantidadPagada }}€</span>
         </div>
       </div>
 
-      <!-- Segunda fila: Precios y Estado -->
-      <div class="card-row-2">
-        <div class="card-prices">
-          <div class="price-item">
-            <span class="price-label">Total:</span>
-            <span class="price-value">{{ element.precioTotal }}€</span>
-          </div>
-          <div class="price-item">
-            <span class="price-label">Pagado:</span>
-            <span class="price-value text-success">{{ element.cantidadPagada }}€</span>
-          </div>
+      <!-- Estado y Acciones -->
+      <div class="card-actions-section">
+        <div class="status-wrapper" *ngIf="element.precioTotal === 0">
+          <span class="badge bg-free mobile-badge">NO PAGA</span>
         </div>
 
-        <div class="card-actions">
-          <span *ngIf="element.precioTotal === 0" class="badge bg-free mobile-badge">
-            NO PAGA
-          </span>
-
+        <div class="status-wrapper" *ngIf="element.precioTotal > 0">
           <mat-form-field
             appearance="outline"
             class="status-select mobile-select"
-            *ngIf="element.precioTotal > 0"
             subscriptSizing="dynamic"
           >
             <mat-select
@@ -165,17 +165,17 @@
               <mat-option value="PAGADO">🟢 PAGADO</mat-option>
             </mat-select>
           </mat-form-field>
-
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="eliminarPago(element.idPago)"
-            matTooltip="Borrar registro"
-            class="mobile-delete-btn"
-          >
-            <mat-icon>delete_outline</mat-icon>
-          </button>
         </div>
+
+        <button
+          mat-mini-fab
+          color="warn"
+          (click)="eliminarPago(element.idPago, element.actividad, element.curso)"
+          matTooltip="Borrar registro"
+          class="mobile-delete-btn"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
       </div>
     </div>
 
