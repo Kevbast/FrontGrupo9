@@ -398,12 +398,7 @@ export class ActivitiesComponent implements OnInit {
     this.router.navigate(['/pagos', this.idEvento]);
   }
 
-  // Navega a la vista de pagos filtrando por una actividad específica
-  irAPagos(act: Actividad): void {
-    this.router.navigate(['/pagos', this.idEvento], {
-      queryParams: { actividad: act.nombreActividad },
-    });
-  }
+
 
   // --- LÓGICA EXISTENTE ---
   // Agrupa las inscripciones por ID de evento-actividad
