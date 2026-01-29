@@ -43,8 +43,8 @@ export class AdminComponent implements OnInit {
         this.adminUser = user;
         
         // RESTRICCIÓN DE ACCESO A LA VISTA
-        // Solo entran Admin (3) y Organizador (4)
-        if (user.idRole !== 3 && user.idRole !== 4) {
+        // Solo entran Admin (3) y Organizador (4) y (6)
+        if (user.idRole !== 3 && user.idRole !== 4 && user.idRole !== 6) {
           this._router.navigate(['/perfil']);
         } else {
           this.cargarCursos();

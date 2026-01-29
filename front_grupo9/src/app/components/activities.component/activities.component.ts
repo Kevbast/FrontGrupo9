@@ -841,7 +841,7 @@ export class ActivitiesComponent implements OnInit {
 
   // Elimina una actividad del evento (solo organizadores)
   eliminarEventoActividad(idEventoActividad: number, nombreActividad: string): void {
-    const esOrganizador = this.usuarioPerfil?.idRole === 4;
+    const esOrganizador = this.usuarioPerfil?.idRole === 4 || this.usuarioPerfil?.idRole === 6;
 
     if (!esOrganizador) {
       return;
