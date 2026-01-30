@@ -83,6 +83,7 @@
 .badge-default { background-color: #e3f2fd; color: #0277bd; }
 .badge-admin   { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 .badge-org     { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.badge-capi     { background-color: #e7cfa2; color: #c05e03; border: 1px solid #c8e6c9; }
 
 .icon-tiny { font-size: 18px; width: 18px; height: 18px; }
 
