@@ -137,6 +137,8 @@ mat-card-content {
   border-radius: 5px; 
   overflow: hidden; 
   margin-bottom: 20px; 
+  height: 8px;
+  margin-bottom: 12px;
 }
 
 .fill { 
@@ -1314,10 +1316,6 @@ mat-card-actions {
     opacity: 0.7;
   }
 
-  .progress-bar {
-    height: 8px;
-    margin-bottom: 12px;
-  }
 
   .material-btn {
     padding: 10px 12px;
