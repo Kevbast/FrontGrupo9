@@ -199,6 +199,7 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         }).then(() => {
           this.cerrarModalCrear();
           this.cargarPartidos();
+          window.location.reload();
         })
       },
       error: (err) => {
@@ -248,6 +249,7 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         }).then(() => {
           this.cerrarModalCrear();
           this.cargarPartidos();
+          window.location.reload();
         })
       },
       error: (err) => {
